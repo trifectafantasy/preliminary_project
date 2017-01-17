@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "cheerio": "latest",
-    "express": "latest",
+    "express": "3.10.10",
     "nodemon": "latest",
     "request": "latest",
     "mongodb": "latest",
