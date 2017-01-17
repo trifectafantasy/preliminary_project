@@ -10,6 +10,17 @@ var assert = require('assert');
 var MongoClient = mongo.MongoClient;
 var mongo_url = 'mongodb://localhost:27017/espn';
 
+var db;
+
+// Initialize connection once
+MongoClient.connect("mongodb://localhost:27017/espn", function(err, database) {
+  
+  if(err) throw err;
+
+  db = database;
+
+});
+
 // create router object
 var router = express.Router();
 
@@ -127,19 +138,6 @@ router.get('/scrape_standings', function(req, res) {
 			//console.log(standings);
 			//console.log(roto_standings);
 
-			MongoClient.connect(mongo_url, function(err, db) {
-
-				assert.equal(null, err);
-
-				insertDocument(db, function(db, callback) {});
-/*
-				readCollection(db, function() {
-
-					db.close();
-
-				}) */
-			})
-
 
 			var insertDocument = function(db, callback) {
 
@@ -175,7 +173,7 @@ router.get('/scrape_standings', function(req, res) {
 
 					if (doc != null) {
 
-						//console.dir(doc);
+						console.dir(doc);
 
 					} else {
 
@@ -199,7 +197,8 @@ router.get('/scrape_standings', function(req, res) {
 
 			};
 			
-			
+		insertDocument(db, function(db, callback) {});
+		
 		res.sendFile(path.join(__dirname, "../baseball_standings.html"));
 		
 		}
