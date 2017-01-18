@@ -20,12 +20,13 @@ function start(mongo_url) {
 
 	readCollection(db, function(array){
 		console.log("did i get the array???")
-		console.log(array);
+		//console.log(array);
 		//alert(array);
 		//document.getElementbyId("hello").innerHTML = array;
 		return array;
 	})
 
+	console.log("closing up shop")
 	db.close();
 
 })
@@ -34,10 +35,17 @@ function start(mongo_url) {
 
 
 function readCollection(db, callback) {
+		console.log("reading...")
 
 		var cursor1 = db.collection('baseball_2016_h2h').find({}, {"_id": 0}, {"sort": [['division', 'asc'], ['win_per', 'desc']]}).toArray(function(err, cursor1){
 			callback(cursor1);
 	})
 }
 
-document.getElementById("hello").innerHTML = start(mongo_url);
+//document.getElementById("hello").innerHTML = start(mongo_url);
+start(mongo_url)
+
+
+
+
+

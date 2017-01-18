@@ -10,10 +10,11 @@
   "license": "ISC",
   "dependencies": {
     "cheerio": "latest",
-    "express": "3.10.10",
+    "express": "latest",
     "nodemon": "latest",
     "request": "latest",
     "mongodb": "latest",
-    "monk"   : "latest"
+    "monk"   : "latest",
+    "python-shell" : "latest"
   }
 }
