@@ -18,6 +18,7 @@ MongoClient.connect("mongodb://localhost:27017/espn", function(err, database) {
   if(err) throw err;
 
   db = database;
+  console.log("Connected to MongoDB")
 
 });
 
@@ -196,6 +197,8 @@ router.get('/scrape_standings', function(req, res) {
 				});
 
 			};
+
+
 			
 		insertDocument(db, function(db, callback) {});
 		
@@ -206,3 +209,35 @@ router.get('/scrape_standings', function(req, res) {
 
 })
 
+router.get('/display_standings', function(req, res) {
+
+	db.collection('baseball_2016_roto').find({}, {"_id": 0}).toArray(function(e, docs) {
+		console.log(docs);
+		res.send(docs);
+	});
+
+
+/*
+
+		var readCollection = function(db, callback) {
+
+		var cursor2 = db.collection('baseball_2016_roto').find({}).toArray(function(err, cursor2) {
+
+			//callback(cursor2);
+			res.render("result" , {"standings": cursor2});
+		})
+
+		
+	};
+
+
+	readCollection(db, function(db, output) {
+
+		//res.render("result", {"Standings": output});
+
+	});
+*/
+
+
+
+});
