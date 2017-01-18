@@ -166,8 +166,6 @@ def roto_trifecta(collection):
 		collection.update({"team": current_team}, {"$set": {"roto_trifecta_points": individual_trifecta_roto_points}})
 
 
-
-
 mongod = subprocess.Popen(["mongod"])
 time.sleep(2)
 
@@ -185,6 +183,5 @@ collection2 = db.baseball_2016_roto
 h2h_trifecta(collection1)
 roto_trifecta(collection2)
 
-print "Putting subprocess to sleep, then killing it"
-time.sleep(5)
+time.sleep(3)
 mongod.terminate()

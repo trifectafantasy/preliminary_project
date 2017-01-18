@@ -3,6 +3,7 @@ var express = require('express');
 var request = require('request');
 var cheerio = require('cheerio');
 var path = require('path');
+var pyshell = require('python-shell');
 
 var mongo = require('mongodb');
 var assert = require('assert');
@@ -145,21 +146,27 @@ router.get('/scrape_standings', function(req, res) {
 				var collection1 = db.collection('baseball_2016_h2h');
 				var collection2 = db.collection('baseball_2016_roto');
 
+				collection1.remove({});
+				collection2.remove({});
+
 				collection1.insert(h2h_standings, function(err, result) {
 			    
-			    	assert.equal(err, null);
-			    	//console.log("A document was inserted into the collection");
+					collection2.insert(roto_standings, function(err, result) {
 			    
-			    	callback(result);
+				    	assert.equal(err, null);
+				    	console.log("Document 2 was inserted into the collection");
+				    
+				    	// return callback after 2nd document is uploaded
+				    	callback(result);
+					});
+
+			    	assert.equal(err, null);
+			    	console.log("Document 1 was inserted into the collection");
+			    
+			    	// only return after 2nd document finishes uploading
+			    	//callback(result);
 				});
 
-				collection2.insert(roto_standings, function(err, result) {
-			    
-			    	assert.equal(err, null);
-			    	//console.log("A document was inserted into the collection");
-			    
-			    	callback(result);
-				});
 			}
 
 
@@ -199,9 +206,17 @@ router.get('/scrape_standings', function(req, res) {
 			};
 
 
+		insertDocument(db, function(db, callback) {
+
+			console.log("All documents uploaded");
+			pyshell.run("standings.py", function(err) {
+				if (err) throw err;
+				console.log("python standings.py script complete");
+
+			});
 			
-		insertDocument(db, function(db, callback) {});
-		
+		});
+
 		res.sendFile(path.join(__dirname, "../baseball_standings.html"));
 		
 		}
@@ -209,10 +224,11 @@ router.get('/scrape_standings', function(req, res) {
 
 })
 
+
 router.get('/display_standings', function(req, res) {
 
-	db.collection('baseball_2016_roto').find({}, {"_id": 0}).toArray(function(e, docs) {
-		console.log(docs);
+	db.collection('baseball_2016_roto').find({}, {"_id": 0}, {"sort": ["h2h_rank", "desc"]}).toArray(function(e, docs) {
+		//console.log(docs);
 		res.send(docs);
 	});
 
