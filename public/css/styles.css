@@ -5,3 +5,12 @@ body {
 header {
 	background-color: black;
 }
+
+table {
+  border-collapse: separate;
+  border-spacing: 25px 0;
+}
+
+td {
+  padding: 5px 0;
+}

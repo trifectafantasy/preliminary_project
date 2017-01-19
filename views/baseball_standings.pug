@@ -13,7 +13,34 @@ html
 
 		h2= "2016 Baseball Standings"
 
-		ul
-			each team in everything
-				each val, index in team
-					li= index + ': ' + val
+
+		h4= "Head to Head Standings"
+		table
+			thead
+				tr
+					th TEAM
+					th WINS
+					th LOSSES
+					th TIES
+					th WIN %
+					th DIVISION
+					th TRIFECTA H2H POINTS
+			tbody
+				each readin in h2h_standings
+					tr
+						each val, cat in readin
+							if cat === "team"
+								td= val
+							if cat === "wins"
+								td= val
+							if cat === "losses"
+								td= val
+							if cat === "ties"
+								td= val
+							if cat === "win_per"
+								td= val
+							if cat === "division"
+								td= val
+							if cat === "h2h_trifecta_points"
+								td= val
+													

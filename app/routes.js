@@ -72,12 +72,12 @@ router.get('/scrape_standings', function(req, res) {
 
 				// store sraped data for each team in json
 				var json1 = {
-					division: "", 
 					team: "",
 					wins: "",
 					losses: "",
 					ties: "",
-					win_per: ""
+					win_per: "",
+					division: ""
 				};
 
 				// traversing the DOM
@@ -95,7 +95,7 @@ router.get('/scrape_standings', function(req, res) {
 				json1.wins = parseInt(wins.text());
 				json1.losses = parseInt(losses.text());
 				json1.ties = parseInt(ties.text());
-				json1.win_per = parseFloat(win_per.text());
+				json1.win_per = parseFloat(win_per.text()).toFixed(3);
 
 				// push each team's json of data into array of all teams
 				h2h_standings.push(json1);
@@ -150,14 +150,14 @@ router.get('/scrape_standings', function(req, res) {
 				json2.RBI = parseInt(RBI.text());
 				json2.SO = parseInt(SO.text());
 				json2.SB = parseInt(SB.text());
-				json2.OBP = parseFloat(OBP.text());
+				json2.OBP = parseFloat(OBP.text()).toFixed(4);
 
 				json2.K = parseInt(K.text());
 				json2.QS = parseInt(QS.text());
 				json2.W = parseInt(W.text());
 				json2.SV = parseInt(SV.text());
-				json2.ERA = parseFloat(ERA.text());
-				json2.WHIP = parseFloat(WHIP.text());
+				json2.ERA = parseFloat(ERA.text()).toFixed(3);
+				json2.WHIP = parseFloat(WHIP.text()).toFixed(3);
 
 				// push each team's json of data into array of all teams
 				roto_standings.push(json2);
@@ -247,15 +247,15 @@ router.get('/scrape_standings', function(req, res) {
 				console.log("Python script complete");
 
 				// pull from mongodb and display new data after python script finishes
-				db.collection('baseball_2016_roto').find({}, {"_id": 0}, {"sort": ["h2h_rank", "desc"]}).toArray(function(e, docs) {
+				db.collection('baseball_2016_h2h').find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
 					//console.log(docs);
 					console.log("Displaying data...")
 					//res.send(docs);
-
-					const bstand = {
-						everything: docs
+					
+					const bstandh2h = {
+						h2h_standings: docs
 					}
-					res.render('baseball_standings', bstand);		
+					res.render('baseball_standings', bstandh2h);	
 
 				});
 
