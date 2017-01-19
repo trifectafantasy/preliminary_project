@@ -39,8 +39,8 @@ router.get('/', function(req, res) {
 	res.render('index', message);
 });
 
-// route to /scrape_standings
-router.get('/scrape_standings', function(req, res) {
+// route to /baseball_standings
+router.get('/baseball_standings', function(req, res) {
 
 	// url for basketball 2017 standings
 	//var url = 'http://games.espn.com/fba/standings?leagueId=100660&seasonId=2017';
@@ -246,6 +246,7 @@ router.get('/scrape_standings', function(req, res) {
 				if (err) throw err;
 				console.log("Python script complete");
 
+				// initialize display database queries
 				var disp_h2h_standings = null;
 				var disp_roto_standings = null;
 
@@ -253,24 +254,24 @@ router.get('/scrape_standings', function(req, res) {
 				db.collection('baseball_2016_h2h').find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
 					//console.log(docs);
 					console.log("Displaying h2h data...")
-					//res.send(docs);
 					disp_h2h_standings = docs;
+					// call complete to see if both finds are done
 					complete();
-
-					//res.render('baseball_standings', bstandh2h);	
 				});
 
 				db.collection('baseball_2016_roto').find({}, {"_id": 0}).sort({"roto_trifecta_points": -1}).toArray(function(e, docs) {
 					//console.log(docs);
 					console.log("Displaying roto data...")
-					//res.send(docs);
 					disp_roto_standings = docs;
+					// call complete to see if both finds are done
 					complete();
-					//res.render('baseball_standings', bstandh2h);	
 				});				
 
+				// function that checks if both finds from mongodb are complete (ie display variables are not empty)
 				var complete = function() {
 					if (disp_h2h_standings !== null && disp_roto_standings !== null) {
+
+						// render to baseball_standings
 						res.render('baseball_standings', {
 							h2h_standings: disp_h2h_standings,
 							roto_standings: disp_roto_standings
@@ -286,4 +287,4 @@ router.get('/scrape_standings', function(req, res) {
 
 		} // end of if(!error)
 	}) // end of request
-}) // end of .get('/scrape_standings')
+}) // end of .get('/baseball_standings')
