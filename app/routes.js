@@ -49,8 +49,8 @@ router.get('/scrape_standings', function(req, res) {
 		// if not an error
 		if(!error){
 
-			// send html page pack
-			res.sendFile(path.join(__dirname, "../baseball_standings.html"));
+			// send html page back
+			//res.sendFile(path.join(__dirname, "../baseball_standings.html"));
 
 			// use cheerio to traverse and scrape html 
 			var $ = cheerio.load(html);
@@ -231,31 +231,30 @@ router.get('/scrape_standings', function(req, res) {
 
 ///// EXECUTE SCRIPT /////
 
-		// call insertDocumet asynchronously
-		insertDocument(db, function(db, callback) {
+		// call insertDocumet asynchronously, but don't use db from callback as we need to use db from argument to find and get from to render
+		insertDocument(db, function(callback) {
 
 			console.log("All documents uploaded");
 
 			// run standings.py from python-shell to update collections with roto and trifecta points
 			pyshell.run("standings.py", function(err) {
+				
 				if (err) throw err;
-				console.log("python script complete");
+				console.log("Python script complete");
+
+				// pull from mongodb and display new data after python script finishes
+				db.collection('baseball_2016_roto').find({}, {"_id": 0}, {"sort": ["h2h_rank", "desc"]}).toArray(function(e, docs) {
+					//console.log(docs);
+					console.log("Displaying data...")
+					res.send(docs);
+
+				});
+
 			});
+
 		});
 
 
 		} // end of if(!error)
 	}) // end of request
 }) // end of .get('/scrape_standings')
-
-
-// route to display standings
-router.get('/display_standings', function(req, res) {
-
-	// pull from mongodb array of roto standings
-	db.collection('baseball_2016_roto').find({}, {"_id": 0}, {"sort": ["h2h_rank", "desc"]}).toArray(function(e, docs) {
-		//console.log(docs);
-		res.send(docs);
-	});
-
-});
