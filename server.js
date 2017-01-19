@@ -4,6 +4,9 @@ var request = require('request');
 var cheerio = require('cheerio');
 var app = express();
 
+app.set('view engine', 'pug');
+app.set('views', './views');
+
 // routes for our app
 var router = require('./app/routes.js');
 app.use('/', router);

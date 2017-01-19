@@ -14,6 +14,7 @@
     "nodemon": "latest",
     "request": "latest",
     "mongodb": "latest",
-    "python-shell" : "latest"
+    "python-shell" : "latest",
+    "pug"    : "latest"
   }
 }

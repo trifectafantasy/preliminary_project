@@ -32,7 +32,11 @@ module.exports = router;
 // Route to Home/Root page
 router.get('/', function(req, res) {
 	// send response as index.html page
-	res.sendFile(path.join(__dirname, "../index.html"));
+	//res.sendFile(path.join(__dirname, "../index.html"));
+	const message = {
+		message: "Welcome to The Chip and Markers Trifecta Fantasy League Home Page"
+	}
+	res.render('index', message);
 });
 
 // route to /scrape_standings
@@ -246,7 +250,12 @@ router.get('/scrape_standings', function(req, res) {
 				db.collection('baseball_2016_roto').find({}, {"_id": 0}, {"sort": ["h2h_rank", "desc"]}).toArray(function(e, docs) {
 					//console.log(docs);
 					console.log("Displaying data...")
-					res.send(docs);
+					//res.send(docs);
+
+					const bstand = {
+						everything: docs
+					}
+					res.render('baseball_standings', bstand);		
 
 				});
 
