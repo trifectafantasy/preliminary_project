@@ -11,7 +11,7 @@ html
 				a(href= '/baseball_standings') Baseball Standings
 		
 
-		h2= "2016 Baseball Standings"
+		h2= "2016 Basketball Standings"
 
 
 		h4= "Head to Head Standings"
@@ -49,18 +49,15 @@ html
 			thead
 				tr
 					th TEAM
-					th R
-					th HR
-					th RBI
-					th SO
-					th SB
-					th OBP
-					th K 
-					th QS
-					th W
-					th SV
-					th ERA
-					th WHIP
+					th FG%
+					th FT%
+					th 3PM
+					th REB
+					th AST
+					th STL
+					th BLK 
+					th TO
+					th PTS
 					th TOTAL ROTO POINTS
 					th TRIFECTA ROTO POINTS
 			tbody
@@ -69,29 +66,23 @@ html
 						each val, cat in next
 							if cat === "team"
 								td= val
-							if cat === "R"
+							if cat === "FG_PCT"
 								td= val
-							if cat === "HR"
+							if cat === "FT_PCT"
 								td= val
-							if cat === "RBI"
+							if cat === "THREEPM"
 								td= val
-							if cat === "SO"
+							if cat === "REB"
 								td= val
-							if cat === "SB"
+							if cat === "AST"
 								td= val
-							if cat === "OBP"
+							if cat === "STL"
 								td= val
-							if cat === "K"
+							if cat === "BLK"
 								td= val
-							if cat === "QS"
+							if cat === "TO"
 								td= val
-							if cat === "W"
-								td= val
-							if cat === "SV"
-								td= val
-							if cat === "ERA"
-								td= val
-							if cat === "WHIP"
+							if cat === "PTS"
 								td= val
 							if cat === "total_roto_points"
 								td= val
