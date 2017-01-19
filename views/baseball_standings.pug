@@ -43,4 +43,57 @@ html
 								td= val
 							if cat === "h2h_trifecta_points"
 								td= val
-													
+
+		h4= "Roto Standings"
+		table
+			thead
+				tr
+					th TEAM
+					th R
+					th HR
+					th RBI
+					th SO
+					th SB
+					th OBP
+					th K 
+					th QS
+					th W
+					th SV
+					th ERA
+					th WHIP
+					th TOTAL ROTO POINTS
+					th TRIFECTA ROTO POINTS
+			tbody
+				each next in roto_standings
+					tr
+						each val, cat in next
+							if cat === "team"
+								td= val
+							if cat === "R"
+								td= val
+							if cat === "HR"
+								td= val
+							if cat === "RBI"
+								td= val
+							if cat === "SO"
+								td= val
+							if cat === "SB"
+								td= val
+							if cat === "OBP"
+								td= val
+							if cat === "K"
+								td= val
+							if cat === "QS"
+								td= val
+							if cat === "W"
+								td= val
+							if cat === "SV"
+								td= val
+							if cat === "ERA"
+								td= val
+							if cat === "WHIP"
+								td= val
+							if cat === "total_roto_points"
+								td= val
+							if cat === "roto_trifecta_points"
+								td= val													

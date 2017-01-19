@@ -246,18 +246,38 @@ router.get('/scrape_standings', function(req, res) {
 				if (err) throw err;
 				console.log("Python script complete");
 
+				var disp_h2h_standings = null;
+				var disp_roto_standings = null;
+
 				// pull from mongodb and display new data after python script finishes
 				db.collection('baseball_2016_h2h').find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
 					//console.log(docs);
-					console.log("Displaying data...")
+					console.log("Displaying h2h data...")
 					//res.send(docs);
-					
-					const bstandh2h = {
-						h2h_standings: docs
-					}
-					res.render('baseball_standings', bstandh2h);	
+					disp_h2h_standings = docs;
+					complete();
 
+					//res.render('baseball_standings', bstandh2h);	
 				});
+
+				db.collection('baseball_2016_roto').find({}, {"_id": 0}).sort({"roto_trifecta_points": -1}).toArray(function(e, docs) {
+					//console.log(docs);
+					console.log("Displaying roto data...")
+					//res.send(docs);
+					disp_roto_standings = docs;
+					complete();
+					//res.render('baseball_standings', bstandh2h);	
+				});				
+
+				var complete = function() {
+					if (disp_h2h_standings !== null && disp_roto_standings !== null) {
+						res.render('baseball_standings', {
+							h2h_standings: disp_h2h_standings,
+							roto_standings: disp_roto_standings
+						});
+					}
+				}
+
 
 			});
 
