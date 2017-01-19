@@ -73,7 +73,7 @@ def roto_trifecta(collection):
 	categories = ["R", "HR", "RBI", "SO", "SB", "OBP", "K", "QS", "W", "SV", "ERA", "WHIP"]
 
 	# insert empty list of roto category points for each (see {}) document in collection
-	collection.update({}, {"$set": {"roto_category_points": []}}, multi = True)
+	#collection.update({}, {"$set": {"roto_category_points": []}}, multi = True)
 
 	# cycle through each category
 	for this_category in categories:
@@ -144,7 +144,7 @@ def roto_trifecta(collection):
 			# create key-value pair for each roto category and corresponding roto category points per category
 			each_team_each_category_points = {new_cat_points: float(individual_category_points)}
 			# update collection by pushing new dictionary entry into previously initialized array for all roto category points
-			collection.update({"team": current_team}, {"$push": {"roto_category_points": each_team_each_category_points}})
+			collection.update({"team": current_team}, {"$set": {new_cat_points: float(individual_category_points)}})
 
 
 ### now that all roto category points have been calculated, need to sum them
@@ -156,20 +156,34 @@ def roto_trifecta(collection):
 	for each_team_dict in team_list:
 		current_team = each_team_dict["team"]
 
+		# initializing long json that lists all the fields we want pulled down for summing the categories
+		category_pull = {
+			"category_points_R" : 1,
+			"category_points_HR" : 1,
+			"category_points_RBI" : 1,
+			"category_points_SO" : 1,
+			"category_points_SB" : 1,
+			"category_points_OBP" : 1,
+			"category_points_K" : 1,
+			"category_points_QS" : 1,
+			"category_points_W" : 1,
+			"category_points_SV" : 1,
+			"category_points_ERA" : 1,
+			"category_points_WHIP" : 1,
+			"_id" : 0
+			}
+
 		# pull down each team's roto category points entry (a list of key-value pairs for each category)
-		total_team_roto_points = list(collection.find({"team": current_team}, {"roto_category_points": 1, "_id": 0}))
-		#print(total_team_roto_points)
+		total_team_roto_points = list(collection.find({"team": current_team}, category_pull))
+		print total_team_roto_points
 
 		# initialize total number of category roto points for said team
 		individual_total_roto_points = 0
 
-		# first get inside array "roto_category_points" of length 1, which has the next array of key-value pairs
-		for each_category in total_team_roto_points[0]["roto_category_points"]:
-
-			# iterate for each category
-			for key, value in each_category.iteritems():
-				# add this roto category point total to total for individual team
-				individual_total_roto_points += float(value)
+		# iterate for each category, but first need to get inside array of length 0
+		for key, value in total_team_roto_points[0].iteritems():
+			# add this roto category point total to total for individual team
+			individual_total_roto_points += float(value)
 
 		team_points_print = current_team.encode('ascii') + " total team roto points: "
 
