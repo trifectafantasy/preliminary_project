@@ -99,8 +99,8 @@ except pymongo.errors.ConnectionFailure, e:
 db = client.espn
 
 # define collections to be used
-collection_h2h = db.football_2016_h2h
-collection_roto = db.football_2016_roto
+collection_h2h = db.football_h2h_2016
+collection_roto = db.football_roto_2016
 
 combine_databases(collection_h2h, collection_roto)
 trifecta_points(collection_h2h)
