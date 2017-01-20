@@ -6,7 +6,7 @@ import time
 ##### DEFINE FUNCTIONS #####
 
 # function to sort and give trifecta points based on h2h win percentage
-# takes in argument of which MongoDB collection to use: 'baseball_2016_h2h'
+# takes in argument of which MongoDB collection to use: 'baseball_h2h_2016'
 def h2h_trifecta(collection):
 
 	sorted_h2h = list(collection.find({}, {"team": 1, "win_per": 1, "_id": 0}).sort("win_per", -1))
@@ -64,8 +64,8 @@ def h2h_trifecta(collection):
 		collection.update({"team": current_team}, {"$set": {"h2h_trifecta_points": individual_trifecta_h2h_points}})
 
 # function to rank and sort by each roto category, distribute roto points per category, then sum and determine roto trifecta points
-# everything is updated back into 'baseball_2016_roto' collection
-# takes in input of which MongoDB collection to use: 'baseball_2016_roto'
+# everything is updated back into 'baseball_roto_2016' collection
+# takes in input of which MongoDB collection to use: 'baseball_roto_2016'
 def roto_trifecta(collection):	
 
 	# list of categories
@@ -253,8 +253,8 @@ except pymongo.errors.ConnectionFailure, e:
 db = client.espn
 
 # define collections to be used
-collection1 = db.baseball_2016_h2h
-collection2 = db.baseball_2016_roto
+collection1 = db.baseball_h2h_2016
+collection2 = db.baseball_roto_2016
 
 h2h_trifecta(collection1)
 roto_trifecta(collection2)

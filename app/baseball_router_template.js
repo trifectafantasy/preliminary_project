@@ -1,8 +1,8 @@
 // route to /baseball_standings
-router.get('/baseball_standings', function(req, res) {
-
-	// url for baseball 2016 standings
-	var url = 'http://games.espn.com/flb/standings?leagueId=109364&seasonId=2016';
+router.get('/baseball_standings=____', function(req, res) {
+	var year = ____;
+	// url for baseballf standings
+	var url = 'http://games.espn.com/flb/standings?leagueId=109364&seasonId=' + year;
 
 	request(url, function(error, response, html) {
 
@@ -127,11 +127,11 @@ router.get('/baseball_standings', function(req, res) {
 
 			// asynchronous function that inserts both arrays into their appropriate collections
 			// arguments are the database (db) and callback
-			var insertDocument = function(db, callback) {
+			var insertDocument = function(db, year, callback) {
 
 				// set collections
-				var collection1 = db.collection('baseball_2016_h2h');
-				var collection2 = db.collection('baseball_2016_roto');
+				var collection1 = db.collection('baseball_h2h' + year);
+				var collection2 = db.collection('baseball_roto' + year);
 
 				// remove all documents from collections to start fresh
 				collection1.remove({});
@@ -167,7 +167,7 @@ router.get('/baseball_standings', function(req, res) {
 ///// EXECUTE SCRIPT /////
 
 		// call insertDocumet asynchronously, but don't use db from callback as we need to use db from argument to find and get from to render
-		insertDocument(db, function(callback) {
+		insertDocument(db, year, function(callback) {
 
 			console.log("All documents uploaded");
 
@@ -182,7 +182,7 @@ router.get('/baseball_standings', function(req, res) {
 				var disp_roto_standings = null;
 
 				// pull from mongodb and display new data after python script finishes
-				db.collection('baseball_2016_h2h').find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
+				db.collection('baseball_h2h_' + year).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
 					//console.log(docs);
 					console.log("Displaying h2h data...")
 					disp_h2h_standings = docs;
@@ -190,7 +190,7 @@ router.get('/baseball_standings', function(req, res) {
 					complete();
 				});
 
-				db.collection('baseball_2016_roto').find({}, {"_id": 0}).sort({"roto_trifecta_points": -1}).toArray(function(e, docs) {
+				db.collection('baseball_roto_' + year).find({}, {"_id": 0}).sort({"roto_trifecta_points": -1}).toArray(function(e, docs) {
 					//console.log(docs);
 					console.log("Displaying roto data...")
 					disp_roto_standings = docs;
@@ -205,7 +205,8 @@ router.get('/baseball_standings', function(req, res) {
 						// render to baseball_standings
 						res.render('baseball_standings', {
 							h2h_standings: disp_h2h_standings,
-							roto_standings: disp_roto_standings
+							roto_standings: disp_roto_standings,
+							year: year
 						});
 					}
 				}

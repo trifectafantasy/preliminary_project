@@ -1,8 +1,8 @@
 // route to /football_standings
-router.get('/football_standings', function(req, res) {
-
-	// url for football 2016 standings
-	var url = 'http://games.espn.com/ffl/standings?leagueId=154802&seasonId=2016';
+router.get('/football_standings=____', function(req, res) {
+	var year = ____;
+	// url for football standings
+	var url = 'http://games.espn.com/ffl/standings?leagueId=154802&seasonId=' + year;
 
 	request(url, function(error, response, html) {
 
@@ -108,11 +108,11 @@ router.get('/football_standings', function(req, res) {
 
 			// asynchronous function that inserts both arrays into their appropriate collections
 			// arguments are the database (db) and callback
-			var insertDocument = function(db, callback) {
+			var insertDocument = function(db, year, callback) {
 
 				// set collections
-				var collection1 = db.collection('football_2016_h2h');
-				var collection2 = db.collection('football_2016_roto');
+				var collection1 = db.collection('football_h2h_' + year);
+				var collection2 = db.collection('football_roto_' + year);
 
 				// remove all documents from collections to start fresh
 				collection1.remove({});
@@ -148,7 +148,7 @@ router.get('/football_standings', function(req, res) {
 ///// EXECUTE SCRIPT /////
 
 		// call insertDocumet asynchronously, but don't use db from callback as we need to use db from argument to find and get from to render
-		insertDocument(db, function(callback) {
+		insertDocument(db, year, function(callback) {
 
 			console.log("All documents uploaded");
 
@@ -162,7 +162,7 @@ router.get('/football_standings', function(req, res) {
 				var disp_h2h_standings = null;
 
 				// pull from mongodb and display new data after python script finishes
-				db.collection('football_2016_h2h').find({}, {"_id": 0}).sort({"trifecta_points": -1}).toArray(function(e, docs) {
+				db.collection('football_h2h_' + year).find({}, {"_id": 0}).sort({"trifecta_points": -1}).toArray(function(e, docs) {
 					//console.log(docs);
 					console.log("Displaying h2h data...")
 					disp_h2h_standings = docs;
@@ -176,7 +176,8 @@ router.get('/football_standings', function(req, res) {
 
 						// render to baseball_standings
 						res.render('football_standings', {
-							h2h_standings: disp_h2h_standings
+							h2h_standings: disp_h2h_standings,
+							year: year
 						});
 					}
 				}
