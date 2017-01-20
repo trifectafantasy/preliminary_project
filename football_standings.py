@@ -6,7 +6,7 @@ import time
 ##### DEFINE FUNCTIONS #####
 
 # function to sort and give trifecta points based on h2h win percentage
-# takes in argument of which MongoDB collection to use: 'football_2016_h2h'
+# takes in argument of which MongoDB collection to use: 'football_2015_h2h'
 def combine_databases(collection_h2h, collection_roto):
 
 	pull_teams = list(collection_h2h.find({}, {"team": 1, "_id": 0}))
@@ -18,9 +18,9 @@ def combine_databases(collection_h2h, collection_roto):
 		for category in other_categories:
 
 			pull_other = list(collection_roto.find({"team": team_name}, {category: 1, "_id": 0}))
-			#print pull_other
+			print pull_other
 			input_value = pull_other[0][category]
-			collection_h2h.update({"team": team_name}, {"$set": {category: input_value}})
+			collection_h2h.update({"team": team_name}, {"$set": {category: float(input_value)}})
 
 def trifecta_points(collection): 
 
