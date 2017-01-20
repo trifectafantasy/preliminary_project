@@ -1,6 +1,6 @@
 html
 	head
-		title= "2016 Basketball Standings"
+		title= "2016 Football Standings"
 		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
 		link(rel='stylesheet', href='/css/styles.css')
 
@@ -13,8 +13,7 @@ html
 				a(href= '/football_standings' class = 'navbar') Football Standings
 
 
-
-		h2= "2016 Basketball Standings"
+		h2= "2016 Football Standings"
 
 
 		h4= "Head to Head Standings"
@@ -27,7 +26,9 @@ html
 					th TIES
 					th WIN %
 					th DIVISION
-					th TRIFECTA H2H POINTS
+					th POINTS FOR
+					th POINTS AGAINST
+					th TRIFECTA POINTS
 			tbody
 				each readin in h2h_standings
 					tr
@@ -44,50 +45,9 @@ html
 								td= val
 							if cat === "division"
 								td= val
-							if cat === "h2h_trifecta_points"
+							if cat === "PF"
 								td= val
-
-		h4= "Roto Standings"
-		table
-			thead
-				tr
-					th TEAM
-					th FG%
-					th FT%
-					th 3PM
-					th REB
-					th AST
-					th STL
-					th BLK 
-					th TO
-					th PTS
-					th TOTAL ROTO POINTS
-					th TRIFECTA ROTO POINTS
-			tbody
-				each next in roto_standings
-					tr
-						each val, cat in next
-							if cat === "team"
+							if cat === "PA"
 								td= val
-							if cat === "FG_PCT"
+							if cat === "trifecta_points"
 								td= val
-							if cat === "FT_PCT"
-								td= val
-							if cat === "THREEPM"
-								td= val
-							if cat === "REB"
-								td= val
-							if cat === "AST"
-								td= val
-							if cat === "STL"
-								td= val
-							if cat === "BLK"
-								td= val
-							if cat === "TO"
-								td= val
-							if cat === "PTS"
-								td= val
-							if cat === "total_roto_points"
-								td= val
-							if cat === "roto_trifecta_points"
-								td= val													
