@@ -47,6 +47,7 @@ router.get('/baseball_standings=2016', function(req, res) {
 ///// EXECUTE SCRIPT /////
 
 	// initialize display database queries
+	var year = 2016;
 	var disp_h2h_standings = null;
 	var disp_roto_standings = null;
 
@@ -74,7 +75,8 @@ router.get('/baseball_standings=2016', function(req, res) {
 			// render to baseball_standings
 			res.render('baseball_standings', {
 				h2h_standings: disp_h2h_standings,
-				roto_standings: disp_roto_standings
+				roto_standings: disp_roto_standings,
+				year: year
 			});
 		}
 	}
@@ -90,6 +92,7 @@ router.get('/basketball_standings=2016', function(req, res) {
 ///// EXECUTE SCRIPT /////
 
 	// initialize display database queries
+	var year = 2016;
 	var disp_h2h_standings = null;
 	var disp_roto_standings = null;
 
@@ -117,7 +120,8 @@ router.get('/basketball_standings=2016', function(req, res) {
 			// render to baseball_standings
 			res.render('basketball_standings', {
 				h2h_standings: disp_h2h_standings,
-				roto_standings: disp_roto_standings
+				roto_standings: disp_roto_standings,
+				year: year
 			});
 		}
 	}
@@ -127,10 +131,42 @@ router.get('/basketball_standings=2016', function(req, res) {
 }); // end of .get('/basketball_standings')
 
 // route to /football_standings
+router.get('/football_standings=2015', function(req, res) {
+
+///// EXECUTE SCRIPT /////
+	// initialize display database queries
+	var year = 2015;
+	var disp_h2h_standings = null;
+
+	// pull from mongodb and display new data after python script finishes
+	db.collection('football_2015_h2h').find({}, {"_id": 0}).sort({"trifecta_points": -1}).toArray(function(e, docs) {
+		//console.log(docs);
+		console.log("Displaying h2h data...")
+		disp_h2h_standings = docs;
+		// call complete to see if both finds are done
+		complete();
+	});
+
+	// function that checks if both finds from mongodb are complete (ie display variables are not empty)
+	var complete = function() {
+		if (disp_h2h_standings !== null) {
+
+			// render to baseball_standings
+			res.render('football_standings', {
+				h2h_standings: disp_h2h_standings,
+				year: year
+			});
+		}
+	}
+
+}); // end of .get('/foottball_standings')
+
+// route to /football_standings
 router.get('/football_standings=2016', function(req, res) {
 
 ///// EXECUTE SCRIPT /////
 	// initialize display database queries
+	var year = 2016;
 	var disp_h2h_standings = null;
 
 	// pull from mongodb and display new data after python script finishes
@@ -148,7 +184,8 @@ router.get('/football_standings=2016', function(req, res) {
 
 			// render to baseball_standings
 			res.render('football_standings', {
-				h2h_standings: disp_h2h_standings
+				h2h_standings: disp_h2h_standings,
+				year: year
 			});
 		}
 	}
