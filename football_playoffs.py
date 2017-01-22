@@ -27,6 +27,7 @@ def combine_databases(db, collection_h2h, collection_playoffs, year):
 		h2h_trifecta_points = pull_h2h[i]["trifecta_points"]
 
 		pull_playoffs = list(db[collection_playoffs].find({"team": team_name}, {"playoff_trifecta_points": 1, "_id": 0}))
+		print pull_playoffs
 		playoff_trifecta_points = pull_playoffs[0]["playoff_trifecta_points"]
 
 		#print team_name

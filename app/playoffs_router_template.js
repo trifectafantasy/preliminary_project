@@ -1,21 +1,21 @@
 // TEMPLATE TO GET PLAYOFF RESULTS AND TRIFECTA POINTS
-router.get('/baseball_standings=playoffs', function(req, res) {
+router.get('/football_standings=playoffs', function(req, res) {
 	var year = 2016;
 
-	db.collection('baseball_h2h_' + year).find({}, {"team": 1, "_id": 0}).toArray(function(e, docs) {
+	db.collection('football_h2h_' + year).find({}, {"team": 1, "_id": 0}).toArray(function(e, docs) {
 
 		var team_list = docs;
 		console.log(team_list);
 
-		db.collection('baseball_playoffs_' + year).remove({});
+		db.collection('football_playoffs_' + year).remove({});
 
 		for (i = 0; i < team_list.length; i ++) {
-			db.collection('baseball_playoffs_' + year).insert({"team": team_list[i]["team"], "playoff_trifecta_points": 0});
+			db.collection('football_playoffs_' + year).insert({"team": team_list[i]["team"], "playoff_trifecta_points": 0});
 		}
 	})
 
-	// url for baseball standings
-	var url = 'http://games.espn.com/flb/h2hplayoffs?leagueId=109364&seasonId=' + year;
+	// url for football standings
+	var url = 'http://games.espn.com/ffl/h2hplayoffs?leagueId=154802&seasonId=' + year;
 
 	request(url, function(error, response, html) {
 
@@ -23,7 +23,7 @@ router.get('/baseball_standings=playoffs', function(req, res) {
 		if(!error){
 
 			// send html page back
-			//res.sendFile(path.join(__dirname, "../baseball_standings.html"));
+			//res.sendFile(path.join(__dirname, "../football_standings.html"));
 
 			// use cheerio to traverse and scrape html 
 			var $ = cheerio.load(html);
@@ -281,7 +281,7 @@ router.get('/baseball_standings=playoffs', function(req, res) {
 
 				var disp_playoff_standings = null;
 
-				db.collection('baseball_playoffs_' + year).update({"team": { "$regex": winning_team}}, {"$set": {"playoff_trifecta_points": playoff_wins}}, function(err, result) {
+				db.collection('football_playoffs_' + year).update({"team": { "$regex": winning_team}}, {"$set": {"playoff_trifecta_points": playoff_wins}}, function(err, result) {
 
 					console.log("updated database");
 

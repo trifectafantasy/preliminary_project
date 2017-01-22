@@ -1,6 +1,6 @@
 // route to /football_standings
-router.get('/football_standings=____', function(req, res) {
-	var year = ____;
+router.get('/football_standings=2016', function(req, res) {
+	var year = 2016;
 	// url for football standings
 	var url = 'http://games.espn.com/ffl/standings?leagueId=154802&seasonId=' + year;
 

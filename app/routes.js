@@ -119,6 +119,7 @@ router.get('/football_standings=2015', function(req, res) {
 
 }); // end of .get('/foottball_standings')
 
+
 // route to /football_standings
 router.get('/football_standings=2016', function(req, res) {
 	var year = 2016;
@@ -198,8 +199,6 @@ router.get('/football_standings=2016', function(req, res) {
 	}
 
 }); // end of .get('/foottball_standings')
-
-
 
 
 // route to /basketball_standings
