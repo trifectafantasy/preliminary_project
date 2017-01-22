@@ -171,8 +171,12 @@ router.get('/baseball_standings=____', function(req, res) {
 
 			console.log("All documents uploaded");
 
+			var options = {
+				args: [year]
+			}
+
 			// run standings.py from python-shell to update collections with roto and trifecta points
-			pyshell.run("baseball_standings.py", function(err) {
+			pyshell.run("baseball_standings.py", options, function(err) {
 				
 				if (err) throw err;
 				console.log("Python script complete");

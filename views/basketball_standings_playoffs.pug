@@ -93,3 +93,18 @@ html
 							if cat === "roto_trifecta_points"
 								td= val			
 
+
+		table
+			thead
+				tr
+					th TEAM
+					th PLAYOFF TRIFECTA POINTS
+
+			tbody
+				each readin2 in playoff_standings
+					tr
+						each val, cat in readin2
+							if cat === "team"
+								td= val
+							if cat === "playoff_trifecta_points"
+								td= val

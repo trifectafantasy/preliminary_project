@@ -1,7 +1,8 @@
 // route to /basketball_standings
 router.get('/basketball_standings=2017', function(req, res) {
 	var year = 2017;
-	// url for basketball standings
+	var playoffs = false;
+	// url for basketball 2016 standings
 	var url = 'http://games.espn.com/fba/standings?leagueId=100660&seasonId=' + year;
 
 	request(url, function(error, response, html) {
@@ -159,8 +160,12 @@ router.get('/basketball_standings=2017', function(req, res) {
 
 			console.log("All documents uploaded");
 
+			var options = {
+				args: [year]
+			}
+
 			// run standings.py from python-shell to update collections with roto and trifecta points
-			pyshell.run("basketball_standings.py", function(err) {
+			pyshell.run("basketball_standings.py", options, function(err) {
 				
 				if (err) throw err;
 				console.log("Python script complete");
@@ -184,21 +189,44 @@ router.get('/basketball_standings=2017', function(req, res) {
 					disp_roto_standings = docs;
 					// call complete to see if both finds are done
 					complete();
-				});				
+				});
+
+				if (playoffs === true) {
+					db.collection('basketball_playoffs_' + year).find({}, {"_id": 0}).toArray(function(e, docs) {
+						//console.log(docs);
+						console.log("Displaying playoff data...");
+						disp_playoff_standings = docs;
+						complete();
+					});
+				};
 
 				// function that checks if both finds from mongodb are complete (ie display variables are not empty)
 				var complete = function() {
-					if (disp_h2h_standings !== null && disp_roto_standings !== null) {
 
-						// render to basketball_standings
-						res.render('basketball_standings', {
-							h2h_standings: disp_h2h_standings,
-							roto_standings: disp_roto_standings,
-							year: year
-						});
+					if (playoffs === true) {
+						if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_playoff_standings !== null) {
+
+							// render to baseball_standings
+							res.render('basketball_standings_playoffs', {
+								h2h_standings: disp_h2h_standings,
+								roto_standings: disp_roto_standings,
+								playoff_standings: disp_playoff_standings,
+								year: year
+							});
+						}
 					}
-				}
+					else {
+						if (disp_h2h_standings !== null && disp_roto_standings !== null) {
 
+							// render to baseball_standings
+							res.render('basketball_standings', {
+								h2h_standings: disp_h2h_standings,
+								roto_standings: disp_roto_standings,
+								year: year
+							});
+						}
+					}
+				}				
 
 			});
 
