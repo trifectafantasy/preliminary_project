@@ -2,14 +2,15 @@
 from pymongo import MongoClient
 import subprocess
 import time
+import sys
 
 ##### DEFINE FUNCTIONS #####
 
 # function to sort and give trifecta points based on h2h win percentage
 # takes in argument of which MongoDB collection to use: 'football_2015_h2h'
-def combine_databases(collection_h2h, collection_roto):
+def combine_databases(db, collection_h2h, collection_roto):
 
-	pull_teams = list(collection_h2h.find({}, {"team": 1, "_id": 0}))
+	pull_teams = list(db[collection_h2h].find({}, {"team": 1, "_id": 0}))
 	for i in range(len(pull_teams)):
 		team_name = pull_teams[i]["team"]
 
@@ -17,14 +18,14 @@ def combine_databases(collection_h2h, collection_roto):
 
 		for category in other_categories:
 
-			pull_other = list(collection_roto.find({"team": team_name}, {category: 1, "_id": 0}))
+			pull_other = list(db[collection_roto].find({"team": team_name}, {category: 1, "_id": 0}))
 			print pull_other
 			input_value = pull_other[0][category]
-			collection_h2h.update({"team": team_name}, {"$set": {category: float(input_value)}})
+			db[collection_h2h].update({"team": team_name}, {"$set": {category: float(input_value)}})
 
-def trifecta_points(collection): 
+def trifecta_points(db, collection): 
 
-	sorted_record = list(collection.find({}, {"team": 1, "win_per": 1, "PF": 1, "_id": 0}).sort("win_per", -1))
+	sorted_record = list(db[collection].find({}, {"team": 1, "win_per": 1, "PF": 1, "_id": 0}).sort("win_per", -1))
 	###print sorted_record
 
 	trifecta_points = 10
@@ -78,7 +79,7 @@ def trifecta_points(collection):
 		print "Team:", current_team
 		print "Trifecta points", individual_trifecta_points
 
-		collection.update({"team": current_team}, {"$set": {"trifecta_points": individual_trifecta_points}})
+		db[collection].update({"team": current_team}, {"$set": {"trifecta_points": individual_trifecta_points}})
 
 
 ##### PYTHON SCRIPT TO EXECUTE #####
@@ -99,11 +100,12 @@ except pymongo.errors.ConnectionFailure, e:
 db = client.espn
 
 # define collections to be used
-collection_h2h = db.football_h2h_2016
-collection_roto = db.football_roto_2016
+year = str(sys.argv[1])
+collection_h2h = "football_h2h" + year
+collection_roto = "football_roto_" + year
 
-combine_databases(collection_h2h, collection_roto)
-trifecta_points(collection_h2h)
+combine_databases(db, collection_h2h, collection_roto)
+trifecta_points(db, collection_h2h)
 
 # sleep and terminate mongodb instance
 time.sleep(3)

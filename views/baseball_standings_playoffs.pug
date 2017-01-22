@@ -1,6 +1,6 @@
 html
 	head
-		title= "2016 Basketball Standings"
+		title= "2016 Baseball Standings"
 		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
 		link(rel='stylesheet', href='/css/styles.css')
 
@@ -13,9 +13,9 @@ html
 				a(href= '/baseball_standings=2016' class = 'navbar') 2016 Baseball Standings
 				a(href= '/football_standings=2016' class = 'navbar') 2016 Football Standings
 				a(href= '/basketball_standings=2017' class = 'navbar') 2017 Basketball Standings
+		
 
-
-		h2= year + " Basketball Standings"
+		h2= year + " Baseball Standings"
 
 
 		h4= "Head to Head Standings"
@@ -53,15 +53,18 @@ html
 			thead
 				tr
 					th TEAM
-					th FG%
-					th FT%
-					th 3PM
-					th REB
-					th AST
-					th STL
-					th BLK 
-					th TO
-					th PTS
+					th R
+					th HR
+					th RBI
+					th SO
+					th SB
+					th OBP
+					th K 
+					th QS
+					th W
+					th SV
+					th ERA
+					th WHIP
 					th TOTAL ROTO POINTS
 					th TRIFECTA ROTO POINTS
 			tbody
@@ -70,26 +73,46 @@ html
 						each val, cat in next
 							if cat === "team"
 								td= val
-							if cat === "FG_PCT"
+							if cat === "R"
 								td= val
-							if cat === "FT_PCT"
+							if cat === "HR"
 								td= val
-							if cat === "THREEPM"
+							if cat === "RBI"
 								td= val
-							if cat === "REB"
+							if cat === "SO"
 								td= val
-							if cat === "AST"
+							if cat === "SB"
 								td= val
-							if cat === "STL"
+							if cat === "OBP"
 								td= val
-							if cat === "BLK"
+							if cat === "K"
 								td= val
-							if cat === "TO"
+							if cat === "QS"
 								td= val
-							if cat === "PTS"
+							if cat === "W"
+								td= val
+							if cat === "SV"
+								td= val
+							if cat === "ERA"
+								td= val
+							if cat === "WHIP"
 								td= val
 							if cat === "total_roto_points"
 								td= val
 							if cat === "roto_trifecta_points"
-								td= val			
+								td= val													
 
+		table
+			thead
+				tr
+					th TEAM
+					th PLAYOFF TRIFECTA POINTS
+
+			tbody
+				each readin2 in playoff_standings
+					tr
+						each val, cat in readin2
+							if cat === "team"
+								td= val
+							if cat === "playoff_trifecta_points"
+								td= val

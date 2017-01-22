@@ -2,14 +2,15 @@
 from pymongo import MongoClient
 import subprocess
 import time
+import sys
 
 ##### DEFINE FUNCTIONS #####
 
 # function to sort and give trifecta points based on h2h win percentage
 # takes in argument of which MongoDB collection to use: 'basketball_h2h_2016'
-def h2h_trifecta(collection):
+def h2h_trifecta(db, collection):
 
-	sorted_h2h = list(collection.find({}, {"team": 1, "win_per": 1, "_id": 0}).sort("win_per", -1))
+	sorted_h2h = list(db[collection].find({}, {"team": 1, "win_per": 1, "_id": 0}).sort("win_per", -1))
 	###print(sorted_h2h)
 
 	# starting value for trifecta points to give out
@@ -61,19 +62,16 @@ def h2h_trifecta(collection):
 		print("h2h trifecta points: ", float(individual_trifecta_h2h_points))
 
 		# update (not upsert or creating new document) each team's document with new field "h2h_trifecta_points"
-		collection.update({"team": current_team}, {"$set": {"h2h_trifecta_points": individual_trifecta_h2h_points}})
+		db[collection].update({"team": current_team}, {"$set": {"h2h_trifecta_points": individual_trifecta_h2h_points}})
 
 # function to rank and sort by each roto category, distribute roto points per category, then sum and determine roto trifecta points
 # everything is updated back into 'basketball_roto_2016' collection
 # takes in input of which MongoDB collection to use: 'basketball_roto_2016'
-def roto_trifecta(collection):	
+def roto_trifecta(db, collection):	
 
 	# list of categories
 	### NOTE: SO is HITTER strikeout, K is PITCHER strikeout
 	categories = ["FG_PCT", "FT_PCT", "THREEPM", "REB", "AST", "STL", "BLK", "TO", "PTS"]
-
-	# insert empty list of roto category points for each (see {}) document in collection
-	#collection.update({}, {"$set": {"roto_category_points": []}}, multi = True)
 
 	# cycle through each category
 	for this_category in categories:
@@ -87,7 +85,7 @@ def roto_trifecta(collection):
 			sort_direction = -1
 
 		# pull down each team's stats for current roto category into list
-		category_rank = list(collection.find({}, {"team": 1, "h2h_rank": 1, this_category: 1, "_id": 0}).sort(this_category, sort_direction))
+		category_rank = list(db[collection].find({}, {"team": 1, "h2h_rank": 1, this_category: 1, "_id": 0}).sort(this_category, sort_direction))
 		print(category_rank)
 
 		# like with h2h trifecta points distribution, initialize category points (10 -> 1) to be distributed and parameters for ties
@@ -141,13 +139,13 @@ def roto_trifecta(collection):
 			# create key-value pair for each roto category and corresponding roto category points per category
 			each_team_each_category_points = {new_cat_points: float(individual_category_points)}
 			# update collection by pushing new dictionary entry into previously initialized array for all roto category points
-			collection.update({"team": current_team, "h2h_rank": current_team_h2h}, {"$set": {new_cat_points: float(individual_category_points)}})
+			db[collection].update({"team": current_team, "h2h_rank": current_team_h2h}, {"$set": {new_cat_points: float(individual_category_points)}})
 
 
 ### now that all roto category points have been calculated, need to sum them
 
 	# pull down list of each team 
-	team_list = list(collection.find({}, {"team": 1, "h2h_rank": 1, "_id": 0}))
+	team_list = list(db[collection].find({}, {"team": 1, "h2h_rank": 1, "_id": 0}))
 
 	# loop through each team
 	for each_team_dict in team_list:
@@ -169,7 +167,7 @@ def roto_trifecta(collection):
 			}
 
 		# pull down each team's roto category points entry (a list of key-value pairs for each category)
-		total_team_roto_points = list(collection.find({"team": current_team, "h2h_rank": current_team_h2h}, category_pull))
+		total_team_roto_points = list(db[collection].find({"team": current_team, "h2h_rank": current_team_h2h}, category_pull))
 		print total_team_roto_points
 
 		# initialize total number of category roto points for said team
@@ -185,12 +183,12 @@ def roto_trifecta(collection):
 		print team_points_print + str(individual_total_roto_points)
 
 		# update collection with new field "total roto points" which has each team's individual total roto category points (10 -> 1)
-		collection.update({"team": current_team, "h2h_rank": current_team_h2h}, {"$set": {"total_roto_points": individual_total_roto_points}})
+		db[collection].update({"team": current_team, "h2h_rank": current_team_h2h}, {"$set": {"total_roto_points": individual_total_roto_points}})
 
 ### now that each team's total roto category points have been calculated, need to rank to determine trifecta roto points
 
 	# pull down the total roto category points for each team
-	sorted_roto_rank = list(collection.find({}, {"team": 1, "h2h_rank": 1, "total_roto_points": 1, "_id": 0}).sort("total_roto_points", -1))
+	sorted_roto_rank = list(db[collection].find({}, {"team": 1, "h2h_rank": 1, "total_roto_points": 1, "_id": 0}).sort("total_roto_points", -1))
 
 ### follow same process as outlined before to rank teams, find ties, and distribute the proper number of roto trifecta points (10 -> 1)
 	trifecta_roto_points = 10
@@ -228,7 +226,7 @@ def roto_trifecta(collection):
 		print("trifecta points: ", float(individual_trifecta_roto_points))
 
 		# update roto collection with new field "roto trifecta points (10 -> 1)"
-		collection.update({"team": current_team, "h2h_rank": current_team_h2h}, {"$set": {"roto_trifecta_points": individual_trifecta_roto_points}})
+		db[collection].update({"team": current_team, "h2h_rank": current_team_h2h}, {"$set": {"roto_trifecta_points": individual_trifecta_roto_points}})
 
 
 ##### PYTHON SCRIPT TO EXECUTE #####
@@ -249,11 +247,12 @@ except pymongo.errors.ConnectionFailure, e:
 db = client.espn
 
 # define collections to be used
-collection1 = db.basketball_h2h_2017
-collection2 = db.basketball_roto_2017
+year = str(sys.argv[1])
+collection1 = "basketball_h2h_" + year
+collection2 = "basketball_roto_" + year
 
-h2h_trifecta(collection1)
-roto_trifecta(collection2)
+h2h_trifecta(db, collection1)
+roto_trifecta(db, collection2)
 
 # sleep and terminate mongodb instance
 time.sleep(3)

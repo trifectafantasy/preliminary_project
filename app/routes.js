@@ -42,6 +42,7 @@ router.get('/', function(req, res) {
 // route to /football_standings
 router.get('/football_standings=2015', function(req, res) {
 	var year = 2015;
+	var playoffs = true;
 
 ///// EXECUTE SCRIPT /////
 	// initialize display database queries
@@ -57,25 +58,40 @@ router.get('/football_standings=2015', function(req, res) {
 		complete();
 	});
 
-	db.collection('football_playoffs_' + year).find({}, {"_id": 0}).toArray(function(e, docs) {
-		//console.log(docs);
-		console.log("Displaying playoff data...");
-		disp_playoff_standings = docs;
-		complete();
-	})
-
+	if (playoffs === true) {
+		db.collection('football_playoffs_' + year).find({}, {"_id": 0}).toArray(function(e, docs) {
+			//console.log(docs);
+			console.log("Displaying playoff data...");
+			disp_playoff_standings = docs;
+			complete();
+		});		
+	};
 
 	// function that checks if both finds from mongodb are complete (ie display variables are not empty)
 	var complete = function() {
-		if (disp_h2h_standings !== null && disp_playoff_standings !== null) {
 
-			// render to baseball_standings
-			res.render('football_standings', {
-				h2h_standings: disp_h2h_standings,
-				playoff_standings: disp_playoff_standings,
-				year: year
-			});
+		if (playoffs === true) {
+			if (disp_h2h_standings !== null && disp_playoff_standings !== null) {
+
+				// render to baseball_standings
+				res.render('football_standings_playoffs', {
+					h2h_standings: disp_h2h_standings,
+					playoff_standings: disp_playoff_standings,
+					year: year
+				});
+			}			
 		}
+		else {
+			if (disp_h2h_standings !== null) {
+
+				// render to baseball_standings
+				res.render('football_standings', {
+					h2h_standings: disp_h2h_standings,
+					year: year
+				});
+			}			
+		}
+
 	}
 
 }); // end of .get('/foottball_standings')
@@ -83,11 +99,12 @@ router.get('/football_standings=2015', function(req, res) {
 // route to /football_standings
 router.get('/football_standings=2016', function(req, res) {
 	var year = 2016;
+	var playoffs = true;
 
 ///// EXECUTE SCRIPT /////
 	// initialize display database queries
 	var disp_h2h_standings = null;
-	var disp_playoff_standings = null;
+	var disp_trifecta_standings = null;
 
 	// pull from mongodb and display new data after python script finishes
 	db.collection('football_h2h_' + year).find({}, {"_id": 0}).sort({"trifecta_points": -1}).toArray(function(e, docs) {
@@ -98,24 +115,40 @@ router.get('/football_standings=2016', function(req, res) {
 		complete();
 	});
 
-	db.collection('football_playoffs_' + year).find({}, {"_id": 0}).toArray(function(e, docs) {
-		//console.log(docs);
-		console.log("Displaying playoff data...");
-		disp_playoff_standings = docs;
-		complete();
-	})
+	if (playoffs === true) {
+		db.collection('football_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
+			//console.log(docs);
+			console.log("Displaying playoff data...");
+			disp_trifecta_standings = docs;
+			complete();
+		});		
+	};
 
 	// function that checks if both finds from mongodb are complete (ie display variables are not empty)
 	var complete = function() {
-		if (disp_h2h_standings !== null && disp_playoff_standings !== null) {
 
-			// render to baseball_standings
-			res.render('football_standings', {
-				h2h_standings: disp_h2h_standings,
-				playoff_standings: disp_playoff_standings,
-				year: year
-			});
+		if (playoffs === true) {
+			if (disp_h2h_standings !== null && disp_trifecta_standings !== null) {
+
+				// render to baseball_standings
+				res.render('football_standings_playoffs', {
+					h2h_standings: disp_h2h_standings,
+					trifecta_standings: disp_trifecta_standings,
+					year: year
+				});
+			}			
 		}
+		else {
+			if (disp_h2h_standings !== null) {
+
+				// render to baseball_standings
+				res.render('football_standings', {
+					h2h_standings: disp_h2h_standings,
+					year: year
+				});
+			}			
+		}
+
 	}
 
 }); // end of .get('/foottball_standings')
@@ -126,6 +159,7 @@ router.get('/football_standings=2016', function(req, res) {
 // route to /basketball_standings
 router.get('/basketball_standings=2016', function(req, res) {
 	var year = 2016;
+	var playoffs = true;
 
 ///// EXECUTE SCRIPT /////
 
@@ -151,24 +185,45 @@ router.get('/basketball_standings=2016', function(req, res) {
 		complete();
 	});
 
-	db.collection('basketball_playoffs_' + year).find({}, {"_id": 0}).toArray(function(e, docs) {
-		//console.log(docs);
-		console.log("Displaying playoff data...");
-		disp_playoff_standings = docs;
-		complete();
-	})
+	if (playoffs === true) {
+		db.collection('basketball_playoffs_' + year).find({}, {"_id": 0}).toArray(function(e, docs) {
+			//console.log(docs);
+			console.log("Displaying playoff data...");
+			disp_playoff_standings = docs;
+			complete();
+		});
+	};
+
 	// function that checks if both finds from mongodb are complete (ie display variables are not empty)
 	var complete = function() {
-		if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_playoff_standings !== null) {
 
-			// render to baseball_standings
-			res.render('basketball_standings', {
-				h2h_standings: disp_h2h_standings,
-				roto_standings: disp_roto_standings,
-				playoff_standings: disp_playoff_standings,
-				year: year
-			});
+		if (playoffs === true) {
+
+			if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_playoff_standings !== null) {
+
+				// render to baseball_standings
+				res.render('basketball_standings_playoffs', {
+					h2h_standings: disp_h2h_standings,
+					roto_standings: disp_roto_standings,
+					playoff_standings: disp_playoff_standings,
+					year: year
+				});
+			}
 		}
+		else {
+
+			if (disp_h2h_standings !== null && disp_roto_standings !== null) {
+
+				// render to baseball_standings
+				res.render('basketball_standings', {
+					h2h_standings: disp_h2h_standings,
+					roto_standings: disp_roto_standings,
+					year: year
+				});
+			}
+
+		}
+
 	}
 
 }); // end of .get('/basketball_standings')
@@ -176,6 +231,7 @@ router.get('/basketball_standings=2016', function(req, res) {
 // route to /basketball_standings
 router.get('/basketball_standings=2017', function(req, res) {
 	var year = 2017;
+	var playoffs = false;
 	// url for basketball 2016 standings
 	var url = 'http://games.espn.com/fba/standings?leagueId=100660&seasonId=' + year;
 
@@ -334,8 +390,12 @@ router.get('/basketball_standings=2017', function(req, res) {
 
 			console.log("All documents uploaded");
 
+			var options = {
+				args: [year]
+			}
+
 			// run standings.py from python-shell to update collections with roto and trifecta points
-			pyshell.run("basketball_standings.py", function(err) {
+			pyshell.run("basketball_standings.py", options, function(err) {
 				
 				if (err) throw err;
 				console.log("Python script complete");
@@ -359,21 +419,44 @@ router.get('/basketball_standings=2017', function(req, res) {
 					disp_roto_standings = docs;
 					// call complete to see if both finds are done
 					complete();
-				});				
+				});
+
+				if (playoffs === true) {
+					db.collection('basketball_playoffs_' + year).find({}, {"_id": 0}).toArray(function(e, docs) {
+						//console.log(docs);
+						console.log("Displaying playoff data...");
+						disp_playoff_standings = docs;
+						complete();
+					});
+				};
 
 				// function that checks if both finds from mongodb are complete (ie display variables are not empty)
 				var complete = function() {
-					if (disp_h2h_standings !== null && disp_roto_standings !== null) {
 
-						// render to basketball_standings
-						res.render('basketball_standings', {
-							h2h_standings: disp_h2h_standings,
-							roto_standings: disp_roto_standings,
-							year: year
-						});
+					if (playoffs === true) {
+						if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_playoff_standings !== null) {
+
+							// render to baseball_standings
+							res.render('basketball_standings_playoffs', {
+								h2h_standings: disp_h2h_standings,
+								roto_standings: disp_roto_standings,
+								playoff_standings: disp_playoff_standings,
+								year: year
+							});
+						}
 					}
-				}
+					else {
+						if (disp_h2h_standings !== null && disp_roto_standings !== null) {
 
+							// render to baseball_standings
+							res.render('basketball_standings', {
+								h2h_standings: disp_h2h_standings,
+								roto_standings: disp_roto_standings,
+								year: year
+							});
+						}
+					}
+				}				
 
 			});
 
@@ -388,6 +471,7 @@ router.get('/basketball_standings=2017', function(req, res) {
 // route to /baseball_standings
 router.get('/baseball_standings=2016', function(req, res) {
 	var year = 2016;
+	var playoffs = true;
 
 ///// EXECUTE SCRIPT /////
 
@@ -413,25 +497,43 @@ router.get('/baseball_standings=2016', function(req, res) {
 		complete();
 	});				
 
-	db.collection('baseball_playoffs_' + year).find({}, {"_id": 0}).toArray(function(e, docs) {
-		//console.log(docs);
-		console.log("Displaying playoff data...");
-		disp_playoff_standings = docs;
-		complete();
-	})
+	if (playoffs === true) {
+
+		db.collection('baseball_playoffs_' + year).find({}, {"_id": 0}).toArray(function(e, docs) {
+			//console.log(docs);
+			console.log("Displaying playoff data...");
+			disp_playoff_standings = docs;
+			complete();
+		});
+	};
 
 	// function that checks if both finds from mongodb are complete (ie display variables are not empty)
 	var complete = function() {
-		if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_playoff_standings !== null) {
 
-			// render to baseball_standings
-			res.render('baseball_standings', {
-				h2h_standings: disp_h2h_standings,
-				roto_standings: disp_roto_standings,
-				playoff_standings: disp_playoff_standings,
-				year: year
-			});
+		if (playoffs === true) {
+			if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_playoff_standings !== null) {
+
+				// render to baseball_standings
+				res.render('baseball_standings_playoffs', {
+					h2h_standings: disp_h2h_standings,
+					roto_standings: disp_roto_standings,
+					playoff_standings: disp_playoff_standings,
+					year: year
+				});
+			}
 		}
+		else {
+			if (disp_h2h_standings !== null && disp_roto_standings !== null) {
+
+				// render to baseball_standings
+				res.render('baseball_standings', {
+					h2h_standings: disp_h2h_standings,
+					roto_standings: disp_roto_standings,
+					year: year
+				});
+			}
+		}
+
 	}
 
 }) // end of .get('/baseball_standings')
