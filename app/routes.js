@@ -31,12 +31,30 @@ module.exports = router;
 
 // Route to Home/Root page
 router.get('/', function(req, res) {
-	// send response as index.html page
-	//res.sendFile(path.join(__dirname, "../index.html"));
+
 	const message = {
 		message: "Welcome to The Chip and Markers Trifecta Fantasy League Home Page"
 	}
 	res.render('index', message);
+});
+
+router.get('/trifecta_standings=2015_2016', function(req, res) {
+	var year1 = 2015;
+	var year2 = 2016;
+
+	var disp_trifecta_standings = null;
+
+	db.collection('trifecta_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
+		//console.log(docs);
+		console.log("Displaying trifecta season data...")
+		disp_trifecta_standings = docs;
+		res.render('trifecta_season', {
+			year1: year1,
+			year2: year2,
+			trifecta_standings: disp_trifecta_standings
+		})
+	})
+
 });
 
 // route to /football_standings
