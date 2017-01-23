@@ -264,7 +264,7 @@ except pymongo.errors.ConnectionFailure, e:
 db = client.espn
 
 # define collections to be used
-year = str(sys.arg[1])
+year = str(sys.argv[1])
 collection1 = "baseball_h2h_" + year
 collection2 = "baseball_roto_" + year
 
