@@ -44,6 +44,8 @@ router.get('/football_standings=2015', function(req, res) {
 	var year = 2015;
 	var playoffs = true;
 
+///// Don't need to scrape anymore. See football_router_template.js for scrape ////
+
 ///// EXECUTE SCRIPT /////
 	// initialize display database queries
 	var disp_h2h_standings = null;
@@ -58,22 +60,29 @@ router.get('/football_standings=2015', function(req, res) {
 		complete();
 	});
 
+	// if playoffs are finished, 
 	if (playoffs === true) {
+		// set year as input argument for python script
 		var options = {
 			args: [year]
 		};
+
+		// async function to count number of documents in football trifecta database
 		db.collection('football_trifecta_' + year).count({}, function(err, num){
 
-
+			// if trifecta database is filled (already 10 documents)
 			if (num === 10) {
-					db.collection('football_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-						//console.log(docs);
-						console.log("Displaying playoff data...");
-						disp_trifecta_standings = docs;
-						complete();
-					});				
+
+				// pull down trifecta standings in order of total trifecta points
+				db.collection('football_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
+					//console.log(docs);
+					console.log("Displaying playoff data...");
+					disp_trifecta_standings = docs;
+					complete();
+				});				
 			}
 			else {
+				// if trifecta database is not filled, run python script that adds playoff points to regular season points and creates trifecta database
 				pyshell.run('football_playoffs.py', options, function(err) {
 
 					if (err) throw err;
@@ -96,7 +105,7 @@ router.get('/football_standings=2015', function(req, res) {
 		if (playoffs === true) {
 			if (disp_h2h_standings !== null && disp_trifecta_standings !== null) {
 
-				// render to baseball_standings
+				// render to standings_playoffs
 				res.render('football_standings_playoffs', {
 					h2h_standings: disp_h2h_standings,
 					trifecta_standings: disp_trifecta_standings,
@@ -107,14 +116,13 @@ router.get('/football_standings=2015', function(req, res) {
 		else {
 			if (disp_h2h_standings !== null) {
 
-				// render to baseball_standings
+				// render to standings
 				res.render('football_standings', {
 					h2h_standings: disp_h2h_standings,
 					year: year
 				});
 			}			
 		}
-
 	}
 
 }); // end of .get('/foottball_standings')
@@ -139,13 +147,17 @@ router.get('/football_standings=2016', function(req, res) {
 		complete();
 	});
 
+	// if playoffs are true, display trifecta standings
 	if (playoffs === true) {
+		// set year as argument for python script
 		var options = {
 			args: [year]
 		};
+
+		// count number of documents in trifecta database
 		db.collection('football_trifecta_' + year).count({}, function(err, num){
 
-
+			// if 10 documents, database is full and just read trifecta database sorted by total trifecta points
 			if (num === 10) {
 					db.collection('football_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
 						//console.log(docs);
@@ -155,11 +167,11 @@ router.get('/football_standings=2016', function(req, res) {
 					});				
 			}
 			else {
+				// if trifecta database is not filled, run playoffs python script
 				pyshell.run('football_playoffs.py', options, function(err) {
 
 					if (err) throw err;
 					console.log('Playoff python script complete');
-
 					db.collection('football_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
 						//console.log(docs);
 						console.log("Displaying playoff data...");
@@ -177,7 +189,7 @@ router.get('/football_standings=2016', function(req, res) {
 		if (playoffs === true) {
 			if (disp_h2h_standings !== null && disp_trifecta_standings !== null) {
 
-				// render to baseball_standings
+				// render to standings_playoffs
 				res.render('football_standings_playoffs', {
 					h2h_standings: disp_h2h_standings,
 					trifecta_standings: disp_trifecta_standings,
@@ -188,17 +200,16 @@ router.get('/football_standings=2016', function(req, res) {
 		else {
 			if (disp_h2h_standings !== null) {
 
-				// render to baseball_standings
+				// render to standings
 				res.render('football_standings', {
 					h2h_standings: disp_h2h_standings,
 					year: year
 				});
 			}			
 		}
-
 	}
 
-}); // end of .get('/foottball_standings')
+}); // end of .get('/football_standings')
 
 
 // route to /basketball_standings
@@ -230,13 +241,17 @@ router.get('/basketball_standings=2016', function(req, res) {
 		complete();
 	});
 
+	// if playoffs are completed
 	if (playoffs === true) {
+		// initialize year as argument for python script
 		var options = {
 			args: [year]
 		};
 
+		// see if trifecta database is complete (10 documents)
 		db.collection('basketball_trifecta_' + year).count({}, function(err, num) {
 
+			// if complete, pull trifeta database and sort by total trifecta points
 			if (num === 10) {
 					db.collection('basketball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
 						//console.log(docs);
@@ -246,8 +261,8 @@ router.get('/basketball_standings=2016', function(req, res) {
 					});				
 			}
 			else {
+				// if database not complete, fun python script to initialize trifecta database
 				pyshell.run('basketball_playoffs.py', options, function(err) {
-
 					if (err) throw err;
 					console.log('Playoff python script complete');
 
@@ -266,7 +281,6 @@ router.get('/basketball_standings=2016', function(req, res) {
 	var complete = function() {
 
 		if (playoffs === true) {
-
 			if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_trifecta_standings !== null) {
 
 				// render to baseball_standings
@@ -279,7 +293,6 @@ router.get('/basketball_standings=2016', function(req, res) {
 			}
 		}
 		else {
-
 			if (disp_h2h_standings !== null && disp_roto_standings !== null) {
 
 				// render to baseball_standings
@@ -289,9 +302,7 @@ router.get('/basketball_standings=2016', function(req, res) {
 					year: year
 				});
 			}
-
 		}
-
 	}
 
 }); // end of .get('/basketball_standings')
@@ -307,9 +318,6 @@ router.get('/basketball_standings=2017', function(req, res) {
 
 		// if not an error
 		if(!error){
-
-			// send html page back
-			//res.sendFile(path.join(__dirname, "../basketball_standings.html"));
 
 			// use cheerio to traverse and scrape html 
 			var $ = cheerio.load(html);
@@ -453,83 +461,110 @@ router.get('/basketball_standings=2017', function(req, res) {
 
 ///// EXECUTE SCRIPT /////
 
-		// call insertDocumet asynchronously, but don't use db from callback as we need to use db from argument to find and get from to render
-		insertDocument(db, year, function(callback) {
+			// call insertDocumet asynchronously, but don't use db from callback as we need to use db from argument to find and get from to render
+			insertDocument(db, year, function(callback) {
 
-			console.log("All documents uploaded");
+				console.log("All documents uploaded");
 
-			var options = {
-				args: [year]
-			}
+				// initialize year as argument for python script
+				var options = {
+					args: [year]
+				}
 
-			// run standings.py from python-shell to update collections with roto and trifecta points
-			pyshell.run("basketball_standings.py", options, function(err) {
-				
-				if (err) throw err;
-				console.log("Python script complete");
+				// run standings.py from python-shell to update collections with roto and trifecta points
+				pyshell.run("basketball_standings.py", options, function(err) {
+					
+					if (err) throw err;
+					console.log("Python script complete");
 
-				// initialize display database queries
-				var disp_h2h_standings = null;
-				var disp_roto_standings = null;
+					// initialize display database queries
+					var disp_h2h_standings = null;
+					var disp_roto_standings = null;
+					var disp_trifecta_standings = null;
 
-				// pull from mongodb and display new data after python script finishes
-				db.collection('basketball_h2h_' + year).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
-					//console.log(docs);
-					console.log("Displaying h2h data...")
-					disp_h2h_standings = docs;
-					// call complete to see if both finds are done
-					complete();
-				});
-
-				db.collection('basketball_roto_' + year).find({}, {"_id": 0}).sort({"roto_trifecta_points": -1}).toArray(function(e, docs) {
-					//console.log(docs);
-					console.log("Displaying roto data...")
-					disp_roto_standings = docs;
-					// call complete to see if both finds are done
-					complete();
-				});
-
-				if (playoffs === true) {
-					db.collection('basketball_playoffs_' + year).find({}, {"_id": 0}).toArray(function(e, docs) {
+					// pull from mongodb and display new data after python script finishes
+					db.collection('basketball_h2h_' + year).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
 						//console.log(docs);
-						console.log("Displaying playoff data...");
-						disp_playoff_standings = docs;
+						console.log("Displaying h2h data...")
+						disp_h2h_standings = docs;
+						// call complete to see if both finds are done
 						complete();
 					});
-				};
 
-				// function that checks if both finds from mongodb are complete (ie display variables are not empty)
-				var complete = function() {
+					db.collection('basketball_roto_' + year).find({}, {"_id": 0}).sort({"roto_trifecta_points": -1}).toArray(function(e, docs) {
+						//console.log(docs);
+						console.log("Displaying roto data...")
+						disp_roto_standings = docs;
+						// call complete to see if both finds are done
+						complete();
+					});
 
+					// if playoffs are completed
 					if (playoffs === true) {
-						if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_playoff_standings !== null) {
+						// initialize year as argument for python script
+						var options = {
+							args: [year]
+						};
 
-							// render to baseball_standings
-							res.render('basketball_standings_playoffs', {
-								h2h_standings: disp_h2h_standings,
-								roto_standings: disp_roto_standings,
-								playoff_standings: disp_playoff_standings,
-								year: year
-							});
+						// see if trifecta database is complete (10 documents)
+						db.collection('basketball_trifecta_' + year).count({}, function(err, num) {
+
+							// if complete, pull trifeta database and sort by total trifecta points
+							if (num === 10) {
+									db.collection('basketball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
+										//console.log(docs);
+										console.log("Displaying playoff data...");
+										disp_trifecta_standings = docs;
+										complete();
+									});				
+							}
+							else {
+								// if database not complete, fun python script to initialize trifecta database
+								pyshell.run('basketball_playoffs.py', options, function(err) {
+									if (err) throw err;
+									console.log('Playoff python script complete');
+
+									db.collection('basketball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
+										//console.log(docs);
+										console.log("Displaying playoff data...");
+										disp_trifecta_standings = docs;
+										complete();
+									});				
+								})
+							}
+						})
+					};
+
+					// function that checks if both finds from mongodb are complete (ie display variables are not empty)
+					var complete = function() {
+
+						if (playoffs === true) {
+							if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_trifecta_standings !== null) {
+
+								// render to baseball_standings
+								res.render('basketball_standings_playoffs', {
+									h2h_standings: disp_h2h_standings,
+									roto_standings: disp_roto_standings,
+									trifecta_standings: disp_trifecta_standings,
+									year: year
+								});
+							}
 						}
-					}
-					else {
-						if (disp_h2h_standings !== null && disp_roto_standings !== null) {
+						else {
+							if (disp_h2h_standings !== null && disp_roto_standings !== null) {
 
-							// render to baseball_standings
-							res.render('basketball_standings', {
-								h2h_standings: disp_h2h_standings,
-								roto_standings: disp_roto_standings,
-								year: year
-							});
+								// render to baseball_standings
+								res.render('basketball_standings', {
+									h2h_standings: disp_h2h_standings,
+									roto_standings: disp_roto_standings,
+									year: year
+								});
+							}
 						}
-					}
-				}				
+					}				
 
-			});
-
-		});
-
+				}); // end of pyshell 
+			}); // end of insertDocument 
 
 		} // end of if(!error)
 	}) // end of request
@@ -565,13 +600,17 @@ router.get('/baseball_standings=2016', function(req, res) {
 		complete();
 	});				
 
+	// if playoffs have been completed
 	if (playoffs === true) {
+		// set year as arguments for python script
 		var options = {
 			args: [year]
 		};
 
+		// count number in trifecta database
 		db.collection('baseball_trifecta_' + year).count({}, function(err, num) {
 
+			// if there are 10 documents in trifecta database, just read trifecta database and sort by total trifecta points
 			if (num === 10) {
 					db.collection('baseball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
 						//console.log(docs);
@@ -581,8 +620,8 @@ router.get('/baseball_standings=2016', function(req, res) {
 					});				
 			}
 			else {
+				// if no trifecta database, run python shell to set it
 				pyshell.run('baseball_playoffs.py', options, function(err) {
-
 					if (err) throw err;
 					console.log('Playoff python script complete');
 

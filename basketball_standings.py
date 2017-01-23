@@ -92,6 +92,7 @@ def roto_trifecta(db, collection):
 		category_points = 10
 		skipped_team = False
 		points_hold = []
+		times_dist = 0
 
 		# loop through each team in list for each category
 		for i in range(len(category_rank)):
@@ -123,7 +124,14 @@ def roto_trifecta(db, collection):
 					dist_points = float(sum(points_hold)) / same_records
 
 				# now that tied points for each team are (or were already) determined, distribute to each tied team
+				# count number of times distributed to know when to stop and reset
+				times_dist += 1
 				individual_category_points = dist_points
+
+				# if tied points have been distributed to all tied teams, reset points hold and times distributed
+				if times_dist == same_records:
+					points_hold = []
+					times_dist = 0
 
 			# if no tie, give how many remaining category points left
 			else:
@@ -131,10 +139,9 @@ def roto_trifecta(db, collection):
 
 			# subtract 1 category point each team/loop
 			category_points -= 1
-
 			new_cat_points = "category_points_" + this_category
-			print("team: ", current_team)
-			print(new_cat_points, float(individual_category_points))
+			print "team: ", current_team
+			print new_cat_points, float(individual_category_points)
 
 			# create key-value pair for each roto category and corresponding roto category points per category
 			each_team_each_category_points = {new_cat_points: float(individual_category_points)}
@@ -194,6 +201,7 @@ def roto_trifecta(db, collection):
 	trifecta_roto_points = 10
 	skipped_team = False
 	points_hold = []
+	times_dist = 0
 
 	for i in range(len(sorted_roto_rank)):
 
@@ -215,15 +223,22 @@ def roto_trifecta(db, collection):
 			if len(points_hold) == 0:
 				points_hold = range((trifecta_roto_points + 1 - same_records), trifecta_roto_points + 1)
 				dist_points = float(sum(points_hold)) / same_records
-			
+
+			times_dist += 1
 			individual_trifecta_roto_points = dist_points
+
+			if times_dist == same_records:
+				points_hold = []
+				times_dist = 0
 
 		else:
 			individual_trifecta_roto_points = trifecta_roto_points
 
 		trifecta_roto_points -= 1
-		print("team: ", current_team)
-		print("trifecta points: ", float(individual_trifecta_roto_points))
+		print "team: ", current_team
+		print "trifecta points: ", float(individual_trifecta_roto_points)
+		print ""
+
 
 		# update roto collection with new field "roto trifecta points (10 -> 1)"
 		db[collection].update({"team": current_team, "h2h_rank": current_team_h2h}, {"$set": {"roto_trifecta_points": individual_trifecta_roto_points}})
