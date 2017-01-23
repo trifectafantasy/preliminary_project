@@ -10,9 +10,6 @@ router.get('/basketball_standings=2017', function(req, res) {
 		// if not an error
 		if(!error){
 
-			// send html page back
-			//res.sendFile(path.join(__dirname, "../basketball_standings.html"));
-
 			// use cheerio to traverse and scrape html 
 			var $ = cheerio.load(html);
 
@@ -155,83 +152,110 @@ router.get('/basketball_standings=2017', function(req, res) {
 
 ///// EXECUTE SCRIPT /////
 
-		// call insertDocumet asynchronously, but don't use db from callback as we need to use db from argument to find and get from to render
-		insertDocument(db, year, function(callback) {
+			// call insertDocumet asynchronously, but don't use db from callback as we need to use db from argument to find and get from to render
+			insertDocument(db, year, function(callback) {
 
-			console.log("All documents uploaded");
+				console.log("All documents uploaded");
 
-			var options = {
-				args: [year]
-			}
+				// initialize year as argument for python script
+				var options = {
+					args: [year]
+				}
 
-			// run standings.py from python-shell to update collections with roto and trifecta points
-			pyshell.run("basketball_standings.py", options, function(err) {
-				
-				if (err) throw err;
-				console.log("Python script complete");
+				// run standings.py from python-shell to update collections with roto and trifecta points
+				pyshell.run("basketball_standings.py", options, function(err) {
+					
+					if (err) throw err;
+					console.log("Python script complete");
 
-				// initialize display database queries
-				var disp_h2h_standings = null;
-				var disp_roto_standings = null;
+					// initialize display database queries
+					var disp_h2h_standings = null;
+					var disp_roto_standings = null;
+					var disp_trifecta_standings = null;
 
-				// pull from mongodb and display new data after python script finishes
-				db.collection('basketball_h2h_' + year).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
-					//console.log(docs);
-					console.log("Displaying h2h data...")
-					disp_h2h_standings = docs;
-					// call complete to see if both finds are done
-					complete();
-				});
-
-				db.collection('basketball_roto_' + year).find({}, {"_id": 0}).sort({"roto_trifecta_points": -1}).toArray(function(e, docs) {
-					//console.log(docs);
-					console.log("Displaying roto data...")
-					disp_roto_standings = docs;
-					// call complete to see if both finds are done
-					complete();
-				});
-
-				if (playoffs === true) {
-					db.collection('basketball_playoffs_' + year).find({}, {"_id": 0}).toArray(function(e, docs) {
+					// pull from mongodb and display new data after python script finishes
+					db.collection('basketball_h2h_' + year).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
 						//console.log(docs);
-						console.log("Displaying playoff data...");
-						disp_playoff_standings = docs;
+						console.log("Displaying h2h data...")
+						disp_h2h_standings = docs;
+						// call complete to see if both finds are done
 						complete();
 					});
-				};
 
-				// function that checks if both finds from mongodb are complete (ie display variables are not empty)
-				var complete = function() {
+					db.collection('basketball_roto_' + year).find({}, {"_id": 0}).sort({"roto_trifecta_points": -1}).toArray(function(e, docs) {
+						//console.log(docs);
+						console.log("Displaying roto data...")
+						disp_roto_standings = docs;
+						// call complete to see if both finds are done
+						complete();
+					});
 
+					// if playoffs are completed
 					if (playoffs === true) {
-						if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_playoff_standings !== null) {
+						// initialize year as argument for python script
+						var options = {
+							args: [year]
+						};
 
-							// render to baseball_standings
-							res.render('basketball_standings_playoffs', {
-								h2h_standings: disp_h2h_standings,
-								roto_standings: disp_roto_standings,
-								playoff_standings: disp_playoff_standings,
-								year: year
-							});
+						// see if trifecta database is complete (10 documents)
+						db.collection('basketball_trifecta_' + year).count({}, function(err, num) {
+
+							// if complete, pull trifeta database and sort by total trifecta points
+							if (num === 10) {
+									db.collection('basketball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
+										//console.log(docs);
+										console.log("Displaying playoff data...");
+										disp_trifecta_standings = docs;
+										complete();
+									});				
+							}
+							else {
+								// if database not complete, fun python script to initialize trifecta database
+								pyshell.run('basketball_playoffs.py', options, function(err) {
+									if (err) throw err;
+									console.log('Playoff python script complete');
+
+									db.collection('basketball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
+										//console.log(docs);
+										console.log("Displaying playoff data...");
+										disp_trifecta_standings = docs;
+										complete();
+									});				
+								})
+							}
+						})
+					};
+
+					// function that checks if both finds from mongodb are complete (ie display variables are not empty)
+					var complete = function() {
+
+						if (playoffs === true) {
+							if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_trifecta_standings !== null) {
+
+								// render to baseball_standings
+								res.render('basketball_standings_playoffs', {
+									h2h_standings: disp_h2h_standings,
+									roto_standings: disp_roto_standings,
+									trifecta_standings: disp_trifecta_standings,
+									year: year
+								});
+							}
 						}
-					}
-					else {
-						if (disp_h2h_standings !== null && disp_roto_standings !== null) {
+						else {
+							if (disp_h2h_standings !== null && disp_roto_standings !== null) {
 
-							// render to baseball_standings
-							res.render('basketball_standings', {
-								h2h_standings: disp_h2h_standings,
-								roto_standings: disp_roto_standings,
-								year: year
-							});
+								// render to baseball_standings
+								res.render('basketball_standings', {
+									h2h_standings: disp_h2h_standings,
+									roto_standings: disp_roto_standings,
+									year: year
+								});
+							}
 						}
-					}
-				}				
+					}				
 
-			});
-
-		});
-
+				}); // end of pyshell 
+			}); // end of insertDocument 
 
 		} // end of if(!error)
 	}) // end of request

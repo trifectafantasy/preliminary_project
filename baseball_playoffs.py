@@ -8,29 +8,35 @@ from collections import OrderedDict
 ##### DEFINE FUNCTIONS #####
 
 # function to sort and give trifecta points based on h2h win percentage
-# takes in argument of which MongoDB collection to use: 'baseball_2015_h2h'
 def combine_databases(db, collection_h2h, collection_roto, collection_playoffs, year):
 
+	# set name of trifecta collection
 	collection_trifecta = "baseball_trifecta_" + year
 	trifecta_upload = []
 
+	# clear trifecta if it already exists
 	db[collection_trifecta].remove({})
 
+	# pull names and h2h trifecta points from h2h collection
 	pull_h2h = list(db[collection_h2h].find({}, {"team": 1, "h2h_trifecta_points": 1, "_id": 0}))
-	
 
 	for i in range(len(pull_h2h)):
 
+		# make ordered dictionary for input into MongoDB
 		json = OrderedDict()
 
 		team_name = pull_h2h[i]["team"]
+		# pull h2h points and divide by 2 to weight for h2h half
 		h2h_trifecta_points = pull_h2h[i]["h2h_trifecta_points"]
 		h2h_trifecta_points = float(h2h_trifecta_points) / 2
 
+		# pull roto trifecta points from roto collection
 		pull_roto = list(db[collection_roto].find({"team": team_name}, {"roto_trifecta_points": 1, "_id": 0}))
+		# divide by 2 to weight for roto half
 		roto_trifecta_points = pull_roto[0]["roto_trifecta_points"]
 		roto_trifecta_points = float(roto_trifecta_points) / 2
 
+		# pull playoff trifecta points from playoffs collection
 		pull_playoffs = list(db[collection_playoffs].find({"team": team_name}, {"playoff_trifecta_points": 1, "_id": 0}))
 		playoff_trifecta_points = pull_playoffs[0]["playoff_trifecta_points"]
 
@@ -38,12 +44,14 @@ def combine_databases(db, collection_h2h, collection_roto, collection_playoffs, 
 		#print h2h_trifecta_points
 		#print playoff_trifecta_points
 
+		# regular season trifecta points are h2h and roto added together
 		season_trifecta_points = h2h_trifecta_points + roto_trifecta_points
 
+		# total trifecta points are regular season plus playoffs
 		total_trifecta_points = season_trifecta_points + playoff_trifecta_points
-
 		#print total_trifecta_points
 
+		# add values into ordered dictionary
 		json["team"] = team_name
 		json["h2h_trifecta_points"] = h2h_trifecta_points
 		json["roto_trifecta_points"] = roto_trifecta_points
@@ -51,8 +59,10 @@ def combine_databases(db, collection_h2h, collection_roto, collection_playoffs, 
 		json["playoff_trifecta_points"] = playoff_trifecta_points
 		json["total_trifecta_points"] = total_trifecta_points
 
+		# append to list for upload
 		trifecta_upload.append(json)
 
+	# upload all to trifecta collection
 	db[collection_trifecta].insert(trifecta_upload)
 
 ##### PYTHON SCRIPT TO EXECUTE #####
@@ -77,7 +87,6 @@ year = str(sys.argv[1])
 collection_h2h = "baseball_h2h_" + year
 collection_roto = "baseball_roto_" + year
 collection_playoffs = "baseball_playoffs_" + year
-
 
 combine_databases(db, collection_h2h, collection_roto, collection_playoffs, year)
 
