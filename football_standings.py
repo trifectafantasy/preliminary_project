@@ -40,8 +40,6 @@ def trifecta_points(db, collection):
 
 		individual_trifecta_points = 0
 
-
-
 		if i + 1 == len(sorted_record):
 			if deserves_more == False:
 				individual_trifecta_points = trifecta_points
