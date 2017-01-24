@@ -32,22 +32,24 @@ module.exports = router;
 // Route to Home/Root page
 router.get('/', function(req, res) {
 
-	const message = {
+	res.render('index', {
 		message: "Welcome to The Chip and Markers Trifecta Fantasy League Home Page"
-	}
-	res.render('index', message);
+	});
 });
 
+// route to only 2015-2016 trifecta standings
 router.get('/trifecta_standings=2015_2016', function(req, res) {
 	var year1 = 2015;
 	var year2 = 2016;
 
 	var disp_trifecta_standings = null;
 
+	// pull from 2015-2016 trifecta season collection and sort by total trifecta points
 	db.collection('trifecta_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
 		//console.log(docs);
 		console.log("Displaying trifecta season data...")
 		disp_trifecta_standings = docs;
+		// render to trifecta_season.pug
 		res.render('trifecta_season', {
 			year1: year1,
 			year2: year2,
@@ -56,6 +58,43 @@ router.get('/trifecta_standings=2015_2016', function(req, res) {
 	})
 
 });
+
+// template for trifecta standings 
+router.get('/trifecta_standings=2016_2017', function(req, res) {
+	var year1 = 2016;
+	var year2 = 2017;
+	var football_in_season = "yes";
+	var basketball_in_season = "yes";
+	var baseball_in_season = "no";
+
+	// set input arguments for python script
+	var options = {
+		args: [year1, year2, football_in_season, basketball_in_season, baseball_in_season]
+	}
+
+	var disp_trifecta_standings = null;
+
+	// always run trifecta standings python script
+	pyshell.run('trifecta_standings.py', options, function(err) {
+		if (err) throw err;
+		console.log("Trifecta standings python script complete");
+		
+		// pull from this seasons trifecta collection
+		db.collection('trifecta_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs){
+			//console.log(docs);
+			console.log("Displaying trifecta season standings...");
+			disp_trifecta_standings = docs;
+
+			// render to standings_playoffs
+			res.render('trifecta_season', {
+				year1: year1,
+				year2: year2,
+				trifecta_standings: disp_trifecta_standings,
+			});
+		});
+	});
+
+})
 
 // route to /football_standings
 router.get('/football_standings=2015', function(req, res) {

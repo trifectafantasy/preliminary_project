@@ -14,6 +14,7 @@ html
 				a(href= '/trifecta_standings=2015_2016' class = 'navbar') 2015-2016 Trifecta Season Standings
 				a(href= '/football_standings=2016' class = 'navbar') 2016 Football Standings
 				a(href= '/basketball_standings=2017' class = 'navbar') 2017 Basketball Standings
+				a(href= '/trifecta_standings=2016_2017' class = 'navbar') 2016-2017 Trifecta Season Standings
 
 
 		h2= year + " Basketball Standings"
@@ -29,7 +30,7 @@ html
 					th TIES
 					th WIN %
 					th DIVISION
-					th TRIFECTA H2H POINTS
+					th H2H TRIFECTA POINTS
 			tbody
 				each readin in h2h_standings
 					tr
@@ -65,7 +66,7 @@ html
 					th TO
 					th PTS
 					th TOTAL ROTO POINTS
-					th TRIFECTA ROTO POINTS
+					th ROTO TRIFECTA POINTS
 			tbody
 				each next in roto_standings
 					tr
