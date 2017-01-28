@@ -16,10 +16,10 @@ html
 				a(href= '/basketball_standings=2017' class = 'navbar') 2017 Basketball Standings
 				a(href= '/trifecta_standings=2016_2017' class = 'navbar') 2016-2017 Trifecta Season Standings
 				
-		h2= year + " Football Matchup Standings"
+		h2= year1 + "-" + year2 + " Owner Matchups"
 
 
-		h4= "Head to Head Owners"
+		h4= "Football"
 		p= owner + " vs..."
 		table
 			thead
@@ -33,7 +33,7 @@ html
 					th POINTS AGAINST
 					th POINT DIFFERENTIAL
 			tbody
-				each readin in matchup_standings
+				each readin in football_matchups
 					tr
 						each val, cat in readin
 							if cat === "opposing_owner"
@@ -51,4 +51,30 @@ html
 							if cat === "PA"
 								td= val
 							if cat === "pt_diff"
+								td= val
+
+		h4= "Basketball"
+		p= owner + " vs..."
+		table
+			thead
+				tr
+					th OPPOSING OWNER
+					th WINS
+					th LOSSES
+					th TIES
+					th WIN %
+
+			tbody
+				each readin in basketball_matchups
+					tr
+						each val, cat in readin
+							if cat === "opposing_owner"
+								td= val
+							if cat === "wins"
+								td= val
+							if cat === "losses"
+								td= val
+							if cat === "ties"
+								td= val
+							if cat === "win_per"
 								td= val
