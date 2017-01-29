@@ -7,96 +7,119 @@ from collections import OrderedDict
 
 ##### DEFINE FUNCTIONS #####
 
-# function that creates a trifecta season-long standings based on however much data is available for each sport
+# function that combines data from all matchup collections for total season trifecta owner matchup standings
 def matchupRecords(db, owner_number, year1, year2, football_in_season, basketball_in_season, baseball_in_season):
 
+	# set tifecta matchups collection and clear it to initialze
 	collection_owner_matchups = "owner" + owner_number + "_trifecta_matchups_" + year1 + "_" + year2
 	db[collection_owner_matchups].remove({})
 
+	#  set football collection
 	collection_football = "owner" + owner_number + "_football_matchups_" + year1
 
+	# get list of all opposing owners
 	opposing_owners_list = list(db[collection_football].find({}, {"opposing_owner": 1, "_id": 0}))
 	#print opposing_owners_list
 
+	# iterate through each opposing owner
 	for each_opposing_owner in opposing_owners_list:
 
+		# set opposing owner
 		opposing_owner = each_opposing_owner["opposing_owner"]
 		print opposing_owner
 
+		# create ordered dictionary for input
 		insert_json = OrderedDict()
 
+		# if baseball (and therefore all sports are true)
 		if baseball_in_season == "true":
 
+			# pull individual football matchup win_per
 			football_pull = list(db[collection_football].find({"opposing_owner": opposing_owner}, {"win_per": 1, "_id": 0}))
 			#print football_pull
 			football_win_per = football_pull[0]["win_per"]
 			print "football:", football_win_per
 
+			# pull individual baasketball matchup win_per
 			collection_basketball = "owner" + owner_number + "_basketball_matchups_" + year2
 			basketball_pull = list(db[collection_basketball].find({"opposing_owner": opposing_owner}, {"win_per": 1, "_id": 0}))
 			#print basketball_pull
 			basketball_win_per = basketball_pull[0]["win_per"]
 			print "basketball: ", basketball_win_per
 
+			# pull individual baseball matchup win_per
 			collection_baseball = "owner" + owner_number + "_baseball_matchups_" + year2
 			baseball_pull = list(db[collection_baseball].find({"opposing_owner": opposing_owner}, {"win_per": 1, "_id": 0}))
 			#print baseball_pull
 			baseball_win_per = baseball_pull[0]["win_per"]
 			print "baseball: ", baseball_win_per			
 
+			# calculate averaged total win_per
 			total_win_per = (football_win_per + basketball_win_per + baseball_win_per) / 3
 			total_win_per = round(total_win_per, 3)
 			print "total: ", total_win_per
 
+			# insert into ordered dictionary for input
 			insert_json["opposing_owner"] = opposing_owner
 			insert_json["football_win_per"] = football_win_per
 			insert_json["basketball_win_per"] = basketball_win_per
 			insert_json["baseball_win_per"] = baseball_win_per
 			insert_json["total_win_per"] = total_win_per
 
+			# add into matchup collection
 			db[collection_owner_matchups].insert(insert_json)
 
-
+		# if basketball is (therefore also football) in season
 		elif basketball_in_season == "true":
 
+			# pull individual football matchup win_per
 			football_pull = list(db[collection_football].find({"opposing_owner": opposing_owner}, {"win_per": 1, "_id": 0}))
 			#print football_pull
 			football_win_per = football_pull[0]["win_per"]
 			print "football:", football_win_per
 
+			# pull individual basketball matchup win_per
 			collection_basketball = "owner" + owner_number + "_basketball_matchups_" + year2
 			basketball_pull = list(db[collection_basketball].find({"opposing_owner": opposing_owner}, {"win_per": 1, "_id": 0}))
 			#print basketball_pull
 			basketball_win_per = basketball_pull[0]["win_per"]
 			print "basketball: ", basketball_win_per
 
+			# calculate averaged total win_per
 			total_win_per = (football_win_per + basketball_win_per) / 2
 			total_win_per = round(total_win_per, 3)
 			print "total: ", total_win_per
 
+			# insert into ordered dictionary for insert
 			insert_json["opposing_owner"] = opposing_owner
 			insert_json["football_win_per"] = football_win_per
 			insert_json["basketball_win_per"] = basketball_win_per
 			insert_json["total_win_per"] = total_win_per
 
+			# add into matchup collection
 			db[collection_owner_matchups].insert(insert_json)
 
+		# else if just football
 		else:
+
+			# pull individual football matchup win_per
 			football_pull = list(db[collection_football].find({"opposing_owner": opposing_owner}, {"win_per": 1, "_id": 0}))
 			#print football_pull
 			football_win_per = football_pull[0]["win_per"]
 			print "football:", football_win_per
 
+			# calculate averaged total win_per
 			total_win_per = football_win_per
 			total_win_per = round(total_win_per, 3)
 			print "total: ", total_win_per
 
+			# insert into ordered dictionary for insert
 			insert_json["opposing_owner"] = opposing_owner
 			insert_json["football_win_per"] = football_win_per
 			insert_json["total_win_per"] = total_win_per
 
+			# add into matchup collection
 			db[collection_owner_matchups].insert(insert_json)
-
 
 
 ##### PYTHON SCRIPT TO EXECUTE #####
