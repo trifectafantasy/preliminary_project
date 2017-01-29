@@ -16,65 +16,247 @@ html
 				a(href= '/basketball_standings=2017' class = 'navbar') 2017 Basketball Standings
 				a(href= '/trifecta_standings=2016_2017' class = 'navbar') 2016-2017 Trifecta Season Standings
 				
-		h2= year1 + "-" + year2 + " Owner Matchups"
+		h2= owner + "'s " + year1 + "-" + year2 + " Trifecta Head 2 Head Owner Matchups"
 
+		if baseball_in_season
 
-		h4= "Football"
-		p= owner + " vs..."
-		table
-			thead
-				tr
-					th OPPOSING OWNER
-					th WINS
-					th LOSSES
-					th TIES
-					th WIN %
-					th POINTS FOR
-					th POINTS AGAINST
-					th POINT DIFFERENTIAL
-			tbody
-				each readin in football_matchups
+			h4= "Overall"
+			table
+				thead
 					tr
-						each val, cat in readin
-							if cat === "opposing_owner"
-								td= val
-							if cat === "wins"
-								td= val
-							if cat === "losses"
-								td= val
-							if cat === "ties"
-								td= val
-							if cat === "win_per"
-								td= val
-							if cat === "PF"
-								td= val
-							if cat === "PA"
-								td= val
-							if cat === "pt_diff"
-								td= val
+						th OPPOSING OWNER
+						th FOOTBALL WIN %
+						th BASKETBALL WIN %
+						th BASEBALL WIN %
+						th OVERALL WIN%
+				tbody
+					each readin_tri in trifecta_matchups
+						tr
+							each val, cat in readin_tri
+								if cat === "opposing_owner"
+									td= val
+								if cat === "football_win_per"
+									td= val
+								if cat === "basketball_win_per"
+									td= val
+								if cat === "baseball_win_per"
+									td= val
+								if cat === "total_win_per"
+									td= val		
 
-		h4= "Basketball"
-		p= owner + " vs..."
-		table
-			thead
-				tr
-					th OPPOSING OWNER
-					th WINS
-					th LOSSES
-					th TIES
-					th WIN %
-
-			tbody
-				each readin in basketball_matchups
+			h4= "Football"
+			table
+				thead
 					tr
-						each val, cat in readin
-							if cat === "opposing_owner"
-								td= val
-							if cat === "wins"
-								td= val
-							if cat === "losses"
-								td= val
-							if cat === "ties"
-								td= val
-							if cat === "win_per"
-								td= val
+						th OPPOSING OWNER
+						th WINS
+						th LOSSES
+						th TIES
+						th WIN %
+						th POINTS FOR
+						th POINTS AGAINST
+						th POINT DIFFERENTIAL
+				tbody
+					each readin in football_matchups
+						tr
+							each val, cat in readin
+								if cat === "opposing_owner"
+									td= val
+								if cat === "wins"
+									td= val
+								if cat === "losses"
+									td= val
+								if cat === "ties"
+									td= val
+								if cat === "win_per"
+									td= val
+								if cat === "PF"
+									td= val
+								if cat === "PA"
+									td= val
+								if cat === "pt_diff"
+									td= val
+
+			h4= "Basketball"
+			table
+				thead
+					tr
+						th OPPOSING OWNER
+						th WINS
+						th LOSSES
+						th TIES
+						th WIN %
+
+				tbody
+					each readin in basketball_matchups
+						tr
+							each val, cat in readin
+								if cat === "opposing_owner"
+									td= val
+								if cat === "wins"
+									td= val
+								if cat === "losses"
+									td= val
+								if cat === "ties"
+									td= val
+								if cat === "win_per"
+									td= val
+
+			h4= "Baseball"
+			table
+				thead
+					tr
+						th OPPOSING OWNER
+						th WINS
+						th LOSSES
+						th TIES
+						th WIN %
+
+				tbody
+					each readin in basketball_matchups
+						tr
+							each val, cat in readin
+								if cat === "opposing_owner"
+									td= val
+								if cat === "wins"
+									td= val
+								if cat === "losses"
+									td= val
+								if cat === "ties"
+									td= val
+								if cat === "win_per"
+									td= val
+
+		else if basketball_in_season
+
+			h4= "Overall"
+			table
+				thead
+					tr
+						th OPPOSING OWNER
+						th FOOTBALL WIN %
+						th BASKETBALL WIN %
+						th OVERALL WIN%
+				tbody
+					each readin_tri in trifecta_matchups
+						tr
+							each val, cat in readin_tri
+								if cat === "opposing_owner"
+									td= val
+								if cat === "football_win_per"
+									td= val
+								if cat === "basketball_win_per"
+									td= val
+								if cat === "total_win_per"
+									td= val
+
+			h4= "Football"
+			table
+				thead
+					tr
+						th OPPOSING OWNER
+						th WINS
+						th LOSSES
+						th TIES
+						th WIN %
+						th POINTS FOR
+						th POINTS AGAINST
+						th POINT DIFFERENTIAL
+				tbody
+					each readin in football_matchups
+						tr
+							each val, cat in readin
+								if cat === "opposing_owner"
+									td= val
+								if cat === "wins"
+									td= val
+								if cat === "losses"
+									td= val
+								if cat === "ties"
+									td= val
+								if cat === "win_per"
+									td= val
+								if cat === "PF"
+									td= val
+								if cat === "PA"
+									td= val
+								if cat === "pt_diff"
+									td= val
+
+			h4= "Basketball"
+			table
+				thead
+					tr
+						th OPPOSING OWNER
+						th WINS
+						th LOSSES
+						th TIES
+						th WIN %
+
+				tbody
+					each readin in basketball_matchups
+						tr
+							each val, cat in readin
+								if cat === "opposing_owner"
+									td= val
+								if cat === "wins"
+									td= val
+								if cat === "losses"
+									td= val
+								if cat === "ties"
+									td= val
+								if cat === "win_per"
+									td= val
+
+		else
+
+			h4= "Overall"
+			table
+				thead
+					tr
+						th OPPOSING OWNER
+						th FOOTBALL WIN %
+						th OVERALL WIN%
+				tbody
+					each readin_tri in trifecta_matchups
+						tr
+							each val, cat in readin_tri
+								if cat === "opposing_owner"
+									td= val
+								if cat === "football_win_per"
+									td= val
+								if cat === "total_win_per"
+									td= val
+
+			h4= "Football"
+			table
+				thead
+					tr
+						th OPPOSING OWNER
+						th WINS
+						th LOSSES
+						th TIES
+						th WIN %
+						th POINTS FOR
+						th POINTS AGAINST
+						th POINT DIFFERENTIAL
+				tbody
+					each readin in football_matchups
+						tr
+							each val, cat in readin
+								if cat === "opposing_owner"
+									td= val
+								if cat === "wins"
+									td= val
+								if cat === "losses"
+									td= val
+								if cat === "ties"
+									td= val
+								if cat === "win_per"
+									td= val
+								if cat === "PF"
+									td= val
+								if cat === "PA"
+									td= val
+								if cat === "pt_diff"
+									td= val
