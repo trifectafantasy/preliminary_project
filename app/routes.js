@@ -726,126 +726,559 @@ router.get('/baseball_standings=2016', function(req, res) {
 
 
 router.get('/owner2_matchups=2016_2017', function(req, res) {
+
 	var year1 = 2016;
 	var year2 = 2017;
 	var owner_number = 2;
-	var iterate_complete = 0;
+	var complete_count = 0;
+	var sports_in_season_number = 0
+	var disp_football_matchups = null;
+	var disp_basketball_matchups = null;
+	var disp_baseball_matchups = null;
 
 	// full regular season = 13 matchups
-	var completed_matchups = 13;
+	var football_completed_matchups = 13;
+	var football_in_season = true;
+	var football_playoffs = true;
+
+	// full regular season = 18 matchups
+	var basketball_completed_matchups = 13;
+	var basketball_in_season = true;
+	var basketball_playoffs = false;
+
+	// full regular season = 18 matchups
+	var baseball_completed_matchups = 1;
+	var baseball_in_season = false;
+	var baseball_playoffs = false;
+
+	var sports_in_season_list = [football_in_season, basketball_in_season, baseball_in_season];
+	for (c = 0; c < sports_in_season_list.length; c++) {
+		if (sports_in_season_list[c] == true){
+			sports_in_season_number += 1;
+		}
+	}
+
+var complete = function() {
+	complete_count += 1;
+	console.log("sports in season: ", sports_in_season_number)
+	if (complete_count == sports_in_season_number) {
+		console.log("ready to display");
+
+		if (baseball_in_season == true) {
+			// pull from mongodb and display new data after python script finishes
+			db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
+				//console.log(docs);
+				console.log("Displaying football matchup data...")
+				disp_football_matchups = docs;
+				// call complete to see if both finds are done
+				display();
+			});
+
+			db.collection("owner" + owner_number + "_basketball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
+				//console.log(docs);
+				console.log("Displaying basketball matchup data...")
+				disp_basketball_matchups = docs;
+				// call complete to see if both finds are done
+				display();
+			});
+
+			db.collection("owner" + owner_number + "_baseball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
+				//console.log(docs);
+				console.log("Displaying baseball matchup data...")
+				disp_baseball_matchups = docs;
+				// call complete to see if both finds are done
+				display();
+			});			
+
+		}
+
+		else if (basketball_in_season == true) {
+			// pull from mongodb and display new data after python script finishes
+			db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
+				//console.log(docs);
+				console.log("Displaying football matchup data...")
+				disp_football_matchups = docs;
+				// call complete to see if both finds are done
+				display();
+			});
+
+			db.collection("owner" + owner_number + "_basketball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
+				//console.log(docs);
+				console.log("Displaying basketball matchup data...")
+				disp_basketball_matchups = docs;
+				// call complete to see if both finds are done
+				display();
+			});
+
+		}
+
+		else {
+			// pull from mongodb and display new data after python script finishes
+			db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
+				//console.log(docs);
+				console.log("Displaying football matchup data...")
+				disp_football_matchups = docs;
+				// call complete to see if both finds are done
+				display();
+			});
+
+		}
+
+
+	}
+}
+
+
+
+var display = function() {
+
+	if (baseball_in_season == true) {
+
+
+		if ((disp_football_matchups != null && disp_basketball_matchups != null) && disp_baseball_matchups != null) {
+
+			pyshell.run('owner_matchups.py', options, function(err) {
+				if (err) throw err;
+				console.log("owner matchup python script complete");
+				db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
+					console.log("Displaying Trifecta owner matchups...");
+					var disp_trifecta_matchups = docs;
+					res.render('owner_matchups', {
+						year1: year1, 
+						year2: year2,
+						owner: owner_name,
+						football_matchups: disp_football_matchups,
+						basketball_matchups: disp_basketball_matchups,
+						baseball_matchups: disp_baseball_matchups,
+						football_in_season: football_in_season,
+						basketball_in_season: basketball_in_season,
+						baseball_in_season: baseball_in_season,
+						trifecta_matchups: disp_trifecta_matchups
+					})
+
+				})
+
+			})
+
+
+		}
+	}
+
+	else if (basketball_in_season == true) {
+		if (disp_football_matchups != null && disp_basketball_matchups != null) {
+
+			var options = {
+				args: [owner_number, year1, year2, football_in_season, basketball_in_season, baseball_in_season]
+			}
+
+			pyshell.run('owner_matchups.py', options, function(err) {
+				if (err) throw err;
+				console.log("owner matchup python script complete");
+				db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
+					console.log("Displaying trifecta owner matchups...");
+					var disp_trifecta_matchups = docs;
+					res.render('owner_matchups', {
+						year1: year1, 
+						year2: year2,
+						owner: owner_name,
+						football_matchups: disp_football_matchups,
+						basketball_matchups: disp_basketball_matchups,
+						football_in_season: football_in_season,
+						basketball_in_season: basketball_in_season,
+						baseball_in_season, baseball_in_season,
+						trifecta_matchups: disp_trifecta_matchups
+					})
+				})
+				
+			})
+
+		}		
+	}
+
+	else {
+		if (disp_football_matchups != null) {
+			
+			pyshell.run('owner_matchups.py', options, function(err) {
+				if (err) throw err;
+				console.log("owner matchup python script complete");
+				db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
+					console.log("Displaying Trifecta owner matchups...");
+					var disp_trifecta_matchups = docs;
+					res.render('owner_matchups', {
+						year1: year1, 
+						year2: year2,
+						owner: owner_name,
+						football_matchups: disp_football_matchups,
+						football_in_season: football_in_season,
+						basketball_in_season: basketball_in_season,
+						baseball_in_season: baseball_in_season,
+						trifecta_matchups: disp_trifecta_matchups
+					})
+
+				})
+
+			})		
+
+		}
+	}
+
+	
+}
+
+
 
 	db.collection("owners_per_team_name").find({}, {"_id": 0}).toArray(function(e, docs2) {
 		owners_per_team_name_list = docs2[0];
 	});
 
-	db.collection("owner" + owner_number + "_football_matchups_scrape_" + year1).remove({})
-
-	db.collection('owner' + owner_number).find({}, {"owner": 1,"teams": 1, "_id": 0}).toArray(function(e, docs) {
-		owner_name = docs[0]["owner"];
-		//console.log(owner_name);
-		owner_team_list = docs[0]["teams"];
-		//console.log(owner_team_list);
-
-		var team1, score1, team2, score2, opposing_owner, path, my_team, opposing_team
-		var wins, losses, ties, PF, PA, pt_diff
-		//var matchup_number = 1
-
-		for (matchup_number = 1; matchup_number < completed_matchups + 1; matchup_number++) {
-
-			var url = 'http://games.espn.com/ffl/scoreboard?leagueId=154802&seasonId=' + year1 + '&matchupPeriodId=' + matchup_number;
-
-			request(url, function(error, response, html) {
-
-				// if not an error
-				if(!error){
-
-					// use cheerio to traverse and scrape html 
-					var $ = cheerio.load(html);
-
-					$('table.ptsBased.matchup').each(function(j, element) {
-
-						wins = 0;
-						losses = 0;
-						ties = 0;
-						PF = 0;
-						PA = 0;
-
-						team1 = $(this).children().first().children().children().first();
-						var paren1 = team1.text().indexOf("(");
-						team1 = team1.text().slice(0, paren1 - 1);
-						//console.log(team1);
-						score1 = $(this).children().first().children().next();
-						//console.log(score1.text());
-
-						team2 = $(this).children().next().children().children().first();
-						var paren2 = team2.text().indexOf("(");
-						team2 = team2.text().slice(0, paren2 - 1);
-						//console.log(team2);
-						score2 = $(this).children().next().children().next();
-						//console.log(score2.text());
-
-						if (owner_team_list.includes(team1) == true) {
-							my_team = team1;
-							opposing_team = team2;
-							//console.log(my_team);
-							//console.log(opposing_team);
-							PF = parseFloat(score1.text()).toFixed(1);
-							PA = parseFloat(score2.text()).toFixed(1);
-							opposing_owner = owners_per_team_name_list["teams"][opposing_team]["owner"]
-							//console.log(opposing_owner);
-
-						}
-						else if (owner_team_list.includes(team2) == true) {
-							my_team = team2;
-							opposing_team = team1;
-							//console.log(my_team);
-							//console.log(opposing_team);		
-							PF = parseFloat(score2.text()).toFixed(1);
-							PA = parseFloat(score1.text()).toFixed(1);
-							opposing_owner = owners_per_team_name_list["teams"][opposing_team]["owner"]
-							//console.log(opposing_owner);
-
-						}
-						if (PF != 0 && PA != 0) {
-							db.collection('owner' + owner_number + "_football_matchups_scrape_" + year1).insert({"opposing_owner": opposing_owner, "PF": PF, "PA": PA})
-							complete();
-						}
-						
-					}) // end of table.ptsBased.matchup iteration
-				} // end of if(!error)
-			}) // end of request
-		} // end of for loop
+	var football_iterate_complete = 0;
 
 
+	if (football_in_season == true) {
 
-	}) // end of owner team collection
 
-var complete = function() {
-	iterate_complete += 1;
-	if (iterate_complete === completed_matchups) {
-		console.log("scraping done");
+		if (football_playoffs == false) {
 
-		var options = {
-			args: [owner_number, year1]
-		}
+			db.collection("owner" + owner_number + "_football_matchups_scrape_" + year1).remove({})
+
+			db.collection('owner' + owner_number).find({}, {"owner": 1,"teams": 1, "_id": 0}).toArray(function(e, docs) {
+				owner_name = docs[0]["owner"];
+				//console.log(owner_name);
+				owner_team_list = docs[0]["teams"];
+				//console.log(owner_team_list);
+
+				var football_team1, football_score1, football_team2, football_score2, football_opposing_owner, football_my_team, football_opposing_team
+				var football_wins, football_losses, football_ties, PF, PA, pt_diff
+				//var football_matchup_number = 1
+
+				for (football_matchup_number = 1; football_matchup_number < football_completed_matchups + 1; football_matchup_number++) {
+
+					var url = 'http://games.espn.com/ffl/scoreboard?leagueId=154802&seasonId=' + year1 + '&matchupPeriodId=' + football_matchup_number;
+
+					request(url, function(error, response, html) {
+
+						// if not an error
+						if(!error){
+
+							// use cheerio to traverse and scrape html 
+							var $ = cheerio.load(html);
+
+							$('table.ptsBased.matchup').each(function(j, element) {
+
+								football_wins = 0;
+								football_losses = 0;
+								football_ties = 0;
+								PF = 0;
+								PA = 0;
+
+								football_team1 = $(this).children().first().children().children().first();
+								var paren1 = football_team1.text().indexOf("(");
+								football_team1 = football_team1.text().slice(0, paren1 - 1);
+								//console.log(football_team1);
+								football_score1 = $(this).children().first().children().next();
+								//console.log(football_score1.text());
+
+								football_team2 = $(this).children().next().children().children().first();
+								var paren2 = football_team2.text().indexOf("(");
+								football_team2 = football_team2.text().slice(0, paren2 - 1);
+								//console.log(football_team2);
+								football_score2 = $(this).children().next().children().next();
+								//console.log(football_score2.text());
+
+								if (owner_team_list.includes(football_team1) == true) {
+									football_my_team = football_team1;
+									football_opposing_team = football_team2;
+									//console.log(football_my_team);
+									//console.log(football_pposing_team);
+									PF = parseFloat(football_score1.text()).toFixed(1);
+									PA = parseFloat(football_score2.text()).toFixed(1);
+									football_opposing_owner = owners_per_team_name_list["teams"][football_opposing_team]["owner"]
+									//console.log(football_opposing_owner);
+
+								}
+								else if (owner_team_list.includes(football_team2) == true) {
+									football_my_team = football_team2;
+									football_opposing_team = football_team1;
+									//console.log(football_my_team);
+									//console.log(football_opposing_team);		
+									PF = parseFloat(football_score2.text()).toFixed(1);
+									PA = parseFloat(football_score1.text()).toFixed(1);
+									football_opposing_owner = owners_per_team_name_list["teams"][football_opposing_team]["owner"]
+									//console.log(football_opposing_owner);
+
+								}
+								if (PF != 0 && PA != 0) {
+									db.collection('owner' + owner_number + "_football_matchups_scrape_" + year1).insert({"opposing_owner": football_opposing_owner, "PF": PF, "PA": PA})
+									football_complete();
+								}
+								
+							}) // end of table.ptsBased.matchup iteration
+						} // end of if(!error)
+					}) // end of request
+				} // end of for loop
+
+
+
+			}) // end of owner team collection
+
+		}  // end of if playoffs
+		else {
+			console.log("football already done");
+			complete();
+		} // end of else playoffs
+
+	} // end of if in season
+	else {
+		console.log("football not in season")
+	}
+
+var football_complete = function() {
+	football_iterate_complete += 1;
+	if (football_iterate_complete === football_completed_matchups) {
+		console.log("football scraping done");
 
 		pyshell.run('football_matchups.py', options, function(err) {
 			if (err) throw err;
 			console.log('Matchups python script complete');
 
-			db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, display_docs) {
-				//console.log(display_docs);
-				var disp_matchup_standings = display_docs
-				console.log("Displaying matchup data...");
-				res.render('football_matchups', {
-					year: year1,
-					matchup_standings: disp_matchup_standings
-				})
-			}) // display and render data
+
+			complete();
+
 		}) // end of pyshell
 
 	} // end of if statement
 	
 } // end of complete function
 
-}) // end of get(/ownerX_matchups=2016_2017)
+
+	var basketball_iterate_complete = 0;
+
+
+	if (basketball_in_season == true) {
+
+		if (basketball_playoffs == false) {
+
+
+			db.collection("owner" + owner_number + "_basketball_matchups_scrape_" + year2).remove({})
+
+			db.collection('owner' + owner_number).find({}, {"owner": 1,"teams": 1, "_id": 0}).toArray(function(e, docs) {
+				owner_name = docs[0]["owner"];
+				//console.log(owner_name);
+				owner_team_list = docs[0]["teams"];
+				//console.log(owner_team_list);
+
+				var basketball_team1, basketball_team2, basketball_opposing_owner, basketball_my_team, basketball_opposing_team
+				var basketball_record1, basketball_record2, basketball_save_record
+				//var basketball_matchup_number = 1
+
+				for (basketball_matchup_number = 1; basketball_matchup_number < basketball_completed_matchups + 1; basketball_matchup_number++) {
+
+					var url = 'http://games.espn.com/fba/scoreboard?leagueId=100660&seasonId=' + year2 + '&matchupPeriodId=' + basketball_matchup_number;
+
+					request(url, function(error, response, html) {
+
+						// if not an error
+						if(!error){
+
+							// use cheerio to traverse and scrape html 
+							var $ = cheerio.load(html);
+
+							$('tr.tableSubHead').each(function(j, element) {
+
+								basketball_save_record = null;
+
+								basketball_team1 = $(this).next().children().children().first();
+								//console.log(basketball_team1.text());
+
+								basketball_record1 = $(this).next().children().last().children();
+								//console.log(basketball_record1.text());
+
+								basketball_team2 = $(this).next().next().children().children().first();
+								//console.log(basketball_team2.text());
+
+								basketball_record2 = $(this).next().next().children().last().children();
+								//console.log(basketball_record2.text());
+
+
+								if (owner_team_list.includes(basketball_team1.text()) == true) {
+									basketball_my_team = basketball_team1.text();
+									basketball_opposing_team = basketball_team2.text();
+									//console.log(basketball_my_team);
+									//console.log(basketball_opposing_team);
+									basketball_save_record = basketball_record1.text();
+									//console.log(basketball_save_record);
+									basketball_opposing_owner = owners_per_team_name_list["teams"][basketball_opposing_team]["owner"]
+									//console.log(opposing_owner);
+
+								}
+								else if (owner_team_list.includes(basketball_team2.text()) == true) {
+									basketball_my_team = basketball_team2.text();
+									basketball_opposing_team = basketball_team1.text();
+									//console.log(basketball_my_team);
+									//console.log(opposing_team);		
+									basketball_save_record = basketball_record2.text();
+									//console.log(basketball_ave_record);
+									basketball_opposing_owner = owners_per_team_name_list["teams"][basketball_opposing_team]["owner"]
+									//console.log(basketball_opposing_owner);
+
+								}
+								if (basketball_save_record != null) {
+									db.collection('owner' + owner_number + "_basketball_matchups_scrape_" + year2).insert({"opposing_owner": basketball_opposing_owner, "record": basketball_save_record})
+									basketball_complete();
+								}
+								
+							}) // end of table.ptsBased.matchup iteration
+						} // end of if(!error)
+					}) // end of request
+				} // end of for loop
+
+			}) // end of owner team collection
+
+		} // end of if playoffs
+		else {
+			console.log("basketball already done");
+			complete();
+		} // end of else if playoffs
+	} // end of if season
+	else {
+		console.log("basketball not in season")
+	}
+
+var basketball_complete = function() {
+	basketball_iterate_complete += 1;
+	if (basketball_iterate_complete === basketball_completed_matchups) {
+		console.log("basketball scraping done");
+
+		var options = {
+			args: [owner_number, year2]
+		}
+
+		pyshell.run('basketball_matchups.py', options, function(err) {
+			if (err) throw err;
+			console.log('Matchups python script complete');
+
+
+			complete();
+
+		}) // end of pyshell
+
+	} // end of if statement
+	
+} // end of complete function
+
+	var baseball_iterate_complete = 0;
+
+
+	if (baseball_in_season == true) {
+
+		if (baseball_playoffs == false) {
+
+
+			db.collection("owner" + owner_number + "_baseball_matchups_scrape_" + year2).remove({})
+
+			db.collection('owner' + owner_number).find({}, {"owner": 1,"teams": 1, "_id": 0}).toArray(function(e, docs) {
+				owner_name = docs[0]["owner"];
+				//console.log(owner_name);
+				owner_team_list = docs[0]["teams"];
+				//console.log(owner_team_list);
+
+				var baseball_team1, baseball_team2, baseball_opposing_owner, baseball_my_team, baseball_opposing_team
+				var baseball_record1, baseball_record2, baseball_save_record
+				//var baseball_matchup_number = 1
+
+				for (baseball_matchup_number = 1; baseball_matchup_number < baseball_completed_matchups + 1; baseball_matchup_number++) {
+
+					var url = 'http://games.espn.com/fba/scoreboard?leagueId=100660&seasonId=' + year2 + '&matchupPeriodId=' + baseball_matchup_number;
+
+					request(url, function(error, response, html) {
+
+						// if not an error
+						if(!error){
+
+							// use cheerio to traverse and scrape html 
+							var $ = cheerio.load(html);
+
+							$('tr.tableSubHead').each(function(j, element) {
+
+								baseball_save_record = null;
+
+								baseball_team1 = $(this).next().children().children().first();
+								//console.log(baseball_team1.text());
+
+								baseball_record1 = $(this).next().children().last().children();
+								//console.log(baseball_record1.text());
+
+								baseball_team2 = $(this).next().next().children().children().first();
+								//console.log(baseball_team2.text());
+
+								baseball_record2 = $(this).next().next().children().last().children();
+								//console.log(baseball_record2.text());
+
+
+								if (owner_team_list.includes(baseball_team1.text()) == true) {
+									baseball_my_team = baseball_team1.text();
+									baseball_opposing_team = baseball_team2.text();
+									//console.log(baseball_my_team);
+									//console.log(baseball_opposing_team);
+									baseball_save_record = baseball_record1.text();
+									//console.log(baseball_save_record);
+									baseball_opposing_owner = owners_per_team_name_list["teams"][baseball_opposing_team]["owner"]
+									//console.log(opposing_owner);
+
+								}
+								else if (owner_team_list.includes(baseball_team2.text()) == true) {
+									baseball_my_team = baseball_team2.text();
+									baseball_opposing_team = baseball_team1.text();
+									//console.log(baseball_my_team);
+									//console.log(opposing_team);		
+									baseball_save_record = baseball_record2.text();
+									//console.log(baseball_ave_record);
+									baseball_opposing_owner = owners_per_team_name_list["teams"][baseball_opposing_team]["owner"]
+									//console.log(baseball_opposing_owner);
+
+								}
+								if (baseball_save_record != null) {
+									db.collection('owner' + owner_number + "_baseball_matchups_scrape_" + year2).insert({"opposing_owner": baseball_opposing_owner, "record": baseball_save_record})
+									baseball_complete();
+								}
+								
+							}) // end of table.ptsBased.matchup iteration
+						} // end of if(!error)
+					}) // end of request
+				} // end of for loop
+
+			}) // end of owner team collection
+
+		} // end of if playoffs
+		else {
+			console.log("baseball already done");
+			complete();
+		} // end of else if playoffs
+	} // end of if season
+	else {
+		console.log("baseball not in season");
+	}
+
+var baseball_complete = function() {
+	baseball_iterate_complete += 1;
+	if (baseball_iterate_complete === baseball_completed_matchups) {
+		console.log("baseball scraping done");
+
+		var options = {
+			args: [owner_number, year2]
+		}
+
+		pyshell.run('baseball_matchups.py', options, function(err) {
+			if (err) throw err;
+			console.log('Matchups python script complete');
+
+
+			complete();
+
+		}) // end of pyshell
+
+	} // end of if statement
+	
+} // end of complete function
+
+})

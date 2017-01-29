@@ -16,7 +16,7 @@ html
 				a(href= '/basketball_standings=2017' class = 'navbar') 2017 Basketball Standings
 				a(href= '/trifecta_standings=2016_2017' class = 'navbar') 2016-2017 Trifecta Season Standings
 				
-		h2= year + " Football Matchup Standings"
+		h2= year + " Baseball Matchup Standings"
 
 
 		h4= "Head to Head Owners"
@@ -29,9 +29,7 @@ html
 					th LOSSES
 					th TIES
 					th WIN %
-					th POINTS FOR
-					th POINTS AGAINST
-					th POINT DIFFERENTIAL
+
 			tbody
 				each readin in matchup_standings
 					tr
@@ -45,10 +43,4 @@ html
 							if cat === "ties"
 								td= val
 							if cat === "win_per"
-								td= val
-							if cat === "PF"
-								td= val
-							if cat === "PA"
-								td= val
-							if cat === "pt_diff"
 								td= val
