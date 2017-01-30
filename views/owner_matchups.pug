@@ -1,6 +1,6 @@
 html
 	head
-		title= "2016 Football Standings"
+		title= year1 + "-" + year2 + " Owner to Owner Matchups"
 		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
 		link(rel='stylesheet', href='/css/styles.css')
 
@@ -36,13 +36,13 @@ html
 								if cat === "opposing_owner"
 									td= val
 								if cat === "football_win_per"
-									td= val
+									td= parseFloat(val).toFixed(3)
 								if cat === "basketball_win_per"
-									td= val
+									td= parseFloat(val).toFixed(3)
 								if cat === "baseball_win_per"
-									td= val
+									td= parseFloat(val).toFixed(3)
 								if cat === "total_win_per"
-									td= val		
+									td= parseFloat(val).toFixed(3)
 
 			h4= "Football"
 			table
@@ -69,13 +69,13 @@ html
 								if cat === "ties"
 									td= val
 								if cat === "win_per"
-									td= val
+									td= parseFloat(val).toFixed(3)
 								if cat === "PF"
-									td= val
+									td= parseFloat(val).toFixed(1)
 								if cat === "PA"
-									td= val
+									td= parseFloat(val).toFixed(1)
 								if cat === "pt_diff"
-									td= val
+									td= parseFloat(val).toFixed(1)
 
 			h4= "Basketball"
 			table
@@ -100,7 +100,7 @@ html
 								if cat === "ties"
 									td= val
 								if cat === "win_per"
-									td= val
+									td= parseFloat(val).toFixed(3)
 
 			h4= "Baseball"
 			table
@@ -113,7 +113,7 @@ html
 						th WIN %
 
 				tbody
-					each readin in basketball_matchups
+					each readin in baseball_matchups
 						tr
 							each val, cat in readin
 								if cat === "opposing_owner"
@@ -125,7 +125,7 @@ html
 								if cat === "ties"
 									td= val
 								if cat === "win_per"
-									td= val
+									td= parseFloat(val).toFixed(3)
 
 		else if basketball_in_season
 
@@ -144,11 +144,11 @@ html
 								if cat === "opposing_owner"
 									td= val
 								if cat === "football_win_per"
-									td= val
+									td= parseFloat(val).toFixed(3)
 								if cat === "basketball_win_per"
-									td= val
+									td= parseFloat(val).toFixed(3)
 								if cat === "total_win_per"
-									td= val
+									td= parseFloat(val).toFixed(3)
 
 			h4= "Football"
 			table
@@ -175,13 +175,13 @@ html
 								if cat === "ties"
 									td= val
 								if cat === "win_per"
-									td= val
+									td= parseFloat(val).toFixed(3)
 								if cat === "PF"
-									td= val
+									td= parseFloat(val).toFixed(1)
 								if cat === "PA"
-									td= val
+									td= parseFloat(val).toFixed(1)
 								if cat === "pt_diff"
-									td= val
+									td= parseFloat(val).toFixed(1)
 
 			h4= "Basketball"
 			table
@@ -206,7 +206,7 @@ html
 								if cat === "ties"
 									td= val
 								if cat === "win_per"
-									td= val
+									td= parseFloat(val).toFixed(3)
 
 		else
 
@@ -224,9 +224,9 @@ html
 								if cat === "opposing_owner"
 									td= val
 								if cat === "football_win_per"
-									td= val
+									td= parseFloat(val).toFixed(3)
 								if cat === "total_win_per"
-									td= val
+									td= parseFloat(val).toFixed(3)
 
 			h4= "Football"
 			table
@@ -253,10 +253,10 @@ html
 								if cat === "ties"
 									td= val
 								if cat === "win_per"
-									td= val
+									td= parseFloat(val).toFixed(3)
 								if cat === "PF"
-									td= val
+									td= parseFloat(val).toFixed(1)
 								if cat === "PA"
-									td= val
+									td= parseFloat(val).toFixed(1)
 								if cat === "pt_diff"
-									td= val
+									td= parseFloat(val).toFixed(1)

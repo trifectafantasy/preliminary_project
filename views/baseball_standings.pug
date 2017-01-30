@@ -43,7 +43,7 @@ html
 							if cat === "ties"
 								td= val
 							if cat === "win_per"
-								td= val
+								td= parseFloat(val).toFixed(3)
 							if cat === "division"
 								td= val
 							if cat === "h2h_trifecta_points"
@@ -85,7 +85,7 @@ html
 							if cat === "SB"
 								td= val
 							if cat === "OBP"
-								td= val
+								td= parseFloat(val).toFixed(4)
 							if cat === "K"
 								td= val
 							if cat === "QS"
@@ -95,11 +95,10 @@ html
 							if cat === "SV"
 								td= val
 							if cat === "ERA"
-								td= val
+								td= parseFloat(val).toFixed(3)
 							if cat === "WHIP"
-								td= val
+								td= parseFloat(val).toFixed(3)
 							if cat === "total_roto_points"
 								td= val
 							if cat === "roto_trifecta_points"
 								td= val													
-s
