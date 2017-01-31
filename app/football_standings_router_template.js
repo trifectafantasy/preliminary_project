@@ -1,6 +1,14 @@
-// route to /football_standings
-router.get('/football_standings=2016', function(req, res) {
-	var year = 2016;
+///// IMPORT JAVASCRIPT PACKAGES //////
+var express = require('express');
+var request = require('request');
+var cheerio = require('cheerio');
+var path = require('path');
+var pyshell = require('python-shell');
+
+var mongo = require('mongodb');
+var assert = require('assert');
+
+module.exports = function(req, res, db, year, playoffs) {
 	// url for football standings
 	var url = 'http://games.espn.com/ffl/standings?leagueId=154802&seasonId=' + year;
 
@@ -8,9 +16,6 @@ router.get('/football_standings=2016', function(req, res) {
 
 		// if not an error
 		if(!error){
-
-			// send html page back
-			//res.sendFile(path.join(__dirname, "../baseball_standings.html"));
 
 			// use cheerio to traverse and scrape html 
 			var $ = cheerio.load(html);
@@ -21,8 +26,6 @@ router.get('/football_standings=2016', function(req, res) {
 
 			var PF, PA
 			var other_standings = new Array();
-
-
 
 			// scraping h2h records and standings
 			// for each team row in the h2h standings
@@ -143,8 +146,6 @@ router.get('/football_standings=2016', function(req, res) {
 				});
 			}
 
-
-
 ///// EXECUTE SCRIPT /////
 
 			// call insertDocumet asynchronously, but don't use db from callback as we need to use db from argument to find and get from to render
@@ -194,7 +195,7 @@ router.get('/football_standings=2016', function(req, res) {
 									});				
 							}
 							else {
-								// if database not complete, fun python script to initialize trifecta database
+								// if database not complete, run python script to initialize trifecta database
 								pyshell.run('football_playoffs.py', options, function(err) {
 									if (err) throw err;
 									console.log('Playoff python script complete');
@@ -241,4 +242,4 @@ router.get('/football_standings=2016', function(req, res) {
 
 		} // end of if(!error)
 	}) // end of request
-}); // end of .get('/foottball_standings')
+}
