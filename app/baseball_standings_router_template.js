@@ -1,7 +1,15 @@
-// route to /baseball_standings
-router.get('/baseball_standings=____', function(req, res) {
-	var year = ____;
-	var playoffs = ____;
+///// IMPORT JAVASCRIPT PACKAGES //////
+var express = require('express');
+var request = require('request');
+var cheerio = require('cheerio');
+var path = require('path');
+var pyshell = require('python-shell');
+
+var mongo = require('mongodb');
+var assert = require('assert');
+
+module.exports = function(req, res, db, year, playoffs) {
+
 	// url for baseballf standings
 	var url = 'http://games.espn.com/flb/standings?leagueId=109364&seasonId=' + year;
 
@@ -271,4 +279,4 @@ router.get('/baseball_standings=____', function(req, res) {
 
 		} // end of if(!error)
 	}) // end of request
-}) // end of .get('/baseball_standings')
+} // end of .get('/baseball_standings')

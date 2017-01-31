@@ -1,7 +1,15 @@
-// route to /basketball_standings
-router.get('/basketball_standings=2017', function(req, res) {
-	var year = 2017;
-	var playoffs = false;
+///// IMPORT JAVASCRIPT PACKAGES //////
+var express = require('express');
+var request = require('request');
+var cheerio = require('cheerio');
+var path = require('path');
+var pyshell = require('python-shell');
+
+var mongo = require('mongodb');
+var assert = require('assert');
+
+module.exports = function(req, res, db, year, playoffs) {
+
 	// url for basketball 2016 standings
 	var url = 'http://games.espn.com/fba/standings?leagueId=100660&seasonId=' + year;
 
@@ -259,4 +267,4 @@ router.get('/basketball_standings=2017', function(req, res) {
 
 		} // end of if(!error)
 	}) // end of request
-}) // end of .get('/basketball_standings')
+} // end of .get('/basketball_standings')
