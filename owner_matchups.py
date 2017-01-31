@@ -19,7 +19,7 @@ def matchupRecords(db, owner_number, year1, year2, football_in_season, basketbal
 
 	# get list of all opposing owners
 	opposing_owners_list = list(db[collection_football].find({}, {"opposing_owner": 1, "_id": 0}))
-	#print opposing_owners_list
+	print opposing_owners_list
 
 	# iterate through each opposing owner
 	for each_opposing_owner in opposing_owners_list:
