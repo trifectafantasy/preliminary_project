@@ -20,87 +20,202 @@ html
 
 		h2= year + " Baseball Standings"
 
+		if playoffs
 
-		h4= "Head to Head Standings"
-		table
-			thead
-				tr
-					th TEAM
-					th WINS
-					th LOSSES
-					th TIES
-					th WIN %
-					th DIVISION
-					th H2H TRIFECTA POINTS
-			tbody
-				each readin in h2h_standings
+			h4= "Trifecta Standings"
+			table
+				thead
 					tr
-						each val, cat in readin
-							if cat === "team"
-								td= val
-							if cat === "wins"
-								td= val
-							if cat === "losses"
-								td= val
-							if cat === "ties"
-								td= val
-							if cat === "win_per"
-								td= parseFloat(val).toFixed(3)
-							if cat === "division"
-								td= val
-							if cat === "h2h_trifecta_points"
-								td= val
+						th TEAM
+						th H2H TRIFECTA POINTS
+						th ROTO TRIFECTA POINTS
+						th REGULAR SEASON TRIFECTA POINTS
+						th PLAYOFF TRIFECTA POINTS
+						th TOTAL TRIFECTA POINTS
+				tbody
+					each readin2 in trifecta_standings
+						tr
+							each val, cat in readin2
+								if cat === "team"
+									td= val
+								if cat === "h2h_trifecta_points"
+									td= val
+								if cat === "roto_trifecta_points"
+									td= val
+								if cat === "season_trifecta_points"
+									td= val
+								if cat === "playoff_trifecta_points"
+									td= val
+								if cat === "total_trifecta_points"
+									td= val
 
-		h4= "Roto Standings"
-		table
-			thead
-				tr
-					th TEAM
-					th R
-					th HR
-					th RBI
-					th SO
-					th SB
-					th OBP
-					th K 
-					th QS
-					th W
-					th SV
-					th ERA
-					th WHIP
-					th TOTAL ROTO POINTS
-					th ROTO TRIFECTA POINTS
-			tbody
-				each next in roto_standings
+			h4= "Head to Head Standings"
+			table
+				thead
 					tr
-						each val, cat in next
-							if cat === "team"
-								td= val
-							if cat === "R"
-								td= val
-							if cat === "HR"
-								td= val
-							if cat === "RBI"
-								td= val
-							if cat === "SO"
-								td= val
-							if cat === "SB"
-								td= val
-							if cat === "OBP"
-								td= parseFloat(val).toFixed(4)
-							if cat === "K"
-								td= val
-							if cat === "QS"
-								td= val
-							if cat === "W"
-								td= val
-							if cat === "SV"
-								td= val
-							if cat === "ERA"
-								td= parseFloat(val).toFixed(3)
-							if cat === "WHIP"
-								td= parseFloat(val).toFixed(3)
-							if cat === "total_roto_points"
-								td= val
-							if cat === "roto_trifecta_points"
-								td= val													
+						th TEAM
+						th WINS
+						th LOSSES
+						th TIES
+						th WIN %
+						th DIVISION
+						th H2H TRIFECTA POINTS
+				tbody
+					each readin in h2h_standings
+						tr
+							each val, cat in readin
+								if cat === "team"
+									td= val
+								if cat === "wins"
+									td= val
+								if cat === "losses"
+									td= val
+								if cat === "ties"
+									td= val
+								if cat === "win_per"
+									td= parseFloat(val).toFixed(3)
+								if cat === "division"
+									td= val
+								if cat === "h2h_trifecta_points"
+									td= val
+
+			h4= "Roto Standings"
+			table
+				thead
+					tr
+						th TEAM
+						th R
+						th HR
+						th RBI
+						th SO
+						th SB
+						th OBP
+						th K 
+						th QS
+						th W
+						th SV
+						th ERA
+						th WHIP
+						th TOTAL ROTO POINTS
+						th ROTO TRIFECTA POINTS
+				tbody
+					each next in roto_standings
+						tr
+							each val, cat in next
+								if cat === "team"
+									td= val
+								if cat === "R"
+									td= val
+								if cat === "HR"
+									td= val
+								if cat === "RBI"
+									td= val
+								if cat === "SO"
+									td= val
+								if cat === "SB"
+									td= val
+								if cat === "OBP"
+									td= parseFloat(val).toFixed(4)
+								if cat === "K"
+									td= val
+								if cat === "QS"
+									td= val
+								if cat === "W"
+									td= val
+								if cat === "SV"
+									td= val
+								if cat === "ERA"
+									td= parseFloat(val).toFixed(3)
+								if cat === "WHIP"
+									td= parseFloat(val).toFixed(3)
+								if cat === "total_roto_points"
+									td= val
+								if cat === "roto_trifecta_points"
+									td= val													
+
+		else
+
+			h4= "Head to Head Standings"
+			table
+				thead
+					tr
+						th TEAM
+						th WINS
+						th LOSSES
+						th TIES
+						th WIN %
+						th DIVISION
+						th H2H TRIFECTA POINTS
+				tbody
+					each readin in h2h_standings
+						tr
+							each val, cat in readin
+								if cat === "team"
+									td= val
+								if cat === "wins"
+									td= val
+								if cat === "losses"
+									td= val
+								if cat === "ties"
+									td= val
+								if cat === "win_per"
+									td= parseFloat(val).toFixed(3)
+								if cat === "division"
+									td= val
+								if cat === "h2h_trifecta_points"
+									td= val
+
+			h4= "Roto Standings"
+			table
+				thead
+					tr
+						th TEAM
+						th R
+						th HR
+						th RBI
+						th SO
+						th SB
+						th OBP
+						th K 
+						th QS
+						th W
+						th SV
+						th ERA
+						th WHIP
+						th TOTAL ROTO POINTS
+						th ROTO TRIFECTA POINTS
+				tbody
+					each next in roto_standings
+						tr
+							each val, cat in next
+								if cat === "team"
+									td= val
+								if cat === "R"
+									td= val
+								if cat === "HR"
+									td= val
+								if cat === "RBI"
+									td= val
+								if cat === "SO"
+									td= val
+								if cat === "SB"
+									td= val
+								if cat === "OBP"
+									td= parseFloat(val).toFixed(4)
+								if cat === "K"
+									td= val
+								if cat === "QS"
+									td= val
+								if cat === "W"
+									td= val
+								if cat === "SV"
+									td= val
+								if cat === "ERA"
+									td= parseFloat(val).toFixed(3)
+								if cat === "WHIP"
+									td= parseFloat(val).toFixed(3)
+								if cat === "total_roto_points"
+									td= val
+								if cat === "roto_trifecta_points"
+									td= val																
+

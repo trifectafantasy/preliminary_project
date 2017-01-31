@@ -205,10 +205,11 @@ router.get('/football_standings/:year', function(req, res) {
 				if (disp_h2h_standings !== null && disp_trifecta_standings !== null) {
 
 					// render to standings_playoffs
-					res.render('football_standings_playoffs', {
+					res.render('football_standings', {
 						h2h_standings: disp_h2h_standings,
 						trifecta_standings: disp_trifecta_standings,
-						year: year
+						year: year,
+						playoffs: playoffs
 					});
 				}			
 			}
@@ -218,7 +219,8 @@ router.get('/football_standings/:year', function(req, res) {
 					// render to standings
 					res.render('football_standings', {
 						h2h_standings: disp_h2h_standings,
-						year: year
+						year: year,
+						playoffs: playoffs
 					});
 				}			
 			}
@@ -311,11 +313,12 @@ router.get('/basketball_standings/:year', function(req, res) {
 				if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_trifecta_standings !== null) {
 
 					// render to baseball_standings
-					res.render('basketball_standings_playoffs', {
+					res.render('basketball_standings', {
 						h2h_standings: disp_h2h_standings,
 						roto_standings: disp_roto_standings,
 						trifecta_standings: disp_trifecta_standings,
-						year: year
+						year: year,
+						playoffs: playoffs
 					});
 				}
 			}
@@ -326,7 +329,8 @@ router.get('/basketball_standings/:year', function(req, res) {
 					res.render('basketball_standings', {
 						h2h_standings: disp_h2h_standings,
 						roto_standings: disp_roto_standings,
-						year: year
+						year: year,
+						playoffs: playoffs
 					});
 				}
 			}
@@ -418,11 +422,12 @@ router.get('/baseball_standings/:year', function(req, res) {
 				if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_trifecta_standings !== null) {
 
 					// render to baseball_standings
-					res.render('baseball_standings_playoffs', {
+					res.render('baseball_standings', {
 						h2h_standings: disp_h2h_standings,
 						roto_standings: disp_roto_standings,
 						trifecta_standings: disp_trifecta_standings,
-						year: year
+						year: year,
+						playoffs: playoffs
 					});
 				}			
 			}
@@ -433,7 +438,8 @@ router.get('/baseball_standings/:year', function(req, res) {
 					res.render('baseball_standings', {
 						h2h_standings: disp_h2h_standings,
 						roto_standings: disp_roto_standings,
-						year: year
+						year: year,
+						playoffs: playoffs
 					});
 				}			
 			}
