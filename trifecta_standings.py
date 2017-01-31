@@ -33,7 +33,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 
 ##### Football #####
 		# if football is in season (ie has data)
-		if football_in_season == "yes":
+		if football_in_season == "true":
 
 			collection_football_trifecta = "football_trifecta_" + year1
 			football_count = db[collection_football_trifecta].count()
@@ -110,7 +110,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 		
 		# same as above football process
 
-		if basketball_in_season == "yes":
+		if basketball_in_season == "true":
 			
 			collection_basketball_trifecta = "basketball_trifecta_" + year2
 			basketball_count = db[collection_basketball_trifecta].count()
@@ -172,7 +172,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 ##### Baseball #####
 
 		# if baseball is in season (ie has data)
-		if baseball_in_season == "yes":
+		if baseball_in_season == "true":
 			
 			collection_baseball_trifecta = "baseball_trifecta_" + year2
 			baseball_count = db[collection_baseball_trifecta].count()
@@ -315,6 +315,7 @@ year2 = str(sys.argv[2])
 football_in_season = str(sys.argv[3])
 basketball_in_season = str(sys.argv[4])
 baseball_in_season = str(sys.argv[5])
+
 
 trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_season, baseball_in_season)
 

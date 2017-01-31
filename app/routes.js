@@ -110,64 +110,90 @@ router.get('/owner/:owner_number/matchups/:year1/:year2', function(req, res) {
 
 }); // end of owner to owner matchups 
 
-// route to only 2015-2016 trifecta standings
-router.get('/trifecta_standings=2015_2016', function(req, res) {
-	var year1 = 2015;
-	var year2 = 2016;
 
+// route to trifecta standings
+router.get('/trifecta_standings/:year1/:year2', function(req, res) {
+	
+	// set variables from request URL
+	var year1 = req.params.year1;
+	var year2 = req.params.year2;
+	var year_diff = year2 - year1;
+
+	// initialize display variable
 	var disp_trifecta_standings = null;
 
-	// pull from 2015-2016 trifecta season collection and sort by total trifecta points
-	db.collection('trifecta_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-		//console.log(docs);
-		console.log("Displaying trifecta season data...")
-		disp_trifecta_standings = docs;
-		// render to trifecta_season.pug
-		res.render('trifecta_season', {
-			year1: year1,
-			year2: year2,
-			trifecta_standings: disp_trifecta_standings
-		})
-	})
-
-});
-
-// template for trifecta standings 
-router.get('/trifecta_standings=2016_2017', function(req, res) {
-	var year1 = 2016;
-	var year2 = 2017;
-	var football_in_season = "yes";
-	var basketball_in_season = "yes";
-	var baseball_in_season = "no";
-
-	// set input arguments for python script
-	var options = {
-		args: [year1, year2, football_in_season, basketball_in_season, baseball_in_season]
+	// handle error case of non consecutive years
+	if (year_diff != 1) {
+		res.send("Please enter two consecutive years")
 	}
 
-	var disp_trifecta_standings = null;
+	// if pass first error handle
+	else {
+		// if the given years are the current ones, set appropriate parameters
+		if (year1 == current_year1 && year2 == current_year2) {
+			
+			// set variables
+			var football_in_season = true;
+			var basketball_in_season = true;
+			var baseball_in_season = false;
 
-	// always run trifecta standings python script
-	pyshell.run('trifecta_standings.py', options, function(err) {
-		if (err) throw err;
-		console.log("Trifecta standings python script complete");
-		
-		// pull from this seasons trifecta collection
-		db.collection('trifecta_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs){
-			//console.log(docs);
-			console.log("Displaying trifecta season standings...");
-			disp_trifecta_standings = docs;
+			// set input arguments for python script
+			var options = {
+				args: [year1, year2, football_in_season, basketball_in_season, baseball_in_season]
+			}
 
-			// render to standings_playoffs
-			res.render('trifecta_season', {
-				year1: year1,
-				year2: year2,
-				trifecta_standings: disp_trifecta_standings,
-			});
-		});
-	});
+			var disp_trifecta_standings = null;
 
-})
+			// always run trifecta standings python script
+			pyshell.run('trifecta_standings.py', options, function(err) {
+				if (err) throw err;
+				console.log("Trifecta standings python script complete");
+				
+				// pull from this seasons trifecta collection
+				db.collection('trifecta_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs){
+					//console.log(docs);
+					console.log("Displaying trifecta season standings...");
+					disp_trifecta_standings = docs;
+
+					// render to standings_playoffs
+					res.render('trifecta_season', {
+						year1: year1,
+						year2: year2,
+						trifecta_standings: disp_trifecta_standings,
+					});
+				});
+			});			
+		}
+
+		// if the years given are in the past, set everything as finished (true, max, true)
+		else if (year1 < current_year1 && year2 < current_year2) {
+			// football variables
+			var football_in_season = true;
+			var basketball_in_season = true;
+			var baseball_in_season = true;
+			
+			// pull from  trifecta season collection and sort by total trifecta points
+			db.collection('trifecta_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
+				//console.log(docs);
+				console.log("Displaying trifecta season data...")
+				disp_trifecta_standings = docs;
+				// render to trifecta_season.pug
+				res.render('trifecta_season', {
+					year1: year1,
+					year2: year2,
+					trifecta_standings: disp_trifecta_standings
+				})
+			})
+		}
+		// handle error case if years are greater than current
+		else {
+			var disp_err = "Please enter years " + current_year1 + " & " + current_year2 + " or less";
+			res.send(disp_err);
+		}
+	} // end of first error handling	
+
+}); // end of trifecta_standings route
+
 
 // route to /football_standings
 router.get('/football_standings=2015', function(req, res) {
