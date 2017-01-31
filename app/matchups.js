@@ -601,6 +601,8 @@ var basketball_complete = function() {
 
 		// if baseball playoffs are not done yet, so still in regular season
 		if (baseball_playoffs == false) {
+			console.log('need to scrape')
+
 
 			// remove baseball scrape collection
 			db.collection("owner" + owner_number + "_baseball_matchups_scrape_" + year2).remove({})
@@ -621,7 +623,7 @@ var basketball_complete = function() {
 				for (baseball_matchup_number = 1; baseball_matchup_number < baseball_completed_matchups + 1; baseball_matchup_number++) {
 
 					// baseball scoreboard url
-					var url = 'http://games.espn.com/fba/scoreboard?leagueId=100660&seasonId=' + year2 + '&matchupPeriodId=' + baseball_matchup_number;
+					var url = 'http://games.espn.com/flb/scoreboard?leagueId=109364&seasonId=' + year2 + '&matchupPeriodId=' + baseball_matchup_number;
 
 					request(url, function(error, response, html) {
 
@@ -664,7 +666,7 @@ var basketball_complete = function() {
 
 									// find and pull opposing owner from opposing team name
 									baseball_opposing_owner = owners_per_team_name_list["teams"][baseball_opposing_team]["owner"]
-									//console.log(opposing_owner);
+									//console.log(baseball_opposing_owner);
 
 								}
 
@@ -675,11 +677,11 @@ var basketball_complete = function() {
 									baseball_my_team = baseball_team2.text();
 									baseball_opposing_team = baseball_team1.text();
 									//console.log(baseball_my_team);
-									//console.log(opposing_team);		
+									//console.log(baseball_opposing_team);		
 
 									// set and save record
 									baseball_save_record = baseball_record2.text();
-									//console.log(baseball_ave_record);
+									//console.log(baseball_save_record);
 
 									// find and pull opposing owner from opposing team name
 									baseball_opposing_owner = owners_per_team_name_list["teams"][baseball_opposing_team]["owner"]

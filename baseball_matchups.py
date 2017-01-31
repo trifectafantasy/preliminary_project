@@ -46,7 +46,7 @@ def matchupRecords(db, year, owner_number):
 
 		new_record = record[dash_index + 1:]
 		#print new_record
-		dash_index = record.index("-")
+		dash_index = new_record.index("-")
 		losses = float(new_record[:dash_index])
 		print "losses: ", losses
 
