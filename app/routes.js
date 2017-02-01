@@ -491,7 +491,7 @@ router.get('/owner/:owner_number/matchups/:year1/:year2', function(req, res) {
 			// if basketball_playoffs is true, skip scrape
 			var basketball_playoffs = false;
 			// full regular season = 18 matchups
-			var basketball_completed_matchups = 13;	
+			var basketball_completed_matchups = 14;	
 
 			// baseball variables
 			// if baseball_in_season is false, skip altogether
@@ -539,5 +539,83 @@ router.get('/owner/:owner_number/matchups/:year1/:year2', function(req, res) {
 			res.send(disp_err);
 		}
 	}
+
+}); // end of owner to owner matchups 
+
+
+// route to individual owner's matchups for a given trifecta season
+router.get('/owner/:owner_number/matchups/all', function(req, res) {
+	
+	// pull parameters from request URL
+	var owner_number = req.params.owner_number;
+
+	var football_in_season = false;
+	var basketball_in_season = true;
+	var baseball_in_season = false;
+
+	var disp_football_matchups = null;
+	var disp_basketball_matchups = null;
+	var disp_baseball_matchups = null;
+	var disp_trifecta_matchups = null;
+
+	var options = {
+		args: [owner_number, completed_football_season, football_in_season, completed_basketball_season, basketball_in_season, completed_baseball_season, baseball_in_season]
+	}	
+
+	db.collection("owner" + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs) {
+		owner_name = docs[0]["owner"]
+		//console.log(owner_name);
+
+		pyshell.run('total_owner_matchups.py', options, function(err) {
+			if (err) throw err;
+			console.log("total matchups python script complete");
+
+
+			db.collection('owner' + owner_number + '_football_matchups_all').find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
+				//console.log(docs);
+				console.log('pulling football data...');
+				disp_football_matchups = docs;
+				complete();
+			})
+
+			db.collection('owner' + owner_number + '_basketball_matchups_all').find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
+				//console.log(docs);
+				console.log('pulling basketball data...');
+				disp_basketball_matchups = docs;
+				complete();
+
+			})
+
+			db.collection('owner' + owner_number + '_baseball_matchups_all').find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
+				//console.log(docs);
+				console.log('pulling baseball data...');
+				disp_baseball_matchups = docs;
+				complete();
+			})
+
+			db.collection('owner' + owner_number + '_trifecta_matchups_all').find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
+				//console.log(docs);
+				console.log('pulling trifecta data...');
+				disp_trifecta_matchups = docs;
+				complete();
+			})		
+
+		}) // end of total owner python script
+	});
+
+	var complete = function() {
+
+		if ((disp_football_matchups !== null && disp_basketball_matchups !== null) && (disp_baseball_matchups !== null && disp_trifecta_matchups !== null)) {
+
+			res.render('total_owner_matchups', {
+				owner: owner_name,
+				football_matchups: disp_football_matchups,
+				basketball_matchups: disp_basketball_matchups,
+				baseball_matchups: disp_baseball_matchups,
+				trifecta_matchups: disp_trifecta_matchups
+			})
+		}
+	}
+
 
 }); // end of owner to owner matchups 
