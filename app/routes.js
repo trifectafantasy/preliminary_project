@@ -7,6 +7,7 @@ var pyshell = require('python-shell');
 
 var mongo = require('mongodb');
 var assert = require('assert');
+var math = require('mathjs');
 
 // create router object
 var router = express.Router();
@@ -46,6 +47,78 @@ router.get('/', function(req, res) {
 	res.render('index', {
 		message: "Welcome to The Chip and Markers Trifecta Fantasy League Home Page"
 	});
+});
+
+router.get('/:sport/trades/:year', function(req, res) {
+
+	// set variables from request url
+	var sport = req.params.sport;
+	var year = req.params.year;
+
+	var trade = require('./trade.js')(req, res, db, sport, year, function(err, owner_number_list, trades_processed) {
+
+		owner_number_list = owner_number_list.filter(function(item, index, inputArray) {
+			return inputArray.indexOf(item) == index;
+		})
+		//console.log("new owner numbers: ", owner_number_list);
+
+		console.log("trades processed: ", trades_processed)
+
+
+		if (sport === 'basketball') {
+			var trade_stats = require('./basketball_trade_stats.js')(req, res, db, sport, year, owner_number_list, function(err, call) {
+				console.log("scrape done");
+				var options = {
+					args: [sport, year]
+				}
+
+				pyshell.run('basketball_trade_analysis.py', options, function(err) {
+					if (err) throw err;
+					console.log('trade python script complete');
+
+					db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["GP", "asc"], ["owner", "asc"]]}).toArray(function(e, docs) {
+						console.log('displaying trade analysis...');
+						//console.log(docs);
+						disp_trade = docs;
+						res.render('basketball_trade', {
+							year: year,
+							trader: disp_trade
+						})
+					})
+
+				})
+
+			}) 			
+		}
+
+		else if (sport === 'football') {
+			var trade_stats = require('./football_trade_stats.js')(req, res, db, sport, year, owner_number_list, function(err, call) {
+				console.log("scrape done");
+
+				var options = {
+					args: [sport, year]
+				}
+
+				pyshell.run('football_trade_analysis.py', options, function(err) {
+					if (err) throw err;
+					console.log('trade python script complete');
+
+					db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["owner", "asc"]]}).toArray(function(e, docs) {
+						console.log('displaying trade analysis...');
+						disp_trade = docs;
+						res.render('football_trade', {
+							year: year,
+							trader: disp_trade,
+							trades_processed: math.range(1, trades_processed)
+						})
+					})
+				})
+			}) 					
+		}
+
+	});
+
+
 });
 
 
@@ -89,7 +162,7 @@ router.get('/trifecta_standings/:year1/:year2', function(req, res) {
 				
 				// pull from this seasons trifecta collection
 				db.collection('trifecta_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs){
-					//console.log(docs);
+					console.log(docs);
 					console.log("Displaying trifecta season standings...");
 					disp_trifecta_standings = docs;
 
