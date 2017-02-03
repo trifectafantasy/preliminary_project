@@ -1,0 +1,82 @@
+html
+	head
+		title= "Trade Analysis"
+		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', href='/css/styles.css')
+
+	body
+		header
+			navbar
+				a(href= '/' class = 'navbar') Home Page
+				a(href= '/football_standings/2015' class = 'navbar') 2015 Football Standings
+				a(href= '/basketball_standings/2016' class = 'navbar') 2016 Basketball Standings
+				a(href= '/baseball_standings/2016' class = 'navbar') 2016 Baseball Standings
+				a(href= '/trifecta_standings/2015/2016' class = 'navbar') 2015-2016 Trifecta Season Standings
+				a(href= '/football_standings/2016' class = 'navbar') 2016 Football Standings
+				a(href= '/basketball_standings/2017' class = 'navbar') 2017 Basketball Standings
+				a(href= '/trifecta_standings/2016/2017' class = 'navbar') 2016-2017 Trifecta Season Standings
+				a(href= '/owner_matchup_home_page' class = 'navbar') Owner 2 Owner Matchup Records
+
+		h2= year + " Football Trade Analysis"
+				
+		
+		table
+			thead
+				tr
+					th OWNER
+					th PLAYER
+					th PTS
+					th COMP/ATT
+					th PASS YDS
+					th PASS TD
+					th PASS INT
+					th RUSH
+					th RUSH YDS
+					th RUSH TD
+					th REC
+					th REC YDS
+					th REC TD
+					th REC TAR
+					th MISC FUML
+					th MISC TD
+
+			tbody
+				each readin in trader
+					tr
+						each val, cat in readin
+							if cat === "owner"
+								td= val
+							if cat === "player"
+								if val === "zzTotal"
+									td= val.slice(2)
+								else
+									td= val
+							if cat === "PTS"
+								td= parseFloat(val).toFixed(1)
+							if cat === "PASS"
+								td= val
+							if cat === "PASS_YDS"
+								td= val
+							if cat === "PASS_TD"
+								td= val
+							if cat === "PASS_INT"
+								td= val
+							if cat === "RUSH"
+								td= val
+							if cat === "RUSH_YDS"
+								td= val
+							if cat === "RUSH_TD"
+								td= val
+							if cat === "REC"
+								td= val
+							if cat === "REC_YDS"
+								td= val
+							if cat === "REC_TD"
+								td= val
+							if cat === "REC_TAR"
+								td= val
+							if cat === "MISC_FUML"
+								td= val
+							if cat === "MISC_TD"
+								td= val
+

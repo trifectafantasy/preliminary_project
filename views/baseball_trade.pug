@@ -1,0 +1,100 @@
+html
+	head
+		title= "Trade Analysis"
+		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', href='/css/styles.css')
+
+	body
+		header
+			navbar
+				a(href= '/' class = 'navbar') Home Page
+				a(href= '/football_standings/2015' class = 'navbar') 2015 Football Standings
+				a(href= '/basketball_standings/2016' class = 'navbar') 2016 Basketball Standings
+				a(href= '/baseball_standings/2016' class = 'navbar') 2016 Baseball Standings
+				a(href= '/trifecta_standings/2015/2016' class = 'navbar') 2015-2016 Trifecta Season Standings
+				a(href= '/football_standings/2016' class = 'navbar') 2016 Football Standings
+				a(href= '/basketball_standings/2017' class = 'navbar') 2017 Basketball Standings
+				a(href= '/trifecta_standings/2016/2017' class = 'navbar') 2016-2017 Trifecta Season Standings
+				a(href= '/owner_matchup_home_page' class = 'navbar') Owner 2 Owner Matchup Records
+
+		h2= year + " Baseball Trade Analysis"
+				
+		
+		table
+			thead
+				tr
+					th OWNER
+					th PLAYER
+					th GP
+					th AB
+					th H
+					th R
+					th HR
+					th RBI
+					th BB
+					th K
+					th SB
+					th OBP
+					th IP
+					th H
+					th ER
+					th BB
+					th K
+					th QS
+					th W
+					th SV
+					th ERA
+					th WHIP 
+
+
+			tbody
+				each readin in trader
+					tr
+						each val, cat in readin
+							if cat === "owner"
+								td= val
+							if cat === "player"
+								if val === "zzTotal"
+									td= val.slice(2)
+								else
+									td= val
+							if cat === "GP"
+								td= val								
+							if cat === "AB"
+								td= val
+							if cat === "H"
+								td= val
+							if cat === "R"
+								td= val
+							if cat === "HR"
+								td= val
+							if cat === "RBI"
+								td= val
+							if cat === "BB"
+								td= val
+							if cat === "SO"
+								td= val
+							if cat === "SB"
+								td= val
+							if cat === "OBP"
+								td= parseFloat(val).toFixed(4)
+							if cat === "IP"
+								td= parseFloat(val).toFixed(1)
+							if cat === "HA"
+								td= val
+							if cat === "ER"
+								td= val
+							if cat === "BBA"
+								td= val
+							if cat === "K"
+								td= val
+							if cat === "QS"
+								td= val
+							if cat === "W"
+								td= val
+							if cat === "SV"
+								td= val
+							if cat === "ERA"
+								td= parseFloat(val).toFixed(3)
+							if cat === "WHIP"
+								td= parseFloat(val).toFixed(3)								
