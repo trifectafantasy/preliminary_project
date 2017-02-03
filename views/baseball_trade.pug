@@ -17,7 +17,7 @@ html
 				a(href= '/trifecta_standings/2016/2017' class = 'navbar') 2016-2017 Trifecta Season Standings
 				a(href= '/owner_matchup_home_page' class = 'navbar') Owner 2 Owner Matchup Records
 
-		h2= year + " Basketball Trade Analysis"
+		h2= year + " Baseball Trade Analysis"
 				
 		
 		table
@@ -26,17 +26,26 @@ html
 					th OWNER
 					th PLAYER
 					th GP
-					th FG
-					th FG %
-					th FT
-					th FT %
-					th 3PM
-					th REB
-					th AST
-					th STL
-					th BLK
-					th TO
-					th PTS
+					th AB
+					th H
+					th R
+					th HR
+					th RBI
+					th BB
+					th K
+					th SB
+					th OBP
+					th IP
+					th H
+					th ER
+					th BB
+					th K
+					th QS
+					th W
+					th SV
+					th ERA
+					th WHIP 
+
 
 			tbody
 				each readin in trader
@@ -48,28 +57,44 @@ html
 								if val === "zzTotal"
 									td= val.slice(2)
 								else
-									td= val								
+									td= val
 							if cat === "GP"
+								td= val								
+							if cat === "AB"
 								td= val
-							if cat === "FG"
+							if cat === "H"
 								td= val
-							if cat === "FG_PCT"
+							if cat === "R"
+								td= val
+							if cat === "HR"
+								td= val
+							if cat === "RBI"
+								td= val
+							if cat === "BB"
+								td= val
+							if cat === "SO"
+								td= val
+							if cat === "SB"
+								td= val
+							if cat === "OBP"
 								td= parseFloat(val).toFixed(4)
-							if cat === "FT"
+							if cat === "IP"
+								td= parseFloat(val).toFixed(1)
+							if cat === "HA"
 								td= val
-							if cat === "FT_PCT"
-								td= parseFloat(val).toFixed(4)
-							if cat === "THREEPM"
+							if cat === "ER"
 								td= val
-							if cat === "REB"
+							if cat === "BBA"
 								td= val
-							if cat === "AST"
+							if cat === "K"
 								td= val
-							if cat === "STL"
+							if cat === "QS"
 								td= val
-							if cat === "BLK"
+							if cat === "W"
 								td= val
-							if cat === "TO"
+							if cat === "SV"
 								td= val
-							if cat === "PTS"
-								td= val
+							if cat === "ERA"
+								td= parseFloat(val).toFixed(3)
+							if cat === "WHIP"
+								td= parseFloat(val).toFixed(3)								

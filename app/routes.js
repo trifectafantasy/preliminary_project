@@ -4,6 +4,7 @@ var request = require('request');
 var cheerio = require('cheerio');
 var path = require('path');
 var pyshell = require('python-shell');
+var forEach = require('async-foreach').forEach;
 
 var mongo = require('mongodb');
 var assert = require('assert');
@@ -55,7 +56,7 @@ router.get('/:sport/trades/:year', function(req, res) {
 	var sport = req.params.sport;
 	var year = req.params.year;
 
-	var trade = require('./trade.js')(req, res, db, sport, year, function(err, owner_number_list, trades_processed) {
+	var trade = require('./trade.js')(req, res, db, sport, year, function(err, owner_number_list, trades_processed, players_processed) {
 
 		owner_number_list = owner_number_list.filter(function(item, index, inputArray) {
 			return inputArray.indexOf(item) == index;
@@ -63,6 +64,7 @@ router.get('/:sport/trades/:year', function(req, res) {
 		//console.log("new owner numbers: ", owner_number_list);
 
 		console.log("trades processed: ", trades_processed)
+		console.log("players processed: ", players_processed)
 
 
 		if (sport === 'basketball') {
@@ -76,7 +78,7 @@ router.get('/:sport/trades/:year', function(req, res) {
 					if (err) throw err;
 					console.log('trade python script complete');
 
-					db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["GP", "asc"], ["owner", "asc"]]}).toArray(function(e, docs) {
+					db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["player", "asc"], ["owner", "asc"], ["GP", "asc"]]}).toArray(function(e, docs) {
 						console.log('displaying trade analysis...');
 						//console.log(docs);
 						disp_trade = docs;
@@ -103,7 +105,7 @@ router.get('/:sport/trades/:year', function(req, res) {
 					if (err) throw err;
 					console.log('trade python script complete');
 
-					db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["owner", "asc"]]}).toArray(function(e, docs) {
+					db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["player", "asc"], ["owner", "asc"], ["PTS", "asc"]]}).toArray(function(e, docs) {
 						console.log('displaying trade analysis...');
 						disp_trade = docs;
 						res.render('football_trade', {
@@ -114,6 +116,32 @@ router.get('/:sport/trades/:year', function(req, res) {
 					})
 				})
 			}) 					
+		}
+
+		else if (sport === 'baseball') {
+			var trade_stats = require('./baseball_trade_stats.js')(req, res, db, sport, year, owner_number_list, function(err, call) {
+				console.log("scrape done");
+
+				var options = {
+					args: [sport, year]
+				}
+
+				pyshell.run('baseball_trade_analysis.py', options, function(err) {
+					if (err) throw err;
+					console.log('trade python script complete');
+
+					db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["player", "asc"], ["owner", "asc"]]}).toArray(function(e, docs) {
+						console.log('displaying trade analysis...');
+						disp_trade = docs;
+						res.render('baseball_trade', {
+							year: year,
+							trader: disp_trade,
+							trades_processed: math.range(1, trades_processed)
+						})
+					})
+				})
+				
+			})
 		}
 
 	});

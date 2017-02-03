@@ -21,7 +21,7 @@ def footballTrade(db, sport, year):
 	for trade_number_list in trade_list:
 		trade_number_count = trade_number_list["trade_number"]
 
-		if trade_number_count != number_of_trades:
+		if trade_number_count > number_of_trades:
 			number_of_trades = trade_number_count
 
 
@@ -156,7 +156,7 @@ def footballTrade(db, sport, year):
 			total_json["trade_number"] = trade_number
 			total_json["owner_number"] = each_owner
 			total_json["owner"] = owner_name
-			total_json["player"] = "Total"
+			total_json["player"] = "zzTotal"
 			total_json["PTS"] = PTS_upload
 			total_json["PASS"] = PASS_upload
 			total_json["PASS_YDS"] = PASS_YDS_upload

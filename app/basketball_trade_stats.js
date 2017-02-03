@@ -12,26 +12,13 @@ module.exports = function(req, res, db, sport, year, owner_number_list, callback
 
 	var complete_count = 0;
 
-	//var owner_number_list = [1, 2];
-	//console.log(owner_number_list);
-
 	owner_number_list.forEach(function(owner_number, index) {
 
 		//console.log(owner_number);
 		// set and remove collection asynchronously 
 		db.collection("owner" + owner_number + "_" + sport + "_stats_" + year).remove({}, function(err, result) {
 
-
-			// initialize number of processed trades
-			var trades_processed = 0;
-
-			// use today as end date for query for transactions 
-			var d = new Date();
-			var end_year = d.getFullYear();
-			var end_month = d.getMonth() + 1;
-			var end_day = d.getDate();
-
-			var url = 'http://games.espn.com/fba/activestats?leagueId=100660&seasonId=2017&teamId=' + owner_number + '&filter=0';
+			var url = 'http://games.espn.com/fba/activestats?leagueId=100660&seasonId=' + year + '&teamId=' + owner_number + '&filter=0';
 
 			// request for scrape
 			request(url, function(error, response, html) {

@@ -47,7 +47,10 @@ html
 							if cat === "owner"
 								td= val
 							if cat === "player"
-								td= val
+								if val === "zzTotal"
+									td= val.slice(2)
+								else
+									td= val
 							if cat === "PTS"
 								td= parseFloat(val).toFixed(1)
 							if cat === "PASS"
@@ -76,5 +79,4 @@ html
 								td= val
 							if cat === "MISC_TD"
 								td= val
-
 
