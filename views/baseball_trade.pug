@@ -23,6 +23,7 @@ html
 		table
 			thead
 				tr
+					th TRADE NUMBER
 					th OWNER
 					th PLAYER
 					th GP
@@ -51,6 +52,8 @@ html
 				each readin in trader
 					tr
 						each val, cat in readin
+							if cat === "trade_number"
+								td= val
 							if cat === "owner"
 								td= val
 							if cat === "player"

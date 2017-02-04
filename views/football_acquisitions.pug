@@ -1,6 +1,6 @@
 html
 	head
-		title= "Trade Analysis"
+		title= "Acquisition Analysis"
 		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
 		link(rel='stylesheet', href='/css/styles.css')
 
@@ -17,16 +17,18 @@ html
 				a(href= '/trifecta_standings/2016/2017' class = 'navbar') 2016-2017 Trifecta Season Standings
 				a(href= '/owner_matchup_home_page' class = 'navbar') Owner 2 Owner Matchup Records
 
-		h2= year + " Football Trade Analysis"
+		h2= owner + "'s " + year + " Football Acquisition Analysis"
 				
 		
 		table
 			thead
 				tr
-					th TRADE NUMBER
-					th OWNER
 					th PLAYER
 					th PTS
+					th ACQUIRED
+					th DRAFT POSITION
+					th ACQUISITION WEIGHT
+					th ACQUISITION VALUE
 					th COMP/ATT
 					th PASS YDS
 					th PASS TD
@@ -42,19 +44,20 @@ html
 					th MISC TD
 
 			tbody
-				each readin in trader
+				each readin in acquisitions
 					tr
 						each val, cat in readin
-							if cat === "trade_number"
-								td= val						
-							if cat === "owner"
-								td= val
 							if cat === "player"
-								if val === "zzTotal"
-									td= val.slice(2)
-								else
-									td= val
+								td= val
 							if cat === "PTS"
+								td= parseFloat(val).toFixed(1)
+							if cat === "acquired"
+								td= val
+							if cat === "draft_position"
+								td= val
+							if cat === "acquisition_weight"
+								td= parseFloat(val).toFixed(1)
+							if cat === "acquisition_value"
 								td= parseFloat(val).toFixed(1)
 							if cat === "PASS"
 								td= val
