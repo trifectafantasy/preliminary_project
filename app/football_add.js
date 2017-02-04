@@ -11,7 +11,7 @@ var assert = require('assert');
 // create callback function
 module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
-	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).update({}, {"$set": {"acquired": "Trade", "draft_position": "N/A"}}, function(err, count_mod, call) {
+	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).updateMany({}, {"$set": {"acquired": "Trade", "draft_position": "N/A"}})
 		
 		db.collection('football_owners').find({"owner_number": parseInt(owner_number)}, {"football_owner_number": 1, "_id": 0}).toArray(function(e, docs) {
 
@@ -79,19 +79,18 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 							db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).update({"player": player}, {"$set": {"acquired": "FA", "draft_position": "N/A"}})
 
 
-							} // end of if trade processed
+						} // end of if trade processed
 							
 
-						}) // end of table.ptsBased.matchup iteration
+					}) // end of table.ptsBased.matchup iteration
 
-					} // end of if(!error)
+				} // end of if(!error)
 				
 				//console.log("last add");
 				callback();
-				}) // end of request
+			}) // end of request
 
 		})		
-	})
 
 	
 }

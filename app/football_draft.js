@@ -57,7 +57,11 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
 							player_name = row.children().first().next().text();
 							//console.log(player_name.text());
-							player = player_name.slice(0, player_name.indexOf(","));
+							player_index = player_name.indexOf(",");
+							if (player_index == -1) {
+								player_index = player_name.indexOf("D/ST") + 4;
+							}
+							player = player_name.slice(0, player_index);
 							//console.log(player);
 
 							draft_position = row.children().first();

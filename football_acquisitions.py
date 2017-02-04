@@ -13,6 +13,9 @@ def acquisitionValue(db, sport, year, owner_number):
 	collection_acquisition = "owner" + owner_number + "_" + sport + "_acquisitions_" + year
 
 	db[collection_acquisition].remove({"player": "OFFENSIVE PLAYER"})
+	db[collection_acquisition].remove({"player": "KICKER"})
+	db[collection_acquisition].remove({"player": "TEAM D/ST"})
+
 	db[collection_acquisition].remove({"player": ""})
 
 	acquisition_value_chart = range(160, 0, -1)
@@ -27,16 +30,18 @@ def acquisitionValue(db, sport, year, owner_number):
 		insert_json = OrderedDict()
 
 
-		print each_player
+		#print each_player
 
 		player = each_player["player"]
 		acquired = each_player["acquired"]
 		draft_position = each_player["draft_position"]
 
 		try:	
-			PTS = each_player["PTS"]
+			REC = each_player["REC"]
 
 		except KeyError:
+			print each_player
+			print "no rec"
 
 			draft_position = each_player["draft_position"]
 
@@ -49,11 +54,41 @@ def acquisitionValue(db, sport, year, owner_number):
 				acquisition_weight = 1.5
 
 			insert_json["player"] = each_player["player"]
-			insert_json["PTS"] = 0.0
+
+			try:
+				PTS = each_player["PTS"]
+			except KeyError:
+				print "no pts"
+
+				insert_json["PTS"] = 0.0
+				insert_json["acquired"] = each_player["acquired"]
+				insert_json["draft_position"] = each_player["draft_position"]				
+				insert_json["acquisition_weight"] = acquisition_weight
+				insert_json["acquisition_value"] = 0.0
+				insert_json["PASS"] = "0/0"
+				insert_json["PASS_YDS"] = 0
+				insert_json["PASS_TD"] = 0
+				insert_json["PASS_INT"] = 0
+				insert_json["RUSH"] = 0
+				insert_json["RUSH_YDS"] = 0
+				insert_json["RUSH_TD"] = 0
+				insert_json["REC"] = 0
+				insert_json["REC_YDS"] = 0
+				insert_json["REC_TD"] = 0
+				insert_json["REC_TAR"] = 0
+				insert_json["MISC_FUML"] = 0
+				insert_json["MISC_TD"] = 0
+
+				db[collection_acquisition].update({"player": player}, insert_json)
+				continue				
+
+			PTS = each_player["PTS"]
+			acquisition_value = round(PTS / acquisition_weight, 1)
+			insert_json["PTS"] = PTS
 			insert_json["acquired"] = each_player["acquired"]
 			insert_json["draft_position"] = each_player["draft_position"]				
 			insert_json["acquisition_weight"] = acquisition_weight
-			insert_json["acquisition_value"] = 0.0
+			insert_json["acquisition_value"] = acquisition_value
 			insert_json["PASS"] = "0/0"
 			insert_json["PASS_YDS"] = 0
 			insert_json["PASS_TD"] = 0
@@ -71,6 +106,8 @@ def acquisitionValue(db, sport, year, owner_number):
 			db[collection_acquisition].update({"player": player}, insert_json)
 			continue
 
+		PTS = each_player["PTS"]
+
 		if acquired == "Trade":
 
 			acquisition_weight = "N/A"
@@ -86,11 +123,11 @@ def acquisitionValue(db, sport, year, owner_number):
 			if acquisition_weight < 1.5:
 				acquisition_weight = 1.5
 
-			print acquisition_weight
+			#print acquisition_weight
 
 			acquisition_value = round(PTS / acquisition_weight, 1)
 
-		print acquisition_value
+		#print acquisition_value
 
 		insert_json["player"] = each_player["player"]
 		insert_json["PTS"] = each_player["PTS"]
