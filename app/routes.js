@@ -65,6 +65,8 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 		// if owner is all
 		if (owner_number == 'all') {
 
+			var owners = 'all';
+
 			// send to script that compiles all owners' acquisitions
 			var football_all = require('./football_all_acquisitions.js')(req, res, db, sport, year, function(err, call){
 				console.log("update complete");
@@ -74,9 +76,26 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 					//console.log(docs);
 					console.log("displaying all acquisition stats...");
 					disp_acquisitions = docs;
-					res.render('football_acquisitions_all', {
+
+					for (i = disp_acquisitions.length - 1; i >= 0; i--) {
+
+						var move_back = "";
+
+						//console.log(disp_acquisitions[i]);
+						if (disp_acquisitions[i]["acquired"] == "Trade") {
+
+							move_back = disp_acquisitions[i];
+							disp_acquisitions.splice(i, 1);
+							disp_acquisitions.push(move_back);
+
+						}
+
+					}
+
+					res.render('football_acquisitions', {
 						year: year,
-						acquisitions: disp_acquisitions
+						acquisitions: disp_acquisitions,
+						owners: owners
 					})
 				}) // end of collection pull for display
 			}) // end of script for all acquisitions
@@ -111,10 +130,25 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 								console.log("displaying acquisition stats...");
 								disp_acquisitions = docs;
 
+								for (i = disp_acquisitions.length - 1; i >= 0; i--) {
+
+									var move_back = "";
+
+									//console.log(disp_acquisitions[i]);
+									if (disp_acquisitions[i]["acquired"] == "Trade") {
+
+										move_back = disp_acquisitions[i];
+										disp_acquisitions.splice(i, 1);
+										disp_acquisitions.push(move_back);
+
+									}
+
+								}								
+
 								// pull owner nanme for pug display
 								db.collection("owner" + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs2) {
 
-									owner_name = docs2[0]["owner"]
+									owner_name = docs2[0]["owner"];
 
 									res.render('football_acquisitions', {
 										year: year,
@@ -146,6 +180,22 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 					//console.log(docs);
 					console.log("displaying all acquisition stats...");
 					disp_acquisitions = docs;
+
+					for (i = disp_acquisitions.length - 1; i >= 0; i--) {
+
+						var move_back = "";
+
+						//console.log(disp_acquisitions[i]);
+						if (disp_acquisitions[i]["acquired"] == "Trade") {
+
+							move_back = disp_acquisitions[i];
+							disp_acquisitions.splice(i, 1);
+							disp_acquisitions.push(move_back);
+
+						}
+
+					}
+
 					res.render('basketball_acquisitions', {
 						year: year,
 						acquisitions: disp_acquisitions,
@@ -178,6 +228,21 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 									//console.log(docs);
 									console.log("displaying acquisition stats...");
 									disp_acquisitions = docs;
+
+									for (i = disp_acquisitions.length - 1; i >= 0; i--) {
+
+										var move_back = "";
+
+										//console.log(disp_acquisitions[i]);
+										if (disp_acquisitions[i]["acquired"] == "Trade") {
+
+											move_back = disp_acquisitions[i];
+											disp_acquisitions.splice(i, 1);
+											disp_acquisitions.push(move_back);
+
+										}
+
+									}										
 
 									// pull owner nanme for pug display
 									db.collection("owner" + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs2) {
