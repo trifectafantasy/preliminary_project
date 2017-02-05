@@ -17,31 +17,36 @@ html
 				a(href= '/trifecta_standings/2016/2017' class = 'navbar') 2016-2017 Trifecta Season Standings
 				a(href= '/owner_matchup_home_page' class = 'navbar') Owner 2 Owner Matchup Records
 
-		h2= owner + "'s " + year + " Football Acquisition Analysis"
+		if owners === 'all'
+			h2= "Combined Basketball Acquisition Analysis"
+		else
+			h2= owner + "'s " + year + " Basketball Acquisition Analysis"
 				
 		
 		table
 			thead
 				tr
 					th PLAYER
-					th PTS
+					th WEIGHTED PR
 					th ACQUIRED
 					th DRAFT POSITION
 					th ACQUISITION WEIGHT
 					th ACQUISITION VALUE
-					th COMP/ATT
-					th PASS YDS
-					th PASS TD
-					th PASS INT
-					th RUSH
-					th RUSH YDS
-					th RUSH TD
-					th REC
-					th REC YDS
-					th REC TD
-					th REC TAR
-					th MISC FUML
-					th MISC TD
+					th PR
+					th GP
+					th FG
+					th FG %
+					th FT
+					th FT %
+					th 3PM
+					th REB
+					th AST
+					th STL
+					th BLK
+					th TO
+					th PTS
+					if owners === "all"
+						th OWNER
 
 			tbody
 				each readin in acquisitions
@@ -49,8 +54,8 @@ html
 						each val, cat in readin
 							if cat === "player"
 								td= val
-							if cat === "PTS"
-								td= parseFloat(val).toFixed(1)
+							if cat === "weighted_PR"
+								td= parseFloat(val).toFixed(2)
 							if cat === "acquired"
 								td= val
 							if cat === "draft_position"
@@ -59,31 +64,33 @@ html
 								td= parseFloat(val).toFixed(2)
 							if cat === "acquisition_value"
 								td= parseFloat(val).toFixed(2)
-							if cat === "PASS"
+							if cat === "PR"
+								td= parseFloat(val).toFixed(2)
+							if cat === "GP"
 								td= val
-							if cat === "PASS_YDS"
+							if cat === "FG"
 								td= val
-							if cat === "PASS_TD"
+							if cat === "FG_PCT"
+								td= parseFloat(val).toFixed(4)
+							if cat === "FT"
 								td= val
-							if cat === "PASS_INT"
+							if cat === "FT_PCT"
+								td= parseFloat(val).toFixed(4)
+							if cat === "THREEPM"
 								td= val
-							if cat === "RUSH"
+							if cat === "REB"
 								td= val
-							if cat === "RUSH_YDS"
+							if cat === "AST"
 								td= val
-							if cat === "RUSH_TD"
+							if cat === "STL"
 								td= val
-							if cat === "REC"
+							if cat === "BLK"
 								td= val
-							if cat === "REC_YDS"
+							if cat === "TO"
 								td= val
-							if cat === "REC_TD"
+							if cat === "PTS"
 								td= val
-							if cat === "REC_TAR"
-								td= val
-							if cat === "MISC_FUML"
-								td= val
-							if cat === "MISC_TD"
-								td= val
-
+							if owners === 'all'
+								if cat === 'owner'
+									td= val					
 

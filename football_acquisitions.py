@@ -48,7 +48,7 @@ def acquisitionValue(db, sport, year, owner_number):
 			if draft_position == "N/A":
 				acquisition_weight = 1.5
 			else:
-				acquisition_weight = float(acquisition_value_chart[draft_position - 1]) / 10
+				acquisition_weight = float(acquisition_value_chart[draft_position - 1]) / 10 / 1.5
 
 			if acquisition_weight < 1.5:
 				acquisition_weight = 1.5
@@ -83,7 +83,7 @@ def acquisitionValue(db, sport, year, owner_number):
 				continue				
 
 			PTS = each_player["PTS"]
-			acquisition_value = round(PTS / acquisition_weight, 1)
+			acquisition_value = round(PTS / acquisition_weight, 2)
 			insert_json["PTS"] = PTS
 			insert_json["acquired"] = each_player["acquired"]
 			insert_json["draft_position"] = each_player["draft_position"]				
@@ -118,14 +118,14 @@ def acquisitionValue(db, sport, year, owner_number):
 			if draft_position == "N/A":
 				acquisition_weight = 1.5
 			else:
-				acquisition_weight = float(acquisition_value_chart[draft_position - 1]) / 10
+				acquisition_weight = float(acquisition_value_chart[draft_position - 1]) / 10 / 1.5
 
 			if acquisition_weight < 1.5:
 				acquisition_weight = 1.5
 
 			#print acquisition_weight
 
-			acquisition_value = round(PTS / acquisition_weight, 1)
+			acquisition_value = round(PTS / acquisition_weight, 2)
 
 		#print acquisition_value
 

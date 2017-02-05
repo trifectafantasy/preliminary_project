@@ -65,9 +65,6 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
 						if (type_slice.includes("Add")) {
 
-							//trades_processed += 1;
-							//console.log("trade number", trades_processed)
-							
 							players = type.next();
 							//console.log(players.text());
 
@@ -79,7 +76,7 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 							db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).update({"player": player}, {"$set": {"acquired": "FA", "draft_position": "N/A"}})
 
 
-						} // end of if trade processed
+						} // end of if add
 							
 
 					}) // end of table.ptsBased.matchup iteration
