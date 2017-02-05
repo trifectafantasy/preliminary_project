@@ -17,7 +17,7 @@ html
 				a(href= '/trifecta_standings/2016/2017' class = 'navbar') 2016-2017 Trifecta Season Standings
 				a(href= '/owner_matchup_home_page' class = 'navbar') Owner 2 Owner Matchup Records
 
-		h2= owner + "'s " + year + " Football Acquisition Analysis"
+		h2= year + " Football Acquisition Analysis"
 				
 		
 		table
@@ -42,6 +42,7 @@ html
 					th REC TAR
 					th MISC FUML
 					th MISC TD
+					th OWNER
 
 			tbody
 				each readin in acquisitions
@@ -85,5 +86,6 @@ html
 								td= val
 							if cat === "MISC_TD"
 								td= val
-
+							if cat === "owner"
+								td= val
 
