@@ -26,6 +26,7 @@ html
 		table
 			thead
 				tr
+					th RANK
 					th PLAYER
 					th WEIGHTED PR
 					th ACQUIRED
@@ -49,8 +50,9 @@ html
 						th OWNER
 
 			tbody
-				each readin in acquisitions
+				each readin, rank in acquisitions
 					tr
+						td= rank + 1
 						each val, cat in readin
 							if cat === "player"
 								td= val
