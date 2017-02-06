@@ -11,9 +11,8 @@ var assert = require('assert');
 // create callback function
 module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
+	// clear collection for fresh scrape
 	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).remove({}, function(err, result) {
-
-		//console.log("filter", filter_number)
 	
 		var url = 'http://games.espn.com/fba/activestats?leagueId=100660&seasonId=' + year + '&teamId=' + owner_number + '&filter=0';
 
@@ -32,6 +31,7 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 					rows = scrape.siblings();
 					//console.log(rows.text());
 
+					// iterate through every player
 					rows.each(function(j, element) {
 
 						// store scraped data for each team as json
@@ -88,12 +88,12 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 		 				//console.log(json);				
 		 				db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).insert(json)
 
+		 				// if end of page, call complete and count
 		 				if (json.player == ""){
 		 					callback();
 		 					//complete();
 		 				}
-
-					})
+					}) // end of rows iterating scrape
 
 
 				} // end of if(!error)
@@ -108,11 +108,7 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 		}	
 	}
 
-
-
-
-
-	}) // end of collection remove
+	}) // end of collection update many
 
 
 }

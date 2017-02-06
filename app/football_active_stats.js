@@ -8,20 +8,25 @@ var forEach = require('async-foreach').forEach;
 
 var mongo = require('mongodb');
 var assert = require('assert');
+
 // create callback function
 module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
 	var complete_count = 0
 
+	// filter list for offense, kickers, and defense
 	var filter_list = ["0", "3", "5"];
 
+	// pull football owners collection to find football owner number associated with regular owner number
 	db.collection('football_owners').find({"owner_number": parseInt(owner_number)}, {"football_owner_number": 1, "_id": 0}).toArray(function(e, docs) {
 
 		//console.log(docs);
 		football_owner_number = docs[0]["football_owner_number"]
 
+		// clear acquisitions collection for fresh start
 		db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).remove({}, function(err, result) {
 
+			// loop through each filter number
 			filter_list.forEach(function(filter_number, index) {
 				//console.log("filter", filter_number)
 			
@@ -44,6 +49,7 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
 						rows.each(function(j, element) {
 
+							// if filter number is 0, offensive players
 							if (filter_number == "0") {
 							// store scraped data for each team as json
 								var json = {
@@ -101,12 +107,9 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 				 				json.MISC_FUML = parseInt(MISC_FUML.text());
 				 				json.MISC_TD = parseInt(MISC_TD.text());
 				 				json.PTS = parseFloat(PTS.text());
-
-				 				//console.log(json);
-
-
 							}
 
+							// if filter number is 3, aka kickers (just pull name and points)
 							else if (filter_number == "3") {
 								
 								var json = {
@@ -125,8 +128,6 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
 				 				json.player = player_name;
 				 				json.PTS = parseFloat(PTS.text());
-
-
 							}
 
 							else if (filter_number == "5") {
@@ -139,6 +140,7 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 								player_row = $(this).children();
 								player = player_row.first();
 				 				player_name = player.text();
+				 				// account for no comma with D/ST
 				 				player_name = player_name.slice(0, player_name.indexOf("D/ST") + 4);
 				 				//console.log(player_name);
 
@@ -147,20 +149,17 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
 				 				json.player = player_name;
 				 				json.PTS = parseFloat(PTS.text());								
-
 							}
 				 			
+				 			//console.log(json);
 				 			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).insert(json)
-				 											
+				 			
+				 			// if reach end of page, count for callback								
 				 			if (json.player == "") {
 					 			complete();
 
 				 			}
-
-
-						})
-
-
+						}) // end of iterating each row srape
 					} // end of if(!error)
 				
 				}) // end of request
@@ -171,15 +170,10 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 				if (complete_count == filter_list.length){
 					callback();
 				}	
-			}
+			} // end of complete function
 
 			}) // end of for each
-
-	
-
-
 		}) // end of collection remove
-
 	}) // end of getting football owner number
 
 }

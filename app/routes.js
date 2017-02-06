@@ -51,7 +51,53 @@ router.get('/', function(req, res) {
 
 });
 
+// route to baseball acquisition values given either hitters or pitchers
+router.get('/owner/:owner_number/:sport/acquisitions/:year/:hit_or_pit', function(req, res) {
 
+	// set variables from request url
+	var sport = req.params.sport;
+	var year = req.params.year;
+	var owner_number = req.params.owner_number;
+	var hit_or_pit = req.params.owner_number;
+
+	// make sure sport is baseball
+	if (sport === 'baseball') {
+
+		// scrape active stats
+		var active_stats = require('./baseball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call1) {
+			console.log("active stats scrape done");
+
+			// scrape PRs
+			var pr_scrape = require('./baseball_acquisitions_pr.js')(req, res, db, sport, year, owner_number, function(err, call2) {
+				console.log("pr srape done");
+
+				// scrape additions
+				var baseball_add = require('./baseball_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
+					console.log("added players done");
+
+					// scrape drafted
+					var baseball_draft = require('./draft.js')(req, res, db, sport, year, owner_number, function(err, call4) {
+						console.log("drafted players done");
+
+						var options = {
+							args: [sport, year, owner_number]
+						}
+
+						// create acquisition values
+						pyshell.run('baseball_acquisitions.py', options, function(err) {
+							console.log("python script done");
+
+
+						}) // end of pyshell						
+					}) // end of drafted
+				}) // end of added
+			}) // end of pr scrape
+		}) // end of active stats scrape
+	}
+
+}) // end of router get for baseball acquisitions
+
+// route to football and basketball acquistion values
 router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) {
 
 	// set variables from request url
@@ -68,7 +114,7 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 			var owners = 'all';
 
 			// send to script that compiles all owners' acquisitions
-			var football_all = require('./football_all_acquisitions.js')(req, res, db, sport, year, function(err, call){
+			var football_all = require('./all_acquisitions.js')(req, res, db, sport, year, function(err, call){
 				console.log("update complete");
 
 				// pull database for display
@@ -77,20 +123,26 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 					console.log("displaying all acquisition stats...");
 					disp_acquisitions = docs;
 
+					// loop from back to front of pulled array
 					for (i = disp_acquisitions.length - 1; i >= 0; i--) {
 
 						var move_back = "";
 
-						//console.log(disp_acquisitions[i]);
+						// if player is from a trade, move to back
 						if (disp_acquisitions[i]["acquired"] == "Trade") {
 
+							// set moved element
 							move_back = disp_acquisitions[i];
+
+							// remove this indexed element
 							disp_acquisitions.splice(i, 1);
+
+							// add moved element to back
 							disp_acquisitions.push(move_back);
 
 						}
 
-					}
+					} // end of for loop for sorting
 
 					res.render('football_acquisitions', {
 						year: year,
@@ -113,7 +165,7 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 					console.log("added players done");
 
 					// send to script that adds drafted players
-					var trade_acquisition = require('./football_draft.js')(req, res, db, sport, year, owner_number, function(err, call2) {
+					var trade_acquisition = require('./draft.js')(req, res, db, sport, year, owner_number, function(err, call2) {
 						console.log("drafted players done");
 
 						var options = {
@@ -130,20 +182,26 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 								console.log("displaying acquisition stats...");
 								disp_acquisitions = docs;
 
+								// loop from back to front of pulled array
 								for (i = disp_acquisitions.length - 1; i >= 0; i--) {
 
 									var move_back = "";
 
-									//console.log(disp_acquisitions[i]);
+									// if player is from a trade, move to back
 									if (disp_acquisitions[i]["acquired"] == "Trade") {
 
+										// set moved element
 										move_back = disp_acquisitions[i];
+
+										// remove this indexed element
 										disp_acquisitions.splice(i, 1);
+
+										// add moved element to back
 										disp_acquisitions.push(move_back);
 
 									}
 
-								}								
+								}							
 
 								// pull owner nanme for pug display
 								db.collection("owner" + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs2) {
@@ -172,29 +230,34 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 			var owners = "all";
 
 			// send to script that compiles all owners' acquisitions
-			var football_all = require('./basketball_all_acquisitions.js')(req, res, db, sport, year, function(err, call){
+			var football_all = require('./all_acquisitions.js')(req, res, db, sport, year, function(err, call){
 				console.log("update complete");
 
 				// pull database for display
-				db.collection(sport + "_acquisitions_" + year + "_all").find({}, {"_id": 0}, {"sort": [["acquisition_value", "desc"], ["acquisition_weight", "asc"]]}).toArray(function(e, docs) {
+				db.collection(sport + "_acquisitions_" + year + "_all").find({}, {"_id": 0}, {"sort": [["acquisition_value", "desc"], ["weighted_PR", "desc"], ["acquisition_weight", "asc"]]}).toArray(function(e, docs) {
 					//console.log(docs);
 					console.log("displaying all acquisition stats...");
 					disp_acquisitions = docs;
 
+					// loop from back to front of pulled array
 					for (i = disp_acquisitions.length - 1; i >= 0; i--) {
 
 						var move_back = "";
 
-						//console.log(disp_acquisitions[i]);
+						// if player is from a trade, move to back
 						if (disp_acquisitions[i]["acquired"] == "Trade") {
 
+							// set moved element
 							move_back = disp_acquisitions[i];
+
+							// remove this indexed element
 							disp_acquisitions.splice(i, 1);
+
+							// add moved element to back
 							disp_acquisitions.push(move_back);
 
 						}
-
-					}
+					} // end of for loop for sorting
 
 					res.render('basketball_acquisitions', {
 						year: year,
@@ -215,7 +278,7 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 					var basketball_add = require('./basketball_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
 						console.log("added players done");
 
-						var basketball_draft = require('./basketball_draft.js')(req, res, db, sport, year, owner_number, function(err, call4) {
+						var basketball_draft = require('./draft.js')(req, res, db, sport, year, owner_number, function(err, call4) {
 							console.log("drafted players done");
 
 							var options = {
@@ -229,20 +292,26 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 									console.log("displaying acquisition stats...");
 									disp_acquisitions = docs;
 
+									// loop from back to front of pulled array
 									for (i = disp_acquisitions.length - 1; i >= 0; i--) {
 
 										var move_back = "";
 
-										//console.log(disp_acquisitions[i]);
+										// if player is from a trade, move to back
 										if (disp_acquisitions[i]["acquired"] == "Trade") {
 
+											// set moved element
 											move_back = disp_acquisitions[i];
+
+											// remove this indexed element
 											disp_acquisitions.splice(i, 1);
+
+											// add moved element to back
 											disp_acquisitions.push(move_back);
 
 										}
 
-									}										
+									} // end of for loop for sorting								
 
 									// pull owner nanme for pug display
 									db.collection("owner" + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs2) {
@@ -257,24 +326,15 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 										})
 									}) // end of owner database find
 								}) // end of acquisition find for display							
-							})
-
-
-						})
-
-
-					})
-				})
-			})
-		}
-			
-	}
-
-
-
+							}) // end of pyshell
+						}) // end of basketball draft
+					}) // end of basketball add
+				}) // end of pr scrape
+			}) // end of active stats scrape
+		} 
+	} // end of if basketball
 	
-})
-
+}) // end of route to football and basketball acquisition stats
 
 // route to trifecta standings
 router.get('/trifecta_standings/:year1/:year2', function(req, res) {

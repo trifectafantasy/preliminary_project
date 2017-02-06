@@ -12,19 +12,23 @@ var assert = require('assert');
 // create callback function
 module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
-	// remove extraneous documents in collection
+	// remove extraneous documents
 	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).remove({"player": ""});
-	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).remove({"player": "PLAYER"});
+	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).remove({"player": "BATTER"});
+	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).remove({"player": "PITCHER"});
 
-	// list of start indexes to cycle through top 400 players
-	var start_index_list = ["0", "50", "100", "150", "200", "250", "300", "350"];
+	// blanketly add PR = "N/A" for all players in case PR is super low
+	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).updateMany({}, {"$set": {"PR": "N/A"}})
+
+	// list of start indexes to cycle through
+	var start_index_list = ["0", "50", "100", "150", "200", "250", "300", "350", "400", "450", "500", "550", "600", "650", "700", "750", "800", "850", "900", "950"];
 
 	var complete_count = 0;
 
 	// for each start index
 	start_index_list.forEach(function(start_index, index) {
 
-		var url = 'http://games.espn.com/fba/playerrater?leagueId=100660&seasonId=' + year + '&startIndex=' + start_index;
+		var url = 'http://games.espn.com/flb/playerrater?leagueId=109364&seasonId=' + year + '&startIndex=' + start_index
 
 			// request for scrape
 			request(url, function(error, response, html) {
@@ -41,7 +45,6 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 					rows = scrape.siblings();
 					//console.log(rows.text());
 
-					// for each row 
 					rows.each(function(j, element) {
 
 						// store scraped data for each team as json
@@ -62,13 +65,12 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
 		 				json.player = player_name;
 		 				json.PR = parseFloat(PR.text());
-		 				
+
 		 				//console.log(json);		
 						
-						// update document with PR per player
 						db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).update({"player": player_name}, {"$set": {"PR": parseFloat(PR.text())}});
 
-						// if reaches end of page, count
+						// if end of page count number of completions
 						if (json.player == "") {
 							complete();
 						}
@@ -87,10 +89,8 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 			if (complete_count == start_index_list.length){
 				callback();
 			}	
-		}
+		} // end of complete function
 
 	}) // end of for each
-
-
 }
 
