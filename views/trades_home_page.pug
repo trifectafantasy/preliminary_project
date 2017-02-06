@@ -1,6 +1,6 @@
 html
 	head
-		title= year1 + "-" + year2 + " Trifecta Standings"
+		title= "Trade Analysis Home Page"
 		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
 		link(rel='stylesheet', href='/css/styles.css')
 
@@ -18,31 +18,25 @@ html
 				a(href= '/owner_matchup_home_page' class = 'navbar') Owner 2 Owner Matchup Records
 				a(href= '/trades_home_page' class = 'navbar') Trade Analysis
 				a(href= '/acquisition_value_home_page' class = 'navbar') Acquisition Value
+				
+		
+		h2 Trade Analysis
+		h4 Who did you rip off? Who scalped you? Who won the trade?
 
+		ul Sport List
+			li Football
+				ul
+					li Sorry no trade analysis for Football 2015
+					li 
+						a(href= '/football/trades/2016') 2015 Season
 
-		h2= year1 + "-" + year2 + " Trifecta Standings"
+			li Basketball
+				ul
+					li No trades were made in Basketball 2016
+					li
+						a(href= '/basketball/trades/2017') 2017 Season						
 
-		table
-			thead
-				tr
-					th OWNER
-					th FOOTBALL TRIFECTA POINTS
-					th BASKETBALL TRIFECTA POINTS
-					th BASEBALL TRIFECTA POINTS
-					th TOTAL TRIFECTA POINTS
-
-			tbody
-				each readin2 in trifecta_standings
-					tr
-						each val,cat in readin2
-							if cat === "owner"
-								td= val
-							if cat === "football"
-								td= val
-							if cat === "basketball"
-								td= val
-							if cat === "baseball"
-								td= val
-							if cat === "total_trifecta_points"
-								td= val
-
+			li Baseball
+				ul
+					li
+						a(href= '/baseball/trades/2016') 2016 Season
