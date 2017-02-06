@@ -51,6 +51,11 @@ router.get('/', function(req, res) {
 
 });
 
+router.get('/acquisition_value_home_page', function(req, res) {
+	res.render('acquisition_value_home_page');
+})
+
+
 // route to baseball acquisition values given either hitters or pitchers
 router.get('/owner/:owner_number/:sport/acquisitions/:year/:hit_or_pit', function(req, res) {
 
@@ -906,6 +911,11 @@ router.get('/owner/:owner_number/matchups/all', function(req, res) {
 
 
 }); // end of owner to owner matchups 
+
+// route to home page for all individual owner matchup data
+router.get('/trades_home_page', function(req, res) {
+	res.render('trades_home_page');
+})
 
 router.get('/:sport/trades/:year', function(req, res) {
 
