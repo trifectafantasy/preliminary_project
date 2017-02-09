@@ -17,9 +17,10 @@ def acquisitionValue(db, sport, year, owner_number):
 	db[collection_acquisition].remove({"player":""})
 
 	# set list of acquisition weights with pick 1 having greatest weight
-	acquisition_weight_chart = range(140, 0, -1)
+	number_of_draft_picks = db[sport + "_draft_" + year].count()
+	acquisition_weight_chart = range(number_of_draft_picks, 0, -1)
 	#print acquisition_weight_chart
-
+	
 	# pull acquisition collection
 	acquisition_list = list(db[collection_acquisition].find({}, {"_id": 0}))
 	#print acquisition_list
@@ -141,7 +142,7 @@ def acquisitionValue(db, sport, year, owner_number):
 
 		# just overwrite whatever player had with new, ordered json
 		db[collection_acquisition].update({"player": player}, insert_json)
-		
+	
 
 ##### PYTHON SCRIPT TO EXECUTE #####
 

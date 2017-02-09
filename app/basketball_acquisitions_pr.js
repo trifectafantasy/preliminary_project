@@ -10,87 +10,82 @@ var mongo = require('mongodb');
 var assert = require('assert');
 
 // create callback function
-module.exports = function(req, res, db, sport, year, owner_number, callback) {
-
-	// remove extraneous documents in collection
-	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).remove({"player": ""});
-	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).remove({"player": "PLAYER"});
+module.exports = function(req, res, db, sport, year, callback) {
 
 	// list of start indexes to cycle through top 400 players
-	var start_index_list = ["0", "50", "100", "150", "200", "250", "300", "350"];
+	var start_index_list = ["0", "50", "100", "150", "200", "250", "300", "350", "400"];
 
 	var complete_count = 0;
 
-	// for each start index
-	start_index_list.forEach(function(start_index, index) {
+	// remove collection to
+	db.collection(sport + "_pr_" + year).remove({}, function(err, results) {
+		
+		// for each start index
+		start_index_list.forEach(function(start_index, index) {
 
-		var url = 'http://games.espn.com/fba/playerrater?leagueId=100660&seasonId=' + year + '&startIndex=' + start_index;
+			var url = 'http://games.espn.com/fba/playerrater?leagueId=100660&seasonId=' + year + '&startIndex=' + start_index;
 
-			// request for scrape
-			request(url, function(error, response, html) {
+				// request for scrape
+				request(url, function(error, response, html) {
 
-				// if not an error
-				if(!error){
+					// if not an error
+					if(!error){
 
-					// use cheerio to traverse and scrape html 
-					var $ = cheerio.load(html);
+						// use cheerio to traverse and scrape html 
+						var $ = cheerio.load(html);
 
-					scrape = $('tr.playerTableBgRowSubhead.tableSubHead');
-					//console.log(scrape.text());
+						scrape = $('tr.playerTableBgRowSubhead.tableSubHead');
+						//console.log(scrape.text());
 
-					rows = scrape.siblings();
-					//console.log(rows.text());
+						rows = scrape.siblings();
+						//console.log(rows.text());
 
-					// for each row 
-					rows.each(function(j, element) {
+						// for each row 
+						rows.each(function(j, element) {
 
-						// store scraped data for each team as json
-						var json = {
-							player: "",
-							PR: ""
-						}				
+							// store scraped data for each team as json
+							var json = {
+								player: "",
+								PR: ""
+							}				
 
-						player_row = $(this).children();
-						//console.log(player_row.text());
-						player = player_row.first().next();
-						PR = player_row.last();
+							player_row = $(this).children();
+							//console.log(player_row.text());
+							player = player_row.first().next();
+							PR = player_row.last();
 
-		 				// store each scraped value in json as TEXT, INT, or FLOAT
-		 				player_name = player.text();
-		 				player_name = player_name.slice(0, player_name.indexOf(","));
-		 				//console.log(player_name);
+			 				// store each scraped value in json as TEXT, INT, or FLOAT
+			 				player_name = player.text();
+			 				player_name = player_name.slice(0, player_name.indexOf(","));
+			 				//console.log(player_name);
 
-		 				json.player = player_name;
-		 				json.PR = parseFloat(PR.text());
-		 				
-		 				//console.log(json);		
-						
-						// update document with PR per player
-						db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).update({"player": player_name}, {"$set": {"PR": parseFloat(PR.text())}});
+			 				json.player = player_name;
+			 				json.PR = parseFloat(PR.text());
+			 				
+			 				//console.log(json);
 
-						// if reaches end of page, count
-						if (json.player == "") {
-							complete();
-						}
+			 				// if reaches end of page, count, but don't add to collection
+							if (json.player == "") {
+								complete();
+							}
+							// if a real player, add to collection		
+							else {
+			 					db.collection(sport + "_pr_" + year).insert(json);
+							}
+						}) // end of rows scrape iteration
+					} // end of if(!error)
+				}) // end of request
 
+			var complete = function() {
+				complete_count += 1;
 
-					})
+				if (complete_count == start_index_list.length){
+					callback();
+				}	
+			}
 
-
-				} // end of if(!error)
-			
-			}) // end of request
-
-		var complete = function() {
-			complete_count += 1;
-
-			if (complete_count == start_index_list.length){
-				callback();
-			}	
-		}
-
-	}) // end of for each
-
+		}) // end of for each		
+	}) // end of remove
 
 }
 

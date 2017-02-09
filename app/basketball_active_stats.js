@@ -85,14 +85,17 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 		 				json.TO = parseInt(TO.text());
 		 				json.PTS = parseInt(PTS.text());
 
-		 				//console.log(json);				
-		 				db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).insert(json)
+		 				//console.log(json);
 
-		 				// if end of page, call complete and count
-		 				if (json.player == ""){
+		 				if (json.player == "") {
 		 					callback();
-		 					//complete();
 		 				}
+		 				else {
+		 					if (json.player != "PLAYER") {
+		 						db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).insert(json)
+		 					}
+		 				}
+
 					}) // end of rows iterating scrape
 
 
