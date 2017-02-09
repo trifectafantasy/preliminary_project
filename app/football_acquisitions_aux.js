@@ -13,8 +13,7 @@ var assert = require('assert');
 module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
 	var finish_one = 0;
-
-	var basketball_pr_picks, basketball_draft_picks, number_of_owners
+	var basketball_draft_picks, number_of_owners
 
 	// pull team names from specific owner
 	db.collection('owner' + owner_number).find({}, {"teams": 1, "_id": 0}).toArray(function(e, docs) {
@@ -51,37 +50,6 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 	}) // end of owner number find
 
 
-	// synchronous for loop for adding PR to each team
-	var add_pr = function(x, team_pull) {
-
-		if (x < team_pull.length) {
-			//console.log(team_pull);
-			player = team_pull[x]["player"]
-			//console.log(player);
-
-			db.collection(sport + "_pr_" + year).find({"player": player}, {"PR": 1, "_id": 0}).toArray(function(e, docs1) {
-
-				// handle if there is PR for a player (stash)
-				if (docs1.length == 0) {
-					pr = 0.0
-				}
-				else {
-					pr = docs1[0]["PR"]
-				}
-				//console.log(pr);
-
-				// update player with their PR
-			 	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).update({"player": player}, {"$set": {"PR": pr}})
-
-				add_pr(x + 1, team_pull);
-			}) // end of pr pull
-		}
-
-		else {
-			callback();
-		}
-	} // end of add_pr function
-
 	// check for when updating draft position done
 	var one_done = function() {
 
@@ -95,11 +63,7 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 			// if number of draft picks per team
 			if (finish_one == (basketball_draft_picks / number_of_owners)) {
 
-				// pull all players per team to add PR to them
-			 	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).find({}, {"player": 1, "_id": 0}).toArray(function(e, docs) {
-			 		team_pull = docs;
-			 		add_pr(0, team_pull);
-			 	}) // end of team acquisition pull
+				callback();
 			} // end of if
 		})	// end of count of team acquisition
 
