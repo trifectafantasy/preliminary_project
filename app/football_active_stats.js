@@ -152,13 +152,18 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 							}
 				 			
 				 			//console.log(json);
-				 			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).insert(json)
-				 			
+
 				 			// if reach end of page, count for callback								
 				 			if (json.player == "") {
 					 			complete();
-
 				 			}
+				 			else {
+				 				// if not one of headers, add to database
+				 				if ((json.player != "OFFENSIVE PLAYER" && json.player != "KICKER") && json.player != "TEAM D/ST") {
+		 							db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).insert(json)
+				 				}
+				 			}
+
 						}) // end of iterating each row srape
 					} // end of if(!error)
 				
