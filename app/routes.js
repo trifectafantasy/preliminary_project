@@ -44,91 +44,11 @@ var completed_baseball_season = 2016;
 
 // Route to Home/Root page
 router.get('/', function(req, res) {
-
 	res.render('index', {
 		message: "Welcome to The Chip and Markers Trifecta Fantasy League Home Page"
 	});
-
 });
 
-router.get('/football_coach_home_page', function(req, res) {
-	res.render('football_coach_home_page');
-})
-
-// route to analyze fantasy football "coaching" aka starting lineup optimization
-router.get('/football/coach/:year', function(req, res) {
-
-	// set variables from request url
-	var year = req.params.year;
-
-	// if year is greater than completed season, SCRAPE
-	if (year > completed_football_season) {
-	
-		// how many weeks have been completed, able to scrape
-		var completed_weeks = 1;
-
-		// list of owner numbers to loop through
-		owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-
-	// function that executes synchronous scrapes and python script analyses
-	var all_football_coach = function(x, owner_list) {
-		if (x < owner_list.length) {
-
-			// set owner number
-			owner_number = owner_list[x];
-
-			// scrape starting lineups and benches from each week
-			var coach_scrape = require('./coach_scrape.js')(req, res, db, year, owner_number, completed_weeks, function(err, call) {
-				console.log("coach scrape done");
-
-				var options = {
-					args: [year, owner_number, completed_weeks]
-				}
-
-				// run python script that calculates difference between optimal and starting lineups
-				pyshell.run('football_coach.py', options, function(err) {
-					if (err) throw err;
-					console.log("coach python script done");
-
-					// send back to loop again
-					all_football_coach(x + 1, owner_list);
-				}) // end of python script
-			}) // end of coach scrape script
-		}
-		// once done with all in loop, done
-		else {
-			// pull from collection for display
-			db.collection("all_coach_" + year).find({}, {"_id": 0}).sort({"season": -1}).toArray(function(e, docs) {
-				disp_coach = docs;
-				console.log("displaying coach standings...");
-
-				res.render('football_coach', {
-					year: year,
-					coach_standings: disp_coach
-				})
-			}) // end of display pull
-		}
-	} // end of all_football_coach function
-
-		// run synchronous for loop function
-		all_football_coach(0, owner_list);
-	} // end of if need to be scraped
-
-	// if year is in past, just pull
-	else {
-		// pull from collection for display
-		db.collection("all_coach_" + year).find({}, {"_id": 0}).sort({"season": -1}).toArray(function(e, docs) {
-			disp_coach = docs;
-			console.log("displaying coach standings...");
-
-			res.render('football_coach', {
-				year: year,
-				coach_standings: disp_coach
-			})
-		}) // end of display pull	
-	} // end of just pull
-						
-}) // end of route to coach analysis
 
 router.get('/acquisition_value_home_page', function(req, res) {
 	res.render('acquisition_value_home_page');
@@ -729,6 +649,42 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 	
 }) // end of route to football and basketball acquisition stats
 
+// route to home page for each trifecta season's standings (individual sports and trifefcta)
+router.get('/standings_home_page/:year1/:year2', function(req, res) {
+	var year1 = req.params.year1;
+	var year2 = req.params.year2;
+
+	if (year1 == current_year1 && year2 == current_year2) {
+		
+		var football_in_season = true;
+		var basketball_in_season = true;
+		var baseball_in_season = false;
+
+		res.render('full_season_standings_home_page', {
+			year1: year1,
+			year2: year2,
+			football_in_season: football_in_season,
+			basketball_in_season: basketball_in_season,
+			baseball_in_season: baseball_in_season
+		})
+	}
+
+	else {
+		var football_in_season = true;
+		var basketball_in_season = true;
+		var baseball_in_season = true;
+
+		res.render('full_season_standings_home_page', {
+			year1: year1,
+			year2: year2,
+			football_in_season: football_in_season,
+			basketball_in_season: basketball_in_season,
+			baseball_in_season: baseball_in_season
+		})
+	}
+
+}) // end of route to home page for each season's individual sports and trifecta standings
+
 // route to trifecta standings
 router.get('/trifecta_standings/:year1/:year2', function(req, res) {
 	
@@ -1171,7 +1127,7 @@ router.get('/owner/:owner_number/matchups/:year1/:year2', function(req, res) {
 			// if basketball_playoffs is true, skip scrape
 			var basketball_playoffs = false;
 			// full regular season = 18 matchups
-			var basketball_completed_matchups = 15;	
+			var basketball_completed_matchups = 16;	
 
 			// baseball variables
 			// if baseball_in_season is false, skip altogether
@@ -1498,3 +1454,83 @@ router.get('/:sport/trades/:year', function(req, res) {
 	}
 
 });
+
+// home page for football coach rankings
+router.get('/football_coach_home_page', function(req, res) {
+	res.render('football_coach_home_page');
+})
+
+// route to analyze fantasy football "coaching" aka starting lineup optimization
+router.get('/football/coach/:year', function(req, res) {
+
+	// set variables from request url
+	var year = req.params.year;
+
+	// if year is greater than completed season, SCRAPE
+	if (year > completed_football_season) {
+	
+		// how many weeks have been completed, able to scrape
+		var completed_weeks = 1;
+
+		// list of owner numbers to loop through
+		owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+
+	// function that executes synchronous scrapes and python script analyses
+	var all_football_coach = function(x, owner_list) {
+		if (x < owner_list.length) {
+
+			// set owner number
+			owner_number = owner_list[x];
+
+			// scrape starting lineups and benches from each week
+			var coach_scrape = require('./coach_scrape.js')(req, res, db, year, owner_number, completed_weeks, function(err, call) {
+				console.log("coach scrape done");
+
+				var options = {
+					args: [year, owner_number, completed_weeks]
+				}
+
+				// run python script that calculates difference between optimal and starting lineups
+				pyshell.run('football_coach.py', options, function(err) {
+					if (err) throw err;
+					console.log("coach python script done");
+
+					// send back to loop again
+					all_football_coach(x + 1, owner_list);
+				}) // end of python script
+			}) // end of coach scrape script
+		}
+		// once done with all in loop, done
+		else {
+			// pull from collection for display
+			db.collection("all_coach_" + year).find({}, {"_id": 0}).sort({"season": -1}).toArray(function(e, docs) {
+				disp_coach = docs;
+				console.log("displaying coach standings...");
+
+				res.render('football_coach', {
+					year: year,
+					coach_standings: disp_coach
+				})
+			}) // end of display pull
+		}
+	} // end of all_football_coach function
+
+		// run synchronous for loop function
+		all_football_coach(0, owner_list);
+	} // end of if need to be scraped
+
+	// if year is in past, just pull
+	else {
+		// pull from collection for display
+		db.collection("all_coach_" + year).find({}, {"_id": 0}).sort({"season": -1}).toArray(function(e, docs) {
+			disp_coach = docs;
+			console.log("displaying coach standings...");
+
+			res.render('football_coach', {
+				year: year,
+				coach_standings: disp_coach
+			})
+		}) // end of display pull	
+	} // end of just pull
+						
+}) // end of route to coach analysis
