@@ -12,14 +12,6 @@ var assert = require('assert');
 // create callback function
 module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
-	// remove extraneous documents
-	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).remove({"player": ""});
-	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).remove({"player": "BATTER"});
-	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).remove({"player": "PITCHER"});
-
-	// blanketly add PR = "N/A" for all players in case PR is super low
-	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).updateMany({}, {"$set": {"PR": "N/A"}})
-
 	// list of start indexes to cycle through
 	var start_index_list = ["0", "50", "100", "150", "200", "250", "300", "350", "400", "450", "500", "550", "600", "650", "700", "750", "800", "850", "900", "950"];
 
@@ -68,11 +60,13 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
 		 				//console.log(json);		
 						
-						db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).update({"player": player_name}, {"$set": {"PR": parseFloat(PR.text())}});
-
 						// if end of page count number of completions
 						if (json.player == "") {
 							complete();
+						}
+						// if else add to 
+						else {
+			 				db.collection(sport + "_pr_" + year).insert(json);
 						}
 
 

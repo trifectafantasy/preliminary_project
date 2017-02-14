@@ -1,6 +1,6 @@
 html
 	head
-		title= year1 + "-" + year2 + " Trifecta Standings"
+		title= "Coach Rankings Home Page"
 		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
 		link(rel='stylesheet', href='/css/styles.css')
 
@@ -19,31 +19,14 @@ html
 				a(href= '/trades_home_page' class = 'navbar') Trade Analysis
 				a(href= '/acquisition_value_home_page' class = 'navbar') Acquisition Value
 				a(href= '/football_coach_home_page' class = 'navbar') Football Coach  
+				
+		
+		h2 Coach Analysis
+		h4 How good of a fantasy football coach were you? Did you ever start the optimal lineup? How many regrets do you have?
 
+		ul Football
 
-		h2= year1 + "-" + year2 + " Trifecta Standings"
-
-		table
-			thead
-				tr
-					th OWNER
-					th FOOTBALL TRIFECTA POINTS
-					th BASKETBALL TRIFECTA POINTS
-					th BASEBALL TRIFECTA POINTS
-					th TOTAL TRIFECTA POINTS
-
-			tbody
-				each readin2 in trifecta_standings
-					tr
-						each val,cat in readin2
-							if cat === "owner"
-								td= val
-							if cat === "football"
-								td= val
-							if cat === "basketball"
-								td= val
-							if cat === "baseball"
-								td= val
-							if cat === "total_trifecta_points"
-								td= val
+			li Sorry no trade analysis for Football 2015
+			li 
+				a(href= '/football/coach/2016') 2016 Season
 
