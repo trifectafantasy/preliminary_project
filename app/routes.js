@@ -51,6 +51,85 @@ router.get('/', function(req, res) {
 
 });
 
+router.get('/football_coach_home_page', function(req, res) {
+	res.render('football_coach_home_page');
+})
+
+// route to analyze fantasy football "coaching" aka starting lineup optimization
+router.get('/football/coach/:year', function(req, res) {
+
+	// set variables from request url
+	var year = req.params.year;
+
+	// if year is greater than completed season, SCRAPE
+	if (year > completed_football_season) {
+	
+		// how many weeks have been completed, able to scrape
+		var completed_weeks = 1;
+
+		// list of owner numbers to loop through
+		owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+
+	// function that executes synchronous scrapes and python script analyses
+	var all_football_coach = function(x, owner_list) {
+		if (x < owner_list.length) {
+
+			// set owner number
+			owner_number = owner_list[x];
+
+			// scrape starting lineups and benches from each week
+			var coach_scrape = require('./coach_scrape.js')(req, res, db, year, owner_number, completed_weeks, function(err, call) {
+				console.log("coach scrape done");
+
+				var options = {
+					args: [year, owner_number, completed_weeks]
+				}
+
+				// run python script that calculates difference between optimal and starting lineups
+				pyshell.run('football_coach.py', options, function(err) {
+					if (err) throw err;
+					console.log("coach python script done");
+
+					// send back to loop again
+					all_football_coach(x + 1, owner_list);
+				}) // end of python script
+			}) // end of coach scrape script
+		}
+		// once done with all in loop, done
+		else {
+			// pull from collection for display
+			db.collection("all_coach_" + year).find({}, {"_id": 0}).sort({"season": -1}).toArray(function(e, docs) {
+				disp_coach = docs;
+				console.log("displaying coach standings...");
+
+				res.render('football_coach', {
+					year: year,
+					coach_standings: disp_coach
+				})
+			}) // end of display pull
+		}
+	} // end of all_football_coach function
+
+		// run synchronous for loop function
+		all_football_coach(0, owner_list);
+	} // end of if need to be scraped
+
+	// if year is in past, just pull
+	else {
+		// pull from collection for display
+		db.collection("all_coach_" + year).find({}, {"_id": 0}).sort({"season": -1}).toArray(function(e, docs) {
+			disp_coach = docs;
+			console.log("displaying coach standings...");
+
+			res.render('football_coach', {
+				year: year,
+				coach_standings: disp_coach
+			})
+		}) // end of display pull	
+	} // end of just pull
+						
+}) // end of route to coach analysis
+
 router.get('/acquisition_value_home_page', function(req, res) {
 	res.render('acquisition_value_home_page');
 })
@@ -68,21 +147,25 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year/:hit_or_pit', functio
 	// make sure sport is baseball
 	if (sport === 'baseball') {
 
-		// scrape active stats
-		var active_stats = require('./baseball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call1) {
-			console.log("active stats scrape done");
+		// scrape drafted
+		var baseball_draft = require('./draft.js')(req, res, db, sport, year, owner_number, function(err, call4) {
+			console.log("drafted players done");		
 
 			// scrape PRs
 			var pr_scrape = require('./baseball_acquisitions_pr.js')(req, res, db, sport, year, owner_number, function(err, call2) {
-				console.log("pr srape done");
+				console.log("pr srape done");			
 
-				// scrape additions
-				var baseball_add = require('./baseball_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
-					console.log("added players done");
+				// scrape active stats
+				var active_stats = require('./baseball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call1) {
+					console.log("active stats scrape done");
 
-					// scrape drafted
-					var baseball_draft = require('./draft.js')(req, res, db, sport, year, owner_number, function(err, call4) {
-						console.log("drafted players done");
+
+
+					// scrape additions
+					var baseball_add = require('./baseball_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
+						console.log("added players done");
+
+
 
 						var options = {
 							args: [sport, year, owner_number]
@@ -94,10 +177,10 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year/:hit_or_pit', functio
 
 
 						}) // end of pyshell						
-					}) // end of drafted
-				}) // end of added
+					}) // end of add scrape
+				}) // end of active stats scrape
 			}) // end of pr scrape
-		}) // end of active stats scrape
+		}) // end of draft scrape
 	}
 */
 }) // end of router get for baseball acquisitions

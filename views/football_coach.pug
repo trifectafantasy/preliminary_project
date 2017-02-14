@@ -1,0 +1,80 @@
+html
+	head
+		title= "Coach Rankings"
+		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', href='/css/styles.css')
+
+	body
+		header
+			navbar
+				a(href= '/' class = 'navbar') Home Page
+				a(href= '/football_standings/2015' class = 'navbar') 2015 Football Standings
+				a(href= '/basketball_standings/2016' class = 'navbar') 2016 Basketball Standings
+				a(href= '/baseball_standings/2016' class = 'navbar') 2016 Baseball Standings
+				a(href= '/trifecta_standings/2015/2016' class = 'navbar') 2015-2016 Trifecta Season Standings
+				a(href= '/football_standings/2016' class = 'navbar') 2016 Football Standings
+				a(href= '/basketball_standings/2017' class = 'navbar') 2017 Basketball Standings
+				a(href= '/trifecta_standings/2016/2017' class = 'navbar') 2016-2017 Trifecta Season Standings
+				a(href= '/owner_matchup_home_page' class = 'navbar') Owner 2 Owner Matchup Records
+				a(href= '/trades_home_page' class = 'navbar') Trade Analysis
+				a(href= '/acquisition_value_home_page' class = 'navbar') Acquisition Value
+				a(href= '/football_coach_home_page' class = 'navbar') Football Coach  
+
+		h2= year + " Football Coach Rankings"
+		h4 Points lost from played starting lineup relative to optimal starting lineup
+		
+		table
+			thead
+				tr
+					th RANK
+					th OWNER
+					th WEEK 1
+					th WEEK 2
+					th WEEK 3
+					th WEEK 4
+					th WEEK 5
+					th WEEK 6
+					th WEEK 7
+					Th WEEK 8
+					th WEEK 9
+					th WEEK 10
+					th WEEK 11
+					th WEEK 12
+					th WEEK 13
+					th SEASON TOTAL
+
+			tbody
+				each readin, rank in coach_standings
+					tr
+						td= rank + 1
+						each val, cat in readin
+							if cat === "owner"
+								td= val
+							if cat === "week1"
+								td= parseFloat(val).toFixed(1)
+							if cat === "week2"
+								td= parseFloat(val).toFixed(1)
+							if cat === "week3"
+								td= parseFloat(val).toFixed(1)
+							if cat === "week4"
+								td= parseFloat(val).toFixed(1)
+							if cat === "week5"
+								td= parseFloat(val).toFixed(1)
+							if cat === "week6"
+								td= parseFloat(val).toFixed(1)
+							if cat === "week7"
+								td= parseFloat(val).toFixed(1)
+							if cat === "week8"
+								td= parseFloat(val).toFixed(1)
+							if cat === "week9"							
+								td= parseFloat(val).toFixed(1)
+							if cat === "week10"
+								td= parseFloat(val).toFixed(1)
+							if cat === "week11"
+								td= parseFloat(val).toFixed(1)
+							if cat === "week12"
+								td= parseFloat(val).toFixed(1)
+							if cat === "week13"
+								td= parseFloat(val).toFixed(1)
+							if cat === "season"
+								td= parseFloat(val).toFixed(1)
