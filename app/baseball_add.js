@@ -20,6 +20,16 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 		var end_month = d.getMonth() + 1;
 		var end_day = d.getDate();
 
+		// to account for day needing to be 2 digits
+		if (end_day < 10) {
+			end_day = "0" + String(end_day)
+		}		
+
+		// to account for month needing to be 2 digits
+		if (end_month < 10) {
+			end_month = "0" + String(end_month)
+		}		
+
 		// url for scrape
 		var url = 'http://games.espn.com/flb/recentactivity?leagueId=109364&seasonId=' + year + '&activityType=2&startDate=' + year + '0301&endDate=' + end_year + end_month + end_day + '&teamId=' + owner_number + '&tranType=2';
 
