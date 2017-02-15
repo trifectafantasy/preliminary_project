@@ -1,29 +1,42 @@
-// TEMPLATE TO GET PLAYOFF RESULTS AND TRIFECTA POINTS
-router.get('/football_standings=playoffs', function(req, res) {
+///// IMPORT JAVASCRIPT PACKAGES //////
+var express = require('express');
+var request = require('request');
+var cheerio = require('cheerio');
+var path = require('path');
+var pyshell = require('python-shell');
 
-	// pull team names to initialize football playoffs database
-	db.collection('football_h2h_' + year).find({}, {"team": 1, "_id": 0}).toArray(function(e, docs) {
+var mongo = require('mongodb');
+var assert = require('assert');
+
+module.exports = function(req, res, db, sport, year, callback) {
+// TEMPLATE TO GET PLAYOFF RESULTS AND TRIFECTA POINTS
+
+	var counter = 0;
+
+	// pull team names to initialize playoffs database
+	db.collection(sport + '_h2h_' + year).find({}, {"team": 1, "_id": 0}).toArray(function(e, docs) {
 
 		var team_list = docs;
 		console.log(team_list);
 
-		// clear football playoffs database
-		db.collection('football_playoffs_' + year).remove({});
+		// clear playoffs database
+		db.collection(sport + '_playoffs_' + year).remove({});
 
 		for (i = 0; i < team_list.length; i ++) {
-			db.collection('football_playoffs_' + year).insert({"team": team_list[i]["team"], "playoff_trifecta_points": 0});
+			db.collection(sport + '_playoffs_' + year).insert({"team": team_list[i]["team"], "playoff_trifecta_points": 0});
 		}
 	})
 
-	// url for fball playoffs
-	var url = 'http://games.espn.com/ffl/h2hplayoffs?leagueId=154802&seasonId=' + year;
-
-	// url for bball
-	//var url = 'http://games.espn.com/fba/h2hplayoffs?leagueId=100660&seasonId=' + year;
-
-	// url for bsball
-	//var url = 'http://games.espn.com/flb/h2hplayoffs?leagueId=109364&seasonId=' + year;
-
+	if (sport == 'football') {
+		var url = 'http://games.espn.com/ffl/h2hplayoffs?leagueId=154802&seasonId=' + year;
+	}
+	else if (sport == 'basketball') {
+		var url = 'http://games.espn.com/fba/h2hplayoffs?leagueId=100660&seasonId=' + year;
+	}
+	else if (sport == 'baseball') {
+		var url = 'http://games.espn.com/flb/h2hplayoffs?leagueId=109364&seasonId=' + year;
+	}
+	
 	request(url, function(error, response, html) {
 
 		// if not an error
@@ -314,14 +327,25 @@ router.get('/football_standings=playoffs', function(req, res) {
 				}
 				var disp_playoff_standings = null;
 
-				// add to football playoffs database and regex takes care of half names that playoff bracket sometimes gives
-				db.collection('football_playoffs_' + year).update({"team": { "$regex": winning_team}}, {"$set": {"playoff_trifecta_points": playoff_wins}}, function(err, result) {
+				// add to playoffs database and regex takes care of half names that playoff bracket sometimes gives
+				db.collection(sport + '_playoffs_' + year).update({"team": { "$regex": winning_team}}, {"$set": {"playoff_trifecta_points": playoff_wins}}, function(err, result) {
 
-					console.log("updated database");
+					console.log("updated playoffs database");
+					complete();
 
 				})
 			}
+var complete = function() {
+	counter += 1;
+	if (counter == playoff_winners.length) {
+		callback();
+	}
+
+}
+
+
 
 		} // end of if(!error)
 	}) // end of request
-}); // end of .get('/football_playoffs')
+
+} // end of module export

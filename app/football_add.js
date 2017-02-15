@@ -26,9 +26,19 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 		var end_month = d.getMonth() + 1;
 		var end_day = d.getDate();
 
+		// to account for day needing to be 2 digits
+		if (end_day < 10) {
+			end_day = "0" + String(end_day)
+		}		
+
+		// to account for month needing to be 2 digits
+		if (end_month < 10) {
+			end_month = "0" + String(end_month)
+		}
+
 		// url for scrape
 		var url = 'http://games.espn.com/ffl/recentactivity?leagueId=154802&seasonId=' + year + '&activityType=2&startDate=' + year + '0801&endDate=' + end_year + end_month + end_day + '&teamId=' + football_owner_number + '&tranType=2';
-		
+
 		// request for scrape
 		request(url, function(error, response, html) {
 
@@ -38,12 +48,10 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 				// use cheerio to traverse and scrape html 
 				var $ = cheerio.load(html);
 
-				// iterate through every game in the week
-
 				scrape = $('tr.tableSubHead');
-				//console.log(scrape);
+				//console.log(scrape.text());
 				rows = scrape.siblings();
-				//console.log(hello_children.text());
+				//console.log(rows.text());
 
 				rows.each(function(j, element) {
 

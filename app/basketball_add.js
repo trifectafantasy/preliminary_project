@@ -22,6 +22,15 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
 		var start_year = String(parseInt(year) - 1);
 
+		// to account for day needing to be 2 digits
+		if (end_day < 10) {
+			end_day = "0" + String(end_day)
+		}		
+
+		// to account for month needing to be 2 digits
+		if (end_month < 10) {
+			end_month = "0" + String(end_month)
+		}
 
 		// url for scrape
 		var url = 'http://games.espn.com/fba/recentactivity?leagueId=100660&seasonId=' + year + '&activityType=2&startDate=' + start_year + '1001&endDate=' + end_year + end_month + end_day + '&teamId=' + owner_number + '&tranType=2';
@@ -36,7 +45,7 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 				var $ = cheerio.load(html);
 
 				scrape = $('tr.tableSubHead');
-				//console.log(scrape);
+				//console.log(scrape.text());
 				rows = scrape.siblings();
 				//console.log(hello_children.text());
 

@@ -9,6 +9,9 @@ var mongo = require('mongodb');
 var assert = require('assert');
 
 module.exports = function(req, res, db, year, playoffs) {
+
+	var sport = 'football';
+
 	// url for football standings
 	var url = 'http://games.espn.com/ffl/standings?leagueId=154802&seasonId=' + year;
 
@@ -131,7 +134,7 @@ module.exports = function(req, res, db, year, playoffs) {
 			    		
 			    		// assert to make sure no error
 				    	assert.equal(err, null);
-				    	console.log("Document 2 was inserted into the collection");
+				    	//console.log("Document 2 was inserted into the collection");
 				    
 				    	///// return callback after 2nd (innermost async) document is uploaded ///// 
 				    	callback(result);
@@ -139,7 +142,7 @@ module.exports = function(req, res, db, year, playoffs) {
 
 					// assert to make sure no error
 			    	assert.equal(err, null);
-			    	console.log("Document 1 was inserted into the collection");
+			    	//console.log("Document 1 was inserted into the collection");
 			    
 			    	///// only return after 2nd document finishes uploading /////
 			    	//callback(result);
@@ -182,33 +185,38 @@ module.exports = function(req, res, db, year, playoffs) {
 							args: [year]
 						};
 
-						// see if trifecta database is complete (10 documents)
-						db.collection('football_trifecta_' + year).count({}, function(err, num) {
+						var playoff_scrape = require('./playoffs_router_template.js')(req, res, db, sport, year, function(err, call) {
+							
+							// see if trifecta database is complete (10 documents)
+							db.collection('football_trifecta_' + year).count({}, function(err, num) {
 
-							// if complete, pull trifeta database and sort by total trifecta points
-							if (num === 10) {
-									db.collection('football_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-										//console.log(docs);
-										console.log("Displaying playoff data...");
-										disp_trifecta_standings = docs;
-										complete();
-									});				
-							}
-							else {
-								// if database not complete, run python script to initialize trifecta database
-								pyshell.run('football_playoffs.py', options, function(err) {
-									if (err) throw err;
-									console.log('Playoff python script complete');
+								// if complete, pull trifeta database and sort by total trifecta points
+								if (num === 10) {
+										db.collection('football_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
+											//console.log(docs);
+											console.log("Displaying playoff data...");
+											disp_trifecta_standings = docs;
+											complete();
+										});				
+								}
+								else {
+									// if database not complete, run python script to initialize trifecta database
+									pyshell.run('football_playoffs.py', options, function(err) {
+										if (err) throw err;
+										console.log('Playoff python script complete');
 
-									db.collection('football_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-										//console.log(docs);
-										console.log("Displaying playoff data...");
-										disp_trifecta_standings = docs;
-										complete();
-									});				
-								})
-							}
-						})
+										db.collection('football_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
+											//console.log(docs);
+											console.log("Displaying playoff data...");
+											disp_trifecta_standings = docs;
+											complete();
+										});				
+									})
+								}
+							})
+						});
+
+	
 					};
 
 					// function that checks if both finds from mongodb are complete (ie display variables are not empty)
@@ -218,10 +226,11 @@ module.exports = function(req, res, db, year, playoffs) {
 							if (disp_h2h_standings !== null && disp_trifecta_standings !== null) {
 
 								// render to baseball_standings
-								res.render('football_standings_playoffs', {
+								res.render('football_standings', {
 									h2h_standings: disp_h2h_standings,
 									trifecta_standings: disp_trifecta_standings,
-									year: year
+									year: year,
+									playoffs: playoffs
 								});
 							}
 						}
@@ -231,7 +240,8 @@ module.exports = function(req, res, db, year, playoffs) {
 								// render to baseball_standings
 								res.render('football_standings', {
 									h2h_standings: disp_h2h_standings,
-									year: year
+									year: year,
+									playoffs: playoffs
 								});
 							}
 						}
