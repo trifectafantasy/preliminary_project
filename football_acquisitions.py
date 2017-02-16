@@ -125,7 +125,10 @@ def acquisitionValue(db, sport, year, owner_number):
 
 			#print acquisition_weight
 
-			acquisition_value = round(PTS / acquisition_weight, 2)
+			if PTS < 0:
+				acquisition_value = round(PTS * acquisition_weight, 2)
+			else:
+				acquisition_value = round(PTS / acquisition_weight, 2)
 
 		#print acquisition_value
 

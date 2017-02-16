@@ -10,16 +10,22 @@ from collections import OrderedDict
 # function that combines data from all matchup collections for total season trifecta owner matchup standings
 def acquisitionValue(db, sport, year, owner_number):
 
+	# set acquisition collection name
 	collection_acquisition = "owner" + owner_number + "_" + sport + "_acquisitions_" + year
 
+	# remove all that have a blank player (just in case)
 	db[collection_acquisition].remove({"player":""})
 
-	acquisition_value_chart = range(230, 0, -1)
-	#print acquisition_value_chart
+	# set list of acquisition weights with pick 1 having greatest weight
+	number_of_draft_picks = db[sport + "_draft_" + year].count()
+	acquisition_weight_chart = range(number_of_draft_picks, 0, -1)
+	#print acquisition_weight_chart	
 
+	# pull acquisition collection
 	acquisition_list = list(db[collection_acquisition].find({}, {"_id": 0}))
 	#print acquisition_list
 
+	# loop through each document in pull
 	for each_player in acquisition_list:
 		#print each_player
 
@@ -29,26 +35,30 @@ def acquisitionValue(db, sport, year, owner_number):
 		acquired = each_player["acquired"]
 		draft_position = each_player["draft_position"]
 
+		# try and pull PR
 		try:
 			PR = each_player["PR"]
+		# if error
 		except KeyError:
 			print "no PR"
 
+			# if no PR, then it's a trade, set acquisition stats as N/A
 			if acquired == "Trade":
-
 				acquisition_weight = "N/A"
 				acquisition_value = "N/A"
 
 			else:
-
+				# if undrafted, weight is 1.5
 				if draft_position == "N/A":
 					acquisition_weight = 1.5
+				# if drafted, take drafted acquisition weight from chart, divide by 10 then 1.5 (minimum)
 				else:
-					acquisition_weight = round(float(acquisition_value_chart[draft_position - 1]) / 10 / 1.5, 2)
-
+					acquisition_weight = round(float(acquisition_weight_chart[draft_position - 1]) / 10 / 2 / 1.5, 2)
+				# can't have an acquisition weight less than 1.5
 				if acquisition_weight < 1.5:
 					acquisition_weight = 1.5
 
+			# set ordered json to insert (with all 0's for player with N/A)
 			insert_json["player"] = player
 			insert_json["weighted_PR"] = 0.0
 			insert_json["acquired"] = each_player["acquired"]
@@ -66,37 +76,46 @@ def acquisitionValue(db, sport, year, owner_number):
 			insert_json["SO"] = 0
 			insert_json["SB"] = 0
 			insert_json["OBP"] = 0.0000
+			insert_json["hit_or_pit"] = "hitter/pitcher"
 
 			db[collection_acquisition].update({"player": player}, insert_json)
+			# skip rest of for loop and start again
 			continue
 
+		# try to pull IP
 		try:
 			IP = each_player["IP"]
+		# if can't, hitter
 		except KeyError:
 			print "hitter"
 
 			PR = each_player["PR"]
 			GP = each_player["GP"]				
 
+			# if trade, set acquisition stats as N/A, but still calculate weighted PR
 			if acquired == "Trade":
-
 				acquisition_weight = "N/A"
 				acquisition_value = "N/A"
 				weighted_PR = round(PR * GP, 2)
 
+			# if drafted, find acquisition weight from chart then divide by 10, then base (1.5)
 			else:
-
 				if draft_position == "N/A":
 					acquisition_weight = 1.5
 				else:
-					acquisition_weight = round(float(acquisition_value_chart[draft_position - 1]) / 10 / 1.5, 2)
+					acquisition_weight = round(float(acquisition_weight_chart[draft_position - 1]) / 10 / 2 / 1.5, 2)
 
 				if acquisition_weight < 1.5:
 					acquisition_weight = 1.5
 
 				weighted_PR = round(PR * GP, 2)
-				acquisition_value = round(weighted_PR / acquisition_weight, 2)
+				# if weighted PR < 0, multiply by acquisition weight
+				if weighted_PR < 0:
+					acquisition_value = round(weighted_PR * acquisition_weight, 2)
+				else:
+					acquisition_value = round(weighted_PR / acquisition_weight, 2)
 
+			# add to ordered json for upload
 			insert_json["player"] = player
 			insert_json["weighted_PR"] = weighted_PR
 			insert_json["acquired"] = each_player["acquired"]
@@ -114,37 +133,46 @@ def acquisitionValue(db, sport, year, owner_number):
 			insert_json["SO"] = each_player["SO"]
 			insert_json["SB"] = each_player["SB"]
 			insert_json["OBP"] = each_player["OBP"]
+			insert_json["hit_or_pit"] = "hitter"
 
+			# just overwrite whatever player had with new, ordered json
 			db[collection_acquisition].update({"player": player}, insert_json)
 			continue			
 
+		# try to pull GP
 		try:
 			GP = each_player["GP"]
+		# if can't, pitcher
 		except KeyError:
 			print "pitcher"			
 
 			PR = each_player["PR"]
 			IP = each_player["IP"]				
 
+			# if trade, set acquisition stats as N/A, but still calculate weighted PR
 			if acquired == "Trade":
-
 				acquisition_weight = "N/A"
 				acquisition_value = "N/A"
 				weighted_PR = round(PR * IP, 2)
 
+			# if drafted, find acquisition weight from chart then divide by 10, then base (1.5)
 			else:
-
 				if draft_position == "N/A":
 					acquisition_weight = 1.5
 				else:
-					acquisition_weight = round(float(acquisition_value_chart[draft_position - 1]) / 10 / 1.5, 2)
+					acquisition_weight = round(float(acquisition_weight_chart[draft_position - 1]) / 10 / 2 / 1.5, 2)
 
 				if acquisition_weight < 1.5:
 					acquisition_weight = 1.5
 
 				weighted_PR = round(PR * IP, 2)
-				acquisition_value = round(weighted_PR / acquisition_weight, 2)
+				# if weighted PR < 0, multiply by acquisition weight
+				if weighted_PR < 0:
+					acquisition_value = round(weighted_PR * acquisition_weight, 2)
+				else:
+					acquisition_value = round(weighted_PR / acquisition_weight, 2)
 
+			# add to ordered json for upload
 			insert_json["player"] = player
 			insert_json["weighted_PR"] = weighted_PR
 			insert_json["acquired"] = each_player["acquired"]
@@ -161,13 +189,16 @@ def acquisitionValue(db, sport, year, owner_number):
 			insert_json["SV"] = each_player["SV"]
 			insert_json["ERA"] = each_player["ERA"]
 			insert_json["WHIP"] = each_player["WHIP"]
+			insert_json["hit_or_pit"] = "pitcher"
 
+			# just overwrite whatever player had with new, ordered json
 			db[collection_acquisition].update({"player": player}, insert_json)
 			continue
 
-		print insert_json
+		#print insert_json
 		#print ""
 
+		# just overwrite whatever player had with new, ordered json
 		db[collection_acquisition].update({"player": player}, insert_json)
 		
 

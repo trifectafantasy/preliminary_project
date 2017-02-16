@@ -44,20 +44,16 @@ def acquisitionValue(db, sport, year, owner_number):
 
 			# if trade, set acquisition stats as N/A
 			if acquired == "Trade":
-
 				acquisition_weight = "N/A"
 				acquisition_value = "N/A"
 
 			else:
-
 				# if undrafted, weight is 1.5
 				if draft_position == "N/A":
 					acquisition_weight = 1.5
-
-				# if drafted, take drafted acqusition weight from chart, and divide by 10 then 1.5 (minimu)
+				# if drafted, take drafted acqusition weight from chart, and divide by 10 then 1.5 (minimum)
 				else:
 					acquisition_weight = round(float(acquisition_weight_chart[draft_position - 1]) / 10 / 1.5, 2)
-
 				# can't have an acquisition weight less than 1.5
 				if acquisition_weight < 1.5:
 					acquisition_weight = 1.5
@@ -93,13 +89,11 @@ def acquisitionValue(db, sport, year, owner_number):
 
 		# if trade, set acquisition stats as N/A, but still calculate weighted PR
 		if acquired == "Trade":
-
 			acquisition_weight = "N/A"
 			acquisition_value = "N/A"
 			weighted_PR = round(PR * GP, 2)
 
 		else:
-
 			# if undrafted, set at minimum acquisition weight, 1.5
 			if draft_position == "N/A":
 				acquisition_weight = 1.5
@@ -111,10 +105,12 @@ def acquisitionValue(db, sport, year, owner_number):
 			if acquisition_weight < 1.5:
 				acquisition_weight = 1.5
 
+			# if weighted PR < 0, multiply by acquisition weight
 			weighted_PR = round(PR * GP, 2)
-
-			# acquisition_value = weighted pr / acquisition weight
-			acquisition_value = round(weighted_PR / acquisition_weight, 2)
+			if weighted_PR < 0:
+				acquisition_value = round(weighted_PR * acquisition_weight, 2)
+			else:
+				acquisition_value = round(weighted_PR / acquisition_weight, 2)
 
 		# add to ordered json for upload
 		insert_json["player"] = each_player["player"]
@@ -137,7 +133,7 @@ def acquisitionValue(db, sport, year, owner_number):
 		insert_json["TO"] = each_player["TO"]
 		insert_json["PTS"] = each_player["PTS"]
 
-		print insert_json
+		#print insert_json
 		#print ""
 
 		# just overwrite whatever player had with new, ordered json
