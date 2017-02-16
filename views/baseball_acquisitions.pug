@@ -16,18 +16,17 @@ html
 				a(href= '/football_coach_home_page' class = 'navbar') Football Coach  
 
 		if owner === 'all'
-			if hit_or_pit == "hit"
+			if hit_or_pit == "hitter"
 				h2= "Combined Hitter Baseball Acquisition Analysis"
-			else if hit_or_pit == "pit"
+			else if hit_or_pit == "pitcher"
 				h2= "Combined Pitcher Baseball Acquisition Analysis"
 		else
-			if hit_or_pit == "hit"
+			if hit_or_pit == "hitter"
 				h2= owner + "'s " + year + " Hitter Baseball Acquisition Analysis"
-			else if hit_or_pit == "pit"
+			else if hit_or_pit == "pitcher"
 				h2= owner + "'s " + year + " Pitcher Baseball Acquisition Analysis"
 
-		if hit_or_pit == "hit"
-		
+		if hit_or_pit == "hitter"
 			table
 				thead
 					tr
@@ -96,7 +95,7 @@ html
 										td= val					
 
 
-		else if hit_or_pit == "pit"
+		else if hit_or_pit == "pitcher"
 			table
 					thead
 						tr

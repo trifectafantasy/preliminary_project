@@ -50,375 +50,6 @@ router.get('/', function(req, res) {
 });
 
 
-// route to acquisition home page
-router.get('/acquisition_value_home_page', function(req, res) {
-	res.render('acquisition_value_home_page');
-}) // end of acquisition home page
-
-
-// route to baseball acquisition values given either hitters or pitchers
-router.get('/owner/:owner_number/:sport/acquisitions/:year/:hit_or_pit', function(req, res) {
-
-	// set variables from request url
-	var sport = req.params.sport;
-	var year = req.params.year;
-	var owner_number = req.params.owner_number;
-	var hit_or_pit = req.params.hit_or_pit;
-
-	if (sport === 'baseball') {
-		completed_sport_season = completed_baseball_season;
-	}		
-
-	// if year is in future of last completed season
-	if (year > completed_sport_season) {
-		
-		// make sure sport is baseball
-		if (sport === 'baseball') {
-
-			// if all owners
-			if (owner_number == 'all') {
-				
-				// scrape draft once
-				var baseball_draft = require('./draft.js')(req, res, db, sport, year, function(err, call4) {
-					console.log("drafted players done");		
-
-					// scrape PRs once
-					var pr_scrape = require('./baseball_acquisitions_pr.js')(req, res, db, sport, year, function(err, call2) {
-						console.log("pr srape done");	
-
-						// set array of numbers
-						var owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-
-						// call function that synchronously loops through acquistions for each team
-						all_baseball_acquisitions(0, owner_list);
-						
-					}) // end of draft scrape
-				}) // end of pr scrape	
-
-				// function that synchronously updates acquisitions for each team
-				var all_baseball_acquisitions = function(x, owner_list) {
-
-					// loop through owner list
-					if (x < owner_list.length) {
-
-						// set owner number
-						owner_number = owner_list[x];
-
-						// scrape active stats
-						var active_stats = require('./baseball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call1) {
-							console.log("active stats scrape done");
-
-							// scrape additions
-							var baseball_add = require('./baseball_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
-								console.log("added players done");
-
-								// add aux stats in
-								var baseball_aux = require('./baseball_acquisitions_aux.js')(req, res, db, sport, year, owner_number, function(err, call5) { 
-									console.log("aux stats done");
-
-									var options = {
-										args: [sport, year, owner_number]
-									}
-
-									// create acquisition values
-									pyshell.run('baseball_acquisitions.py', options, function(err) {
-										console.log("acquisitions python script done");
-										all_baseball_acquisitions(x + 1, owner_list);
-									}) // end of pyshell										
-								}) // end of basketball auxiliary
-							}) // end of basketball add 
-						}) // end of active stats
-					}
-
-					// if done with all the owners in owners_list
-					else {
-						// reset owner number (after it has gone through loop) to all for all display
-						owner_number = 'all';
-						var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number, hit_or_pit)			
-					}
-				} // end of all_basketball_acquisitions function
-			
-			} // end of if all owners
-
-			// if individual owner
-			else {
-				// scrape drafted
-				var baseball_draft = require('./draft.js')(req, res, db, sport, year, function(err, call4) {
-					console.log("drafted players done");		
-
-					// scrape PRs
-					var pr_scrape = require('./baseball_acquisitions_pr.js')(req, res, db, sport, year, function(err, call2) {
-						console.log("pr srape done");			
-
-						// scrape active stats
-						var active_stats = require('./baseball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call1) {
-							console.log("active stats scrape done");
-
-							// scrape additions
-							var baseball_add = require('./baseball_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
-								console.log("added players done");
-
-								var baseball_aux = require('./baseball_acquisitions_aux.js')(req, res, db, sport, year, owner_number, function(err, call5) { 
-									console.log("aux stats done");
-
-									var options = {
-										args: [sport, year, owner_number]
-									}
-
-									// create acquisition values
-									pyshell.run('baseball_acquisitions.py', options, function(err) {
-										console.log("python script done");
-										var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number, hit_or_pit)			
-									}) // end of pyshell						
-
-								}) // end of baseball aux include
-							}) // end of add scrape
-						}) // end of active stats scrape
-					}) // end of pr scrape
-				}) // end of draft scrape			
-			} // end of if individual owner
-		} // end of if baseball check
-	} // end of if need to scrape (current season)
-
-	// if season in past, just scrape
-	else {
-		var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number, hit_or_pit)			
-	}
-
-	
-
-}) // end of router get for baseball acquisitions
-
-// route to football and basketball acquistion values
-router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) {
-
-	// set variables from request url
-	var sport = req.params.sport;
-	var year = req.params.year;
-	var owner_number = req.params.owner_number
-
-	// set completed season for check if in season or not depending on sport
-	if (sport === 'football') {
-		completed_sport_season = completed_football_season;
-	}
-	else if (sport === 'basketball') {
-		completed_sport_season = completed_basketball_season;
-	}
-
-	// if year is greater than what's been completed, scrape
-	if (year > completed_sport_season) {
-
-		// if sport is football
-		if (sport == 'football') {
-
-			// if owner is all
-			if (owner_number == 'all') {
-
-				// scrape draft once
-				var football_draft = require('./draft.js')(req, res, db, sport, year, function(err, call4) {
-					console.log("drafted players done");
-
-					// set array of numbers
-					var owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-
-					// call function that synchronously loops through acquistions for each team
-					all_football_acquisitions(0, owner_list);
-					
-				}) // end of draft scrape
-
-
-				// function that synchronously updates acquisitions for each team
-				var all_football_acquisitions = function(x, owner_list) {
-
-					if (x < owner_list.length) {
-
-						owner_number = owner_list[x];
-
-						var active_stats = require('./football_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call){
-							console.log("active stats scrape done");
-
-							var football_add = require('./football_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
-								console.log("added players done");
-
-								var football_aux = require('./football_acquisitions_aux.js')(req, res, db, sport, year, owner_number, function(err, call5) {
-									console.log("aux stats added");
-
-									var options = {
-										args: [sport, year, owner_number]
-									}
-
-									pyshell.run('football_acquisitions.py', options, function(err) {
-										console.log("acquisitions python script complete");
-
-										all_football_acquisitions(x + 1, owner_list);
-									
-									}) // end of pyshell 
-								}) // end of football auxiliary
-							}) // end of football add 
-						}) // end of active stats
-					}
-
-					// if done with all the owners in owners_list
-					else {
-
-						// reset owner number (after it has gone through loop) to all for all display
-						owner_number = 'all';
-						var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number)			
-					}
-
-				} // end of all_football_acquisitions function
-
-			} // end of all owners
-
-			// if owner is a specific owner
-			else {
-
-				// send to script that adds drafted players
-				var football_draft = require('./draft.js')(req, res, db, sport, year, function(err, call2) {
-					console.log("drafted players done");			
-				
-					// send to script that pulls active stats
-					var active_stats = require('./football_active_stats.js')(req, res, db, sport, year, owner_number, function(err, football_owner_number) {
-						console.log("active stats scrape done");
-
-						// send to script that adds added players
-						var football_add = require('./football_add.js')(req, res, db, sport, year, owner_number, function(err, call) {
-							console.log("added players done");
-
-							var football_auxiliary = require('./football_acquisitions_aux.js')(req, res, db, sport, year, owner_number, function(err, call4) {
-								console.log("aux stats complete");
-
-								var options = {
-									args: [sport, year, owner_number]
-								}
-
-								// python script that determines acqusition value
-								pyshell.run('football_acquisitions.py', options, function(err) {
-									console.log("acquisition python script complete");
-									var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number)			
-								}) // end of python script
-
-							}) // end of aux
-						}) // end of football draft script
-					}) // end of football add script
-				})	// end of footbabll draft
-			} // end of else for specific owner
-		} // end of if football
-
-		else if (sport == 'basketball') {
-
-			if (owner_number == 'all') {
-				
-				// scrape PR once
-				var pr_scrape = require('./basketball_acquisitions_pr.js')(req, res, db, sport, year, function(err, call2) {
-					console.log("PR scrape done");
-
-					// scrape draft once
-					var basketball_draft = require('./draft.js')(req, res, db, sport, year, function(err, call4) {
-						console.log("drafted players done");
-
-						// set array of numbers
-						var owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-
-						// call function that synchronously loops through acquistions for each team
-						all_basketball_acquisitions(0, owner_list);
-						
-					}) // end of draft scrape
-				}) // end of pr scrape	
-
-
-			// function that synchronously updates acquisitions for each team
-			var all_basketball_acquisitions = function(x, owner_list) {
-
-				if (x < owner_list.length) {
-
-					owner_number = owner_list[x];
-
-					var active_stats = require('./basketball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call){
-						console.log("active stats scrape done");
-
-						var basketball_add = require('./basketball_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
-							console.log("added players done");
-
-							var basketball_aux = require('./basketball_acquisitions_aux.js')(req, res, db, sport, year, owner_number, function(err, call5) {
-								console.log("aux stats added");
-
-								var options = {
-									args: [sport, year, owner_number]
-								}
-
-								pyshell.run('basketball_acquisitions.py', options, function(err) {
-									console.log("acquisitions python script complete");
-
-									all_basketball_acquisitions(x + 1, owner_list);
-								
-								}) // end of pyshell 
-							}) // end of basketball auxiliary
-						}) // end of basketball add 
-					}) // end of active stats
-				}
-
-				// if done with all the owners in owners_list
-				else {
-
-					// reset owner number (after it has gone through loop) to all for all display
-					owner_number = 'all';
-					var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number)			
-				}
-			} // end of all_basketball_acquisitions function
-
-
-			} // end of all owners			
-
-			else {
-
-				// scrape PR
-				var pr_scrape = require('./basketball_acquisitions_pr.js')(req, res, db, sport, year, function(err, call2) {
-					console.log("PR scrape done");
-
-					// scrape draft
-					var basketball_draft = require('./draft.js')(req, res, db, sport, year, function(err, call4) {
-						console.log("drafted players done");
-
-						// scrape active stats
-						var active_stats = require('./basketball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call){
-							console.log("active stats scrape done");
-
-							// scrape and intialize acquired
-							var basketball_add = require('./basketball_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
-								console.log("added players done");
-
-								// add drafted and PR to acqusitions
-								var basketball_aux = require('./basketball_acquisitions_aux.js')(req, res, db, sport, year, owner_number, function(err, call5) {
-									console.log("aux stats added");
-
-									var options = {
-										args: [sport, year, owner_number]
-									}
-
-									// python  script that determines acquisition value
-									pyshell.run('basketball_acquisitions.py', options, function(err) {
-										console.log('acquisitions python sript done');
-										var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number)
-									}) // end of pyshell 
-								}) // end of basketball aux
-							}) // end of basketball add 
-						}) // end of active stats 
-					}) // end of draft scrape
-				}) // end of pr scrape
-			} 
-		} // end of if basketball
-	}
-	// if don't need to scrape, just pull, sort and display
-	else {
-
-		var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number)
-
-	} // end of if don't need to scrape, just dispaly
-	
-	
-}) // end of route to football and basketball acquisition stats
-
 // route to home page for each trifecta season's standings (individual sports and trifefcta)
 router.get('/standings_home_page/:year1/:year2', function(req, res) {
 	var year1 = req.params.year1;
@@ -1224,6 +855,375 @@ router.get('/:sport/trades/:year', function(req, res) {
 	}
 
 });
+
+// route to acquisition home page
+router.get('/acquisition_value_home_page', function(req, res) {
+	res.render('acquisition_value_home_page');
+}) // end of acquisition home page
+
+
+// route to football and basketball acquistion values
+router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) {
+
+	// set variables from request url
+	var sport = req.params.sport;
+	var year = req.params.year;
+	var owner_number = req.params.owner_number
+
+	// set completed season for check if in season or not depending on sport
+	if (sport === 'football') {
+		completed_sport_season = completed_football_season;
+	}
+	else if (sport === 'basketball') {
+		completed_sport_season = completed_basketball_season;
+	}
+
+	// if year is greater than what's been completed, scrape
+	if (year > completed_sport_season) {
+
+		// if sport is football
+		if (sport == 'football') {
+
+			// if owner is all
+			if (owner_number == 'all') {
+
+				// scrape draft once
+				var football_draft = require('./draft.js')(req, res, db, sport, year, function(err, call4) {
+					console.log("drafted players done");
+
+					// set array of numbers
+					var owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+
+					// call function that synchronously loops through acquistions for each team
+					all_football_acquisitions(0, owner_list);
+					
+				}) // end of draft scrape
+
+
+				// function that synchronously updates acquisitions for each team
+				var all_football_acquisitions = function(x, owner_list) {
+
+					if (x < owner_list.length) {
+
+						owner_number = owner_list[x];
+
+						var active_stats = require('./football_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call){
+							console.log("active stats scrape done");
+
+							var football_add = require('./football_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
+								console.log("added players done");
+
+								var football_aux = require('./football_acquisitions_aux.js')(req, res, db, sport, year, owner_number, function(err, call5) {
+									console.log("aux stats added");
+
+									var options = {
+										args: [sport, year, owner_number]
+									}
+
+									pyshell.run('football_acquisitions.py', options, function(err) {
+										console.log("acquisitions python script complete");
+
+										all_football_acquisitions(x + 1, owner_list);
+									
+									}) // end of pyshell 
+								}) // end of football auxiliary
+							}) // end of football add 
+						}) // end of active stats
+					}
+
+					// if done with all the owners in owners_list
+					else {
+
+						// reset owner number (after it has gone through loop) to all for all display
+						owner_number = 'all';
+						var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number)			
+					}
+
+				} // end of all_football_acquisitions function
+
+			} // end of all owners
+
+			// if owner is a specific owner
+			else {
+
+				// send to script that adds drafted players
+				var football_draft = require('./draft.js')(req, res, db, sport, year, function(err, call2) {
+					console.log("drafted players done");			
+				
+					// send to script that pulls active stats
+					var active_stats = require('./football_active_stats.js')(req, res, db, sport, year, owner_number, function(err, football_owner_number) {
+						console.log("active stats scrape done");
+
+						// send to script that adds added players
+						var football_add = require('./football_add.js')(req, res, db, sport, year, owner_number, function(err, call) {
+							console.log("added players done");
+
+							var football_auxiliary = require('./football_acquisitions_aux.js')(req, res, db, sport, year, owner_number, function(err, call4) {
+								console.log("aux stats complete");
+
+								var options = {
+									args: [sport, year, owner_number]
+								}
+
+								// python script that determines acqusition value
+								pyshell.run('football_acquisitions.py', options, function(err) {
+									console.log("acquisition python script complete");
+									var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number)			
+								}) // end of python script
+
+							}) // end of aux
+						}) // end of football draft script
+					}) // end of football add script
+				})	// end of footbabll draft
+			} // end of else for specific owner
+		} // end of if football
+
+		else if (sport == 'basketball') {
+
+			if (owner_number == 'all') {
+				
+				// scrape PR once
+				var pr_scrape = require('./basketball_acquisitions_pr.js')(req, res, db, sport, year, function(err, call2) {
+					console.log("PR scrape done");
+
+					// scrape draft once
+					var basketball_draft = require('./draft.js')(req, res, db, sport, year, function(err, call4) {
+						console.log("drafted players done");
+
+						// set array of numbers
+						var owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+
+						// call function that synchronously loops through acquistions for each team
+						all_basketball_acquisitions(0, owner_list);
+						
+					}) // end of draft scrape
+				}) // end of pr scrape	
+
+
+			// function that synchronously updates acquisitions for each team
+			var all_basketball_acquisitions = function(x, owner_list) {
+
+				if (x < owner_list.length) {
+
+					owner_number = owner_list[x];
+
+					var active_stats = require('./basketball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call){
+						console.log("active stats scrape done");
+
+						var basketball_add = require('./basketball_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
+							console.log("added players done");
+
+							var basketball_aux = require('./basketball_acquisitions_aux.js')(req, res, db, sport, year, owner_number, function(err, call5) {
+								console.log("aux stats added");
+
+								var options = {
+									args: [sport, year, owner_number]
+								}
+
+								pyshell.run('basketball_acquisitions.py', options, function(err) {
+									console.log("acquisitions python script complete");
+
+									all_basketball_acquisitions(x + 1, owner_list);
+								
+								}) // end of pyshell 
+							}) // end of basketball auxiliary
+						}) // end of basketball add 
+					}) // end of active stats
+				}
+
+				// if done with all the owners in owners_list
+				else {
+
+					// reset owner number (after it has gone through loop) to all for all display
+					owner_number = 'all';
+					var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number)			
+				}
+			} // end of all_basketball_acquisitions function
+
+
+			} // end of all owners			
+
+			else {
+
+				// scrape PR
+				var pr_scrape = require('./basketball_acquisitions_pr.js')(req, res, db, sport, year, function(err, call2) {
+					console.log("PR scrape done");
+
+					// scrape draft
+					var basketball_draft = require('./draft.js')(req, res, db, sport, year, function(err, call4) {
+						console.log("drafted players done");
+
+						// scrape active stats
+						var active_stats = require('./basketball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call){
+							console.log("active stats scrape done");
+
+							// scrape and intialize acquired
+							var basketball_add = require('./basketball_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
+								console.log("added players done");
+
+								// add drafted and PR to acqusitions
+								var basketball_aux = require('./basketball_acquisitions_aux.js')(req, res, db, sport, year, owner_number, function(err, call5) {
+									console.log("aux stats added");
+
+									var options = {
+										args: [sport, year, owner_number]
+									}
+
+									// python  script that determines acquisition value
+									pyshell.run('basketball_acquisitions.py', options, function(err) {
+										console.log('acquisitions python sript done');
+										var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number)
+									}) // end of pyshell 
+								}) // end of basketball aux
+							}) // end of basketball add 
+						}) // end of active stats 
+					}) // end of draft scrape
+				}) // end of pr scrape
+			} 
+		} // end of if basketball
+	}
+	// if don't need to scrape, just pull, sort and display
+	else {
+
+		var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number)
+
+	} // end of if don't need to scrape, just dispaly
+	
+}) // end of route to football and basketball acquisition stats
+
+
+// route to baseball acquisition values given either hitters or pitchers
+router.get('/owner/:owner_number/:sport/acquisitions/:year/:hit_or_pit', function(req, res) {
+
+	// set variables from request url
+	var sport = req.params.sport;
+	var year = req.params.year;
+	var owner_number = req.params.owner_number;
+	var hit_or_pit = req.params.hit_or_pit;
+
+	if (sport === 'baseball') {
+		completed_sport_season = completed_baseball_season;
+	}		
+
+	// if year is in future of last completed season
+	if (year > completed_sport_season) {
+		
+		// make sure sport is baseball
+		if (sport === 'baseball') {
+
+			// if all owners
+			if (owner_number == 'all') {
+				
+				// scrape draft once
+				var baseball_draft = require('./draft.js')(req, res, db, sport, year, function(err, call4) {
+					console.log("drafted players done");		
+
+					// scrape PRs once
+					var pr_scrape = require('./baseball_acquisitions_pr.js')(req, res, db, sport, year, function(err, call2) {
+						console.log("pr srape done");	
+
+						// set array of numbers
+						var owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+
+						// call function that synchronously loops through acquistions for each team
+						all_baseball_acquisitions(0, owner_list);
+						
+					}) // end of draft scrape
+				}) // end of pr scrape	
+
+				// function that synchronously updates acquisitions for each team
+				var all_baseball_acquisitions = function(x, owner_list) {
+
+					// loop through owner list
+					if (x < owner_list.length) {
+
+						// set owner number
+						owner_number = owner_list[x];
+
+						// scrape active stats
+						var active_stats = require('./baseball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call1) {
+							console.log("active stats scrape done");
+
+							// scrape additions
+							var baseball_add = require('./baseball_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
+								console.log("added players done");
+
+								// add aux stats in
+								var baseball_aux = require('./baseball_acquisitions_aux.js')(req, res, db, sport, year, owner_number, function(err, call5) { 
+									console.log("aux stats done");
+
+									var options = {
+										args: [sport, year, owner_number]
+									}
+
+									// create acquisition values
+									pyshell.run('baseball_acquisitions.py', options, function(err) {
+										console.log("acquisitions python script done");
+										all_baseball_acquisitions(x + 1, owner_list);
+									}) // end of pyshell										
+								}) // end of basketball auxiliary
+							}) // end of basketball add 
+						}) // end of active stats
+					}
+
+					// if done with all the owners in owners_list
+					else {
+						// reset owner number (after it has gone through loop) to all for all display
+						owner_number = 'all';
+						var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number, hit_or_pit)			
+					}
+				} // end of all_basketball_acquisitions function
+			
+			} // end of if all owners
+
+			// if individual owner
+			else {
+				// scrape drafted
+				var baseball_draft = require('./draft.js')(req, res, db, sport, year, function(err, call4) {
+					console.log("drafted players done");		
+
+					// scrape PRs
+					var pr_scrape = require('./baseball_acquisitions_pr.js')(req, res, db, sport, year, function(err, call2) {
+						console.log("pr srape done");			
+
+						// scrape active stats
+						var active_stats = require('./baseball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call1) {
+							console.log("active stats scrape done");
+
+							// scrape additions
+							var baseball_add = require('./baseball_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
+								console.log("added players done");
+
+								var baseball_aux = require('./baseball_acquisitions_aux.js')(req, res, db, sport, year, owner_number, function(err, call5) { 
+									console.log("aux stats done");
+
+									var options = {
+										args: [sport, year, owner_number]
+									}
+
+									// create acquisition values
+									pyshell.run('baseball_acquisitions.py', options, function(err) {
+										console.log("python script done");
+										var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number, hit_or_pit)			
+									}) // end of pyshell						
+
+								}) // end of baseball aux include
+							}) // end of add scrape
+						}) // end of active stats scrape
+					}) // end of pr scrape
+				}) // end of draft scrape			
+			} // end of if individual owner
+		} // end of if baseball check
+	} // end of if need to scrape (current season)
+
+	// if season in past, just scrape
+	else {
+		var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number, hit_or_pit)			
+	}
+
+}) // end of router get for baseball acquisitions
+
+
 
 // home page for football coach rankings
 router.get('/football_coach_home_page', function(req, res) {
