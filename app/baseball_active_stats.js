@@ -142,14 +142,14 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 			 				//console.log(json);
 						}
 
-			 			
-			 			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).insert(json)
-			 								
-			 			// if scrape reaches end of page			
-			 			if (json.player == "") {
-				 			complete();
+						if (json.player == "") {
+							complete();
+						}
+						else if (json.player != "BATTER" && json.player != "PITCHER") {
+			 				db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).insert(json)
 
-			 			}
+						} 
+			 			
 					}) // end of rows iterations
 				} // end of if(!error)
 			

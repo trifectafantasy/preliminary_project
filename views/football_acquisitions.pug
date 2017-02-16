@@ -43,7 +43,7 @@ html
 					th REC TAR
 					th MISC FUML
 					th MISC TD
-					if owners === 'all'
+					if owner === 'all'
 						th OWNER
 
 			tbody
@@ -89,6 +89,6 @@ html
 								td= val
 							if cat === "MISC_TD"
 								td= val
-							if owners === 'all'
+							if owner === 'all'
 								if cat === 'owner'
 									td= val		

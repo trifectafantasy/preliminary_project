@@ -25,17 +25,28 @@ module.exports = function(req, res, db, sport, year, callback) {
 		var end_month = d.getMonth() + 1;
 		var end_day = d.getDate();
 
+		// to account for day needing to be 2 digits
+		if (end_day < 10) {
+			end_day = "0" + String(end_day)
+		}		
+
+		// to account for month needing to be 2 digits
+		if (end_month < 10) {
+			end_month = "0" + String(end_month)
+		}				
+
 		// url for scrape
-		if (sport === "basketball") {
-			var url = 'http://games.espn.com/fba/recentactivity?leagueId=100660&seasonId=' + year + '&activityType=2&startDate=20160815&endDate=' + end_year + end_month + end_day + '&teamId=-1&tranType=4';
+		if (sport === "football") {
+			var url = 'http://games.espn.com/ffl/recentactivity?leagueId=154802&seasonId=' + year + '&activityType=2&startDate=' + year + '0801&endDate=' + end_year + end_month + end_day + '&teamId=-1&tranType=4';
 		}
 
-		else if (sport === "football") {
-			var url = 'http://games.espn.com/ffl/recentactivity?leagueId=154802&seasonId=' + year + '&activityType=2&startDate=20160822&endDate=' + end_year + end_month + end_day + '&teamId=-1&tranType=4';
+		else if (sport === "basketball") {
+			var start_year = String(parseInt(year) - 1);
+			var url = 'http://games.espn.com/fba/recentactivity?leagueId=100660&seasonId=' + year + '&activityType=2&startDate=' + start_year + '1001&endDate=' + end_year + end_month + end_day + '&teamId=-1&tranType=4';
 		}
 
 		else if (sport === "baseball") {
-			var url = 'http://games.espn.com/flb/recentactivity?leagueId=109364&seasonId=' + year + '&activityType=2&startDate=20160319&endDate=' + end_year + end_month + end_day + '&teamId=-1&tranType=4';
+			var url = 'http://games.espn.com/flb/recentactivity?leagueId=109364&seasonId=' + year + '&activityType=2&startDate=' + year + '0301&endDate=' + end_year + end_month + end_day + '&teamId=-1&tranType=4';
 		}
 
 		// request for scrape
@@ -46,8 +57,6 @@ module.exports = function(req, res, db, sport, year, callback) {
 
 				// use cheerio to traverse and scrape html 
 				var $ = cheerio.load(html);
-
-				// iterate through every game in the week
 
 				scrape = $('tr.tableSubHead');
 				//console.log(scrape);
@@ -172,7 +181,6 @@ module.exports = function(req, res, db, sport, year, callback) {
 									//console.log("removing excess...");
 								}
 
-
 								owner_number_list.push(owner1_number);
 								players_processed += 1
 								db.collection(sport + "_trades_" + year).insert({"trade_number": trades_processed, "player": player, "owner": owner, "owner_number": owner1_number})
@@ -185,7 +193,6 @@ module.exports = function(req, res, db, sport, year, callback) {
 									owner = owner.slice(0, owner.length - 1);
 									//console.log("removing excess...");
 								}
-
 
 								owner_number_list.push(owner2_number);
 								players_processed += 1

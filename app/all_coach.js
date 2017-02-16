@@ -53,16 +53,11 @@ module.exports = function(req, res, db, sport, year, callback) {
 
 						// each time done, call complete to see when done
 						complete();
-					}				
-				})
-
-			})
-
-
-		})
-
-
-	})
+					} // end of for loop	
+				}) // end of owner name pull
+			}) // end of pulling individual acquisition collection
+		}) // end of forEach owner list loop
+	}) // end of remove all acquisiition collection
 
 var complete = function() {
 	complete_count += 1;
@@ -77,8 +72,7 @@ var complete = function() {
 		}		
 	}
 
-
-}
+} // end of complete function
 	
 
 }

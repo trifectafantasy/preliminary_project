@@ -44,7 +44,7 @@ html
 					th BLK
 					th TO
 					th PTS
-					if owners === "all"
+					if owner === "all"
 						th OWNER
 
 			tbody
@@ -71,11 +71,11 @@ html
 							if cat === "FG"
 								td= val
 							if cat === "FG_PCT"
-								td= parseFloat(val).toFixed(4)
+								td= parseFloat(val).toFixed(3)
 							if cat === "FT"
 								td= val
 							if cat === "FT_PCT"
-								td= parseFloat(val).toFixed(4)
+								td= parseFloat(val).toFixed(3)
 							if cat === "THREEPM"
 								td= val
 							if cat === "REB"
@@ -90,7 +90,7 @@ html
 								td= val
 							if cat === "PTS"
 								td= val
-							if owners === 'all'
+							if owner === 'all'
 								if cat === 'owner'
 									td= val					
 

@@ -10,7 +10,7 @@ var mongo = require('mongodb');
 var assert = require('assert');
 
 // create callback function
-module.exports = function(req, res, db, sport, year, owner_number, callback) {
+module.exports = function(req, res, db, sport, year, callback) {
 
 	// list of start indexes to cycle through
 	var start_index_list = ["0", "50", "100", "150", "200", "250", "300", "350", "400", "450", "500", "550", "600", "650", "700", "750", "800", "850", "900", "950"];
