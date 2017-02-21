@@ -50,6 +50,8 @@ router.get('/', function(req, res) {
 });
 
 
+
+
 // route to home page for each trifecta season's standings (individual sports and trifefcta)
 router.get('/standings_home_page/:year1/:year2', function(req, res) {
 	var year1 = req.params.year1;
@@ -60,29 +62,21 @@ router.get('/standings_home_page/:year1/:year2', function(req, res) {
 		var football_in_season = true;
 		var basketball_in_season = true;
 		var baseball_in_season = false;
-
-		res.render('full_season_standings_home_page', {
-			year1: year1,
-			year2: year2,
-			football_in_season: football_in_season,
-			basketball_in_season: basketball_in_season,
-			baseball_in_season: baseball_in_season
-		})
 	}
 
 	else {
 		var football_in_season = true;
 		var basketball_in_season = true;
 		var baseball_in_season = true;
-
-		res.render('full_season_standings_home_page', {
-			year1: year1,
-			year2: year2,
-			football_in_season: football_in_season,
-			basketball_in_season: basketball_in_season,
-			baseball_in_season: baseball_in_season
-		})
 	}
+
+	res.render('full_season_standings_home_page', {
+		year1: year1,
+		year2: year2,
+		football_in_season: football_in_season,
+		basketball_in_season: basketball_in_season,
+		baseball_in_season: baseball_in_season
+	})	
 
 }) // end of route to home page for each season's individual sports and trifecta standings
 
@@ -568,6 +562,7 @@ router.get('/owner/:owner_number/matchups/:year1/:year2', function(req, res) {
 			// full regular season = 22 matchups
 			var baseball_completed_matchups = 22;
 				
+			// call matchups.js with all the necessary arguments
 			var match = require('./matchups.js')(req, res, db, owner_number, year1, year2, football_in_season, football_completed_matchups, football_playoffs, basketball_in_season, basketball_completed_matchups, basketball_playoffs, baseball_in_season, baseball_completed_matchups, baseball_playoffs);
 		}
 		// handle error case if years are greater than current
@@ -720,10 +715,10 @@ router.get('/:sport/trades/:year', function(req, res) {
 								year: year,
 								trader: disp_trade,
 							})
-						})
-					})
-				}) 					
-			}
+						}) // end of pull for trade display
+					}) // end of pyshell
+				}) // end of trade stats
+			} // end of if football
 
 			// if sport is basketball
 			else if (sport === 'basketball') {
@@ -750,12 +745,10 @@ router.get('/:sport/trades/:year', function(req, res) {
 								year: year,
 								trader: disp_trade
 							})
-						})
-
-					})
-
-				}) 			
-			}
+						}) // end of trade display
+					}) // end of pyshell
+				}) // end of trade stats
+			} // end of if basketball
 
 			// if sport is baseball
 			else if (sport === 'baseball') {
@@ -780,14 +773,13 @@ router.get('/:sport/trades/:year', function(req, res) {
 								year: year,
 								trader: disp_trade,
 							})
-						})
-					})
-					
-				})
-			}
+						}) // end of trade display
+					}) // end of pyshell
+				}) // end of trade stats
+			} // end of if baseball
 
-		});
-	}
+		}) // end of trade script
+	} // end of need to scrape
 
 	// if sport want trade analysis for was in the past, skip scrape
 	else {
@@ -799,9 +791,7 @@ router.get('/:sport/trades/:year', function(req, res) {
 			if (year === '2015') {
 				res.send("Sorry, but trade analysis unavailable for Football 2015")
 			}
-
 			else {
-
 				// sort and pull from trade database for rendering
 				db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["player", "asc"], ["owner", "asc"], ["PTS", "asc"]]}).toArray(function(e, docs) {
 					console.log('displaying trade analysis...');
@@ -811,10 +801,9 @@ router.get('/:sport/trades/:year', function(req, res) {
 						year: year,
 						trader: disp_trade,
 					})
-				})
-			}
-	
-		}
+				}) // end of trade display
+			} 
+		} // end of if football
 
 		// if sport is basketball
 		else if (sport === 'basketball') {
@@ -823,9 +812,7 @@ router.get('/:sport/trades/:year', function(req, res) {
 			if (year === '2016') {
 				res.send("Welp. No trades were made in Basketball 2016")
 			}
-
 			else {
-
 				// sort and pull from trade database for rendering
 				db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["player", "asc"], ["owner", "asc"], ["GP", "asc"]]}).toArray(function(e, docs) {
 					console.log('displaying trade analysis...');
@@ -835,10 +822,11 @@ router.get('/:sport/trades/:year', function(req, res) {
 						year: year,
 						trader: disp_trade
 					})
-				})				
+				}) // end of trade display
 			}
-	
-		}
+		} // end of if basketball
+
+		// if sport is baseball
 		else if (sport === 'baseball') {
 
 			// sort and pull from trade database for rendering
@@ -850,11 +838,16 @@ router.get('/:sport/trades/:year', function(req, res) {
 					year: year,
 					trader: disp_trade,
 				})
-			})			
-		}
-	}
+			}) // end of trade display
+		} // end of if baseball
+	} // end of no scrape, just display
 
-});
+}) // end of route to trades
+
+
+
+
+
 
 // route to acquisition home page
 router.get('/acquisition_value_home_page', function(req, res) {
@@ -1224,6 +1217,257 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year/:hit_or_pit', functio
 }) // end of router get for baseball acquisitions
 
 
+// route to origin home page
+router.get('/origin_home_page', function(req, res) {
+	res.render('origin_home_page')
+});
+
+// route to origin analysis
+router.get('/:sport/origin/:year', function(req, res) {
+
+	// set variables from request url
+	var sport = req.params.sport;
+	var year = req.params.year;
+
+	// set completed season for check if in season or not depending on sport
+	if (sport === 'football') {
+		completed_sport_season = completed_football_season;
+	}
+	else if (sport === 'basketball') {
+		completed_sport_season = completed_basketball_season;
+	}
+	else if (sport === 'baseball') {
+		completed_sport_season = completed_baseball_season;
+	}
+
+	if (year > completed_sport_season) {
+		
+		if (sport == "football") {
+
+			// send to script that adds drafted players
+			var football_draft = require('./draft.js')(req, res, db, sport, year, function(err, call2) {
+				console.log("drafted players done");
+
+				// set array of numbers
+				var owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]				
+
+				// call function that synchronously loops through acquistions for each team
+				all_football_origin(0, owner_list);		
+
+			})	// end of footbabll draft
+
+	// function that synchronously updates acquisitions for each team
+	var all_football_origin = function(x, owner_list) {
+
+		if (x < owner_list.length) {
+
+			owner_number = owner_list[x];
+
+			var active_stats = require('./football_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call){
+				console.log("active stats scrape done");
+
+				var football_add = require('./football_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
+					console.log("added players done");
+
+					var football_aux = require('./football_acquisitions_aux.js')(req, res, db, sport, year, owner_number, function(err, call5) {
+						console.log("aux stats added");
+
+						var options = {
+							args: [sport, year, owner_number]
+						}
+
+						pyshell.run('football_origin.py', options, function(err) {
+							console.log("origin python script complete");
+
+							all_football_origin(x + 1, owner_list);
+						
+						}) // end of pyshell 
+					}) // end of football auxiliary
+				}) // end of football add 
+			}) // end of active stats
+		}
+
+		// if done with all the owners in owners_list
+		else {
+
+			// reset owner number (after it has gone through loop) to all for all display
+			db.collection(sport + "_origin_" + year).find({}, {"_id": 0}).sort({"total_points": -1}).toArray(function(e, docs) {
+				origin_standings = docs;
+				console.log("displaying origin standings...");
+				res.render('origin', {
+					sport: sport,
+					year: year,
+					origin: origin_standings
+				})
+			})		
+		}
+
+	} // end of all_football_acquisitions function			
+		
+		} // end of if football
+
+		else if (sport == 'basketball') {
+
+
+			// scrape PR once
+			var pr_scrape = require('./basketball_acquisitions_pr.js')(req, res, db, sport, year, function(err, call2) {
+				console.log("PR scrape done");
+
+				// scrape draft once
+				var basketball_draft = require('./draft.js')(req, res, db, sport, year, function(err, call4) {
+					console.log("drafted players done");
+
+					// set array of numbers
+					var owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]	
+
+					// call function that synchronously loops through acquistions for each team
+					all_basketball_origin(0, owner_list);
+					
+				}) // end of draft scrape
+			}) // end of pr scrape	
+
+
+	// function that synchronously updates acquisitions for each team
+	var all_basketball_origin = function(x, owner_list) {
+
+		if (x < owner_list.length) {
+
+			owner_number = owner_list[x];
+
+			var active_stats = require('./basketball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call){
+				console.log("active stats scrape done");
+
+				var basketball_add = require('./basketball_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
+					console.log("added players done");
+
+					var basketball_aux = require('./basketball_acquisitions_aux.js')(req, res, db, sport, year, owner_number, function(err, call5) {
+						console.log("aux stats added");
+
+						var options = {
+							args: [sport, year, owner_number]
+						}
+
+						pyshell.run('basketball_origin.py', options, function(err) {
+							console.log("origin python script complete");
+
+							all_basketball_origin(x + 1, owner_list);
+						
+						}) // end of pyshell 
+
+					}) // end of basketball auxiliary
+				}) // end of basketball add 
+			}) // end of active stats
+		}
+
+		// if done with all the owners in owners_list
+		else {
+
+			// reset owner number (after it has gone through loop) to all for all display
+			db.collection(sport + "_origin_" + year).find({}, {"_id": 0}).sort({"total_pr": -1}).toArray(function(e, docs) {
+				origin_standings = docs;
+				console.log("displaying origin standings...");
+				res.render('origin', {
+					sport: sport,
+					year: year,
+					origin: origin_standings
+				})
+			})					
+		}
+
+	} // end of all_basketball_acquisitions function
+		
+		} // end of if basketball
+
+		else if (sport == 'baseball') {
+
+			// scrape draft once
+			var baseball_draft = require('./draft.js')(req, res, db, sport, year, function(err, call4) {
+				console.log("drafted players done");		
+
+				// scrape PRs once
+				var pr_scrape = require('./baseball_acquisitions_pr.js')(req, res, db, sport, year, function(err, call2) {
+					console.log("pr srape done");	
+
+					// set array of numbers
+					var owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+
+					// call function that synchronously loops through acquistions for each team
+					all_baseball_origin(0, owner_list);
+					
+				}) // end of draft scrape
+			}) // end of pr scrape	
+
+	// function that synchronously updates acquisitions for each team
+	var all_baseball_origin = function(x, owner_list) {
+
+		// loop through owner list
+		if (x < owner_list.length) {
+
+
+			// set owner number
+			owner_number = owner_list[x];
+
+			// scrape active stats
+			var active_stats = require('./baseball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call1) {
+				console.log("active stats scrape done");
+
+				// scrape additions
+				var baseball_add = require('./baseball_add.js')(req, res, db, sport, year, owner_number, function(err, call3) {
+					console.log("added players done");
+
+					// add aux stats in
+					var baseball_aux = require('./baseball_acquisitions_aux.js')(req, res, db, sport, year, owner_number, function(err, call5) { 
+						console.log("aux stats done");
+
+						var options = {
+							args: [sport, year, owner_number]
+						}
+
+						// create acquisition values
+						pyshell.run('baseball_origin.py', options, function(err) {
+							console.log("origin python script done");
+							all_baseball_origin(x + 1, owner_list);
+						}) // end of pyshell						
+
+					}) // end of basketball auxiliary
+				}) // end of basketball add 
+			}) // end of active stats
+		}
+
+		// if done with all the owners in owners_list
+		else {
+			// reset owner number (after it has gone through loop) to all for all display
+			db.collection(sport + "_origin_" + year).find({}, {"_id": 0}).sort({"total_pr": -1}).toArray(function(e, docs) {
+				origin_standings = docs;
+				console.log("displaying origin standings...");
+				res.render('origin', {
+					sport: sport,
+					year: year,
+					origin: origin_standings
+				})
+			})		
+		}
+	} // end of all_basall_acquisitions function
+
+		} // end of if baseball		
+	
+	} // end of if need to scrape
+
+	// if year is in past and just display
+	else {
+		// reset owner number (after it has gone through loop) to all for all display
+		db.collection(sport + "_origin_" + year).find({}, {"_id": 0}).sort({"total_pr": -1}).toArray(function(e, docs) {
+			origin_standings = docs;
+			console.log("displaying origin standings...");
+			res.render('origin', {
+				sport: sport,
+				year: year,
+				origin: origin_standings
+			})
+		})			
+	} // end of if just display
+
+}); // end of origin route
 
 // home page for football coach rankings
 router.get('/football_coach_home_page', function(req, res) {
