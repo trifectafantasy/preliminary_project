@@ -1,0 +1,179 @@
+html
+	head
+		title= "Origin Analysis"
+		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', href='/css/styles.css')
+
+	body
+		header
+			navbar
+				a(href= '/' class = 'navbar') Home Page
+				a(href= '/standings_home_page/2015/2016' class = 'navbar') 2015-2016 Standings
+				a(href= '/standings_home_page/2016/2017' class = 'navbar') 2016-2017 Standings
+				a(href= '/owner_matchup_home_page' class = 'navbar') Owner 2 Owner Matchup Records
+				a(href= '/trades_home_page' class = 'navbar') Trade Analysis
+				a(href= '/acquisition_value_home_page' class = 'navbar') Acquisition Value
+				a(href= '/origin_home_page' class = 'navbar') Origin Analysis
+				a(href= '/football_coach_home_page' class = 'navbar') Football Coach  
+
+		h2= year + " " + sport.charAt(0).toUpperCase() + sport.slice(1) + " Origin Analysis"
+		
+		if sport == "football"
+
+			p NOTE: Includes unscored week 17 and playoffs
+
+			table
+				thead
+					tr
+						th RANK
+						th OWNER
+						th TOTAL POINTS
+						th DRAFT %
+						th FA %
+						th TRADE %
+						th DRAFT POINTS
+						th FA POINTS
+						th TRADE POINTS
+
+				tbody
+					each readin, rank in origin
+						tr
+							td= rank + 1
+							each val, cat in readin
+								if cat === "owner"
+									td= val
+								if cat === "total_points"
+									td= parseFloat(val).toFixed(1)
+								if cat === "draft_pct"
+									td= parseFloat(val).toFixed(1) + "%"
+								if cat === "fa_pct"
+									td= parseFloat(val).toFixed(1) + "%"
+								if cat === "trade_pct"
+									td= parseFloat(val).toFixed(1) + "%"								
+								if cat === "draft_points"
+									td= parseFloat(val).toFixed(1)
+								if cat === "fa_points"
+									td= parseFloat(val).toFixed(1)
+								if cat === "trade_points"
+									td= parseFloat(val).toFixed(1)
+
+		else if sport == "basketball"
+
+			p NOTE: Includes unscored regular season stats and playoffs
+
+			table
+				thead
+					tr
+						th RANK
+						th OWNER
+						th TOTAL WEIGHTED PR
+						th DRAFT %
+						th FA %
+						th TRADE %
+						th DRAFT PR
+						th FA PR
+						th TRADE PR
+
+				tbody
+					each readin, rank in origin
+						tr
+							td= rank + 1
+							each val, cat in readin
+								if cat === "owner"
+									td= val
+								if cat === "total_pr"
+									td= parseFloat(val).toFixed(1)
+								if cat === "draft_pct"
+									td= parseFloat(val).toFixed(1) + "%"
+								if cat === "fa_pct"
+									td= parseFloat(val).toFixed(1) + "%"
+								if cat === "trade_pct"
+									td= parseFloat(val).toFixed(1) + "%"								
+								if cat === "draft_pr"
+									td= parseFloat(val).toFixed(1)
+								if cat === "fa_pr"
+									td= parseFloat(val).toFixed(1)
+								if cat === "trade_pr"
+									td= parseFloat(val).toFixed(1)
+
+
+		else if sport == "baseball"
+
+			p NOTE: Includes unscored regular season stats and playoffs
+
+			table
+				thead
+					tr
+						th RANK
+						th OWNER
+						th TOTAL WEIGHTED PR
+						th TOTAL DRAFT %
+						th TOTAL FA %
+						th TOTAL TRADE %
+						th TOTAL DRAFT PR
+						th TOTAL FA PR
+						th TOTAL TRADE PR
+						th TOTAL HITTER WEIGHTED PR
+						th TOTAL HITTER DRAFT %
+						th TOTAL HITTER FA %
+						th TOTAL HITTER TRADE %
+						th TOTAL HITTER DRAFT PR
+						th TOTAL HITTER FA PR
+						th TOTAL HITTER TRADE PR
+						th TOTAL PITCHER WEIGHTED PR
+						th TOTAL PITCHER DRAFT %
+						th TOTAL PITCHER FA %
+						th TOTAL PITCHER TRADE %
+						th TOTAL PITCHER DRAFT PR
+						th TOTAL PITCHER FA PR
+						th TOTAL PITCHER TRADE PR
+
+				tbody
+					each readin, rank in origin
+						tr
+							td= rank + 1
+							each val, cat in readin
+								if cat === "owner"
+									td= val
+								if cat === "total_pr"
+									td= parseFloat(val).toFixed(1)
+								if cat === "draft_pct"
+									td= parseFloat(val).toFixed(1) + "%"
+								if cat === "fa_pct"
+									td= parseFloat(val).toFixed(1) + "%"
+								if cat === "trade_pct"
+									td= parseFloat(val).toFixed(1) + "%"								
+								if cat === "draft_pr"
+									td= parseFloat(val).toFixed(1)
+								if cat === "fa_pr"
+									td= parseFloat(val).toFixed(1)
+								if cat === "trade_pr"
+									td= parseFloat(val).toFixed(1)
+								if cat === "hitter_total_pr"
+									td= parseFloat(val).toFixed(1)
+								if cat === "hitter_draft_pct"
+									td= parseFloat(val).toFixed(1) + "%"
+								if cat === "hitter_fa_pct"
+									td= parseFloat(val).toFixed(1) + "%"
+								if cat === "hitter_trade_pct"
+									td= parseFloat(val).toFixed(1) + "%"								
+								if cat === "hitter_draft_pr"
+									td= parseFloat(val).toFixed(1)
+								if cat === "hitter_fa_pr"
+									td= parseFloat(val).toFixed(1)
+								if cat === "hitter_trade_pr"
+									td= parseFloat(val).toFixed(1)
+								if cat === "pitcher_total_pr"
+									td= parseFloat(val).toFixed(1)
+								if cat === "pitcher_draft_pct"
+									td= parseFloat(val).toFixed(1) + "%"
+								if cat === "pitcher_fa_pct"
+									td= parseFloat(val).toFixed(1) + "%"
+								if cat === "pitcher_trade_pct"
+									td= parseFloat(val).toFixed(1) + "%"								
+								if cat === "pitcher_draft_pr"
+									td= parseFloat(val).toFixed(1)
+								if cat === "pitcher_fa_pr"
+									td= parseFloat(val).toFixed(1)
+								if cat === "pitcher_trade_pr"
+									td= parseFloat(val).toFixed(1)	

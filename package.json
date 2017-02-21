@@ -17,6 +17,7 @@
     "python-shell" : "latest",
     "pug"    : "latest",
     "async-foreach": "latest",
-    "mathjs" : "latest"
+    "mathjs" : "latest",
+    "jade-bootstrap": "latest"
   }
 }
