@@ -195,7 +195,7 @@ def baseballTrade(db, sport, year):
 
 # in a subprocess, open mongodb connection
 mongod = subprocess.Popen(["mongod"])
-time.sleep(2)
+time.sleep(.5)
 
 # connect to MongoDB
 try:
@@ -216,5 +216,5 @@ year = str(sys.argv[2])
 baseballTrade(db, sport, year)
 
 # sleep and terminate mongodb instance
-time.sleep(3)
+time.sleep(.5)
 mongod.terminate()

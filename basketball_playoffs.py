@@ -72,7 +72,7 @@ def combine_databases(db, collection_h2h, collection_roto, collection_playoffs, 
 
 # in a subprocess, open mongodb connection
 mongod = subprocess.Popen(["mongod"])
-time.sleep(2)
+time.sleep(.5)
 
 # connect to MongoDB
 try:
@@ -95,5 +95,5 @@ collection_playoffs = "basketball_playoffs_" + year
 combine_databases(db, collection_h2h, collection_roto, collection_playoffs, year)
 
 # sleep and terminate mongodb instance
-time.sleep(3)
+time.sleep(.5)
 mongod.terminate()
