@@ -49,6 +49,41 @@ router.get('/', function(req, res) {
 	});
 });
 
+router.get('/owner/:owner_number/profile', function(req, res) {
+	var owner_number = req.params.owner_number;
+
+	var start_year = 2015;
+	var end_year = current_year2;
+
+	var football_completed_season = true;
+	var basketball_completed_season = false;
+	var baseball_completed_season = false;
+
+	db.collection('owner' + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs) {
+		owner_name = docs[0]["owner"]
+		//console.log(owner_name);
+
+		var options = {
+			args: [owner_number, start_year, end_year, football_completed_season, basketball_completed_season, baseball_completed_season]
+		}
+
+		pyshell.run('profile.py', options, function(err) {
+			console.log("profile python script done");
+
+			db.collection("owner" + owner_number + "_profile_standings").find({}, {"_id": 0}).toArray(function(e, docs2) {
+				//console.log(docs2);
+				disp_profile_standings = docs2;
+
+				res.render('profile_standings', {
+					owner: owner_name,
+					profile_standings: disp_profile_standings
+				})
+			})
+		})
+	})
+
+});
+
 
 
 
@@ -845,10 +880,6 @@ router.get('/:sport/trades/:year', function(req, res) {
 }) // end of route to trades
 
 
-
-
-
-
 // route to acquisition home page
 router.get('/acquisition_value_home_page', function(req, res) {
 	res.render('acquisition_value_home_page');
@@ -1286,10 +1317,8 @@ router.get('/:sport/origin/:year', function(req, res) {
 				}) // end of football add 
 			}) // end of active stats
 		}
-
 		// if done with all the owners in owners_list
 		else {
-
 			// reset owner number (after it has gone through loop) to all for all display
 			db.collection(sport + "_origin_" + year).find({}, {"_id": 0}).sort({"total_points": -1}).toArray(function(e, docs) {
 				origin_standings = docs;
@@ -1307,7 +1336,6 @@ router.get('/:sport/origin/:year', function(req, res) {
 		} // end of if football
 
 		else if (sport == 'basketball') {
-
 
 			// scrape PR once
 			var pr_scrape = require('./basketball_acquisitions_pr.js')(req, res, db, sport, year, function(err, call2) {
@@ -1358,7 +1386,6 @@ router.get('/:sport/origin/:year', function(req, res) {
 				}) // end of basketball add 
 			}) // end of active stats
 		}
-
 		// if done with all the owners in owners_list
 		else {
 
@@ -1433,7 +1460,6 @@ router.get('/:sport/origin/:year', function(req, res) {
 				}) // end of basketball add 
 			}) // end of active stats
 		}
-
 		// if done with all the owners in owners_list
 		else {
 			// reset owner number (after it has gone through loop) to all for all display

@@ -43,7 +43,7 @@ def createCollection(db):
 
 # in a subprocess, open mongodb connection
 mongod = subprocess.Popen(["mongod"])
-time.sleep(2)
+time.sleep(.5)
 
 # connect to MongoDB
 try:
@@ -63,5 +63,5 @@ db["owners_per_team_name"].insert({"teams":{}})
 createCollection(db)
 
 # sleep and terminate mongodb instance
-time.sleep(3)
+time.sleep(.5)
 mongod.terminate()

@@ -1,0 +1,48 @@
+html
+	head
+		title= "Profile Standings"
+		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', href='/css/styles.css')
+
+	body
+		header
+			navbar
+				a(href= '/' class = 'navbar') Home Page
+				a(href= '/standings_home_page/2015/2016' class = 'navbar') 2015-2016 Standings
+				a(href= '/standings_home_page/2016/2017' class = 'navbar') 2016-2017 Standings
+				a(href= '/owner_matchup_home_page' class = 'navbar') Owner 2 Owner Matchup Records
+				a(href= '/trades_home_page' class = 'navbar') Trade Analysis
+				a(href= '/acquisition_value_home_page' class = 'navbar') Acquisition Value
+				a(href= '/origin_home_page' class = 'navbar') Origin Analysis
+				a(href= '/football_coach_home_page' class = 'navbar') Football Coach  
+
+		h2= owner + "'s" + " Profile Standings"
+		h4 Recap of previous seasons
+		
+		table
+			thead
+				tr
+					th SEASON
+					th TEAM NAME
+					th RANK
+					th TRIFECTA POINTS
+					th WIN %
+					th ROTO POINTS
+
+			tbody
+				each readin in profile_standings
+					tr
+						each val, cat in readin
+							if cat === "season"
+								td= val
+							if cat === "team"
+								td= val
+							if cat === "sport_rank"
+								td= val
+							if cat === "sport_trifecta_points"
+								td= val
+							if cat === "win_per"
+								td= parseFloat(val).toFixed(3)
+							if cat === "roto_points"
+								td= parseFloat(val).toFixed(1)
+						
