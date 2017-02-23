@@ -59,6 +59,9 @@ router.get('/owner/:owner_number/profile', function(req, res) {
 	var basketball_completed_season = false;
 	var baseball_completed_season = false;
 
+	var disp_profile_standings = null;
+	var disp_profile_matchups = null;
+
 	db.collection('owner' + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs) {
 		owner_name = docs[0]["owner"]
 		//console.log(owner_name);
@@ -67,20 +70,43 @@ router.get('/owner/:owner_number/profile', function(req, res) {
 			args: [owner_number, start_year, end_year, football_completed_season, basketball_completed_season, baseball_completed_season]
 		}
 
-		pyshell.run('profile.py', options, function(err) {
-			console.log("profile python script done");
+		pyshell.run('profile_standings.py', options, function(err) {
+			console.log("profile standings python script done");
 
 			db.collection("owner" + owner_number + "_profile_standings").find({}, {"_id": 0}).toArray(function(e, docs2) {
 				//console.log(docs2);
 				disp_profile_standings = docs2;
 
-				res.render('profile_standings', {
-					owner: owner_name,
-					profile_standings: disp_profile_standings
-				})
+				complete();
+
 			})
 		})
+
+		pyshell.run('profile_matchups.py', options, function(err) {
+			console.log('profile matchups python script done');
+
+			db.collection("owner" + owner_number + "_profile_matchups").find({}, {"_id": 0}).toArray(function(e, docs3) {
+				disp_profile_matchups = docs3;
+
+				complete();
+			})
+		})
+
 	})
+
+var complete = function() {
+
+	if (disp_profile_matchups != null && disp_profile_standings != null) {
+
+		console.log("displaying profile stats...");
+		res.render('profile', {
+			owner: owner_name,
+			profile_standings: disp_profile_standings,
+			matchup_standings: disp_profile_matchups
+		})
+
+	}
+}	
 
 });
 

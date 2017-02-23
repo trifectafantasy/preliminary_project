@@ -35,6 +35,58 @@ def acquisitionValue(db, sport, year, owner_number):
 		acquired = each_player["acquired"]
 		draft_position = each_player["draft_position"]
 
+		if len(each_player) == 4:
+			PR = each_player["PR"]
+
+			# if trade, set acquisition stats as N/A, but still calculate weighted PR
+			if acquired == "Trade":
+				acquisition_weight = "N/A"
+				acquisition_value = "N/A"
+				weighted_PR = 0.0
+
+			# if drafted, find acquisition weight from chart then divide by 10, then base (1.5)
+			else:
+				if draft_position == "N/A":
+					acquisition_weight = 1.5
+				else:
+					acquisition_weight = round(float(acquisition_weight_chart[draft_position - 1]) / 10 / 2 / 1.5, 2)
+
+				if acquisition_weight < 1.5:
+					acquisition_weight = 1.5
+
+				weighted_PR = 0.0
+				# if weighted PR < 0, multiply by acquisition weight
+				if weighted_PR < 0:
+					acquisition_value = round(weighted_PR * acquisition_weight, 2)
+				else:
+					acquisition_value = round(weighted_PR / acquisition_weight, 2)
+
+			# add to ordered json for upload
+			insert_json["player"] = player
+			insert_json["weighted_PR"] = weighted_PR
+			insert_json["acquired"] = each_player["acquired"]
+			insert_json["draft_position"] = each_player["draft_position"]
+			insert_json["acquisition_weight"] = acquisition_weight
+			insert_json["acquisition_value"] = acquisition_value
+			insert_json["PR"] = PR
+			insert_json["IP"] = 0
+			insert_json["HA"] = 0
+			insert_json["BBA"] = 0
+			insert_json["K"] = 0
+			insert_json["QS"] = 0
+			insert_json["W"] = 0
+			insert_json["SV"] = 0
+			insert_json["ERA"] = 0.000
+			insert_json["WHIP"] = 0.000
+			insert_json["hit_or_pit"] = "pitcher"
+
+			print insert_json
+
+			# just overwrite whatever player had with new, ordered json
+			db[collection_acquisition].update({"player": player}, insert_json)
+
+			continue
+
 		# try and pull PR
 		try:
 			PR = each_player["PR"]
@@ -77,6 +129,9 @@ def acquisitionValue(db, sport, year, owner_number):
 			insert_json["SB"] = 0
 			insert_json["OBP"] = 0.0000
 			insert_json["hit_or_pit"] = "hitter/pitcher"
+
+			print insert_json
+
 
 			db[collection_acquisition].update({"player": player}, insert_json)
 			# skip rest of for loop and start again
@@ -135,6 +190,7 @@ def acquisitionValue(db, sport, year, owner_number):
 			insert_json["OBP"] = each_player["OBP"]
 			insert_json["hit_or_pit"] = "hitter"
 
+			print insert_json
 			# just overwrite whatever player had with new, ordered json
 			db[collection_acquisition].update({"player": player}, insert_json)
 			continue			
@@ -191,6 +247,7 @@ def acquisitionValue(db, sport, year, owner_number):
 			insert_json["WHIP"] = each_player["WHIP"]
 			insert_json["hit_or_pit"] = "pitcher"
 
+			print insert_json
 			# just overwrite whatever player had with new, ordered json
 			db[collection_acquisition].update({"player": player}, insert_json)
 			continue

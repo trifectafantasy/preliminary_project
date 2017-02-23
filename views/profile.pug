@@ -16,8 +16,10 @@ html
 				a(href= '/origin_home_page' class = 'navbar') Origin Analysis
 				a(href= '/football_coach_home_page' class = 'navbar') Football Coach  
 
-		h2= owner + "'s" + " Profile Standings"
+		h2= owner + "'s" + " Profile"
 		h4 Recap of previous seasons
+
+		h3 Profile Standings
 		
 		table
 			thead
@@ -42,7 +44,50 @@ html
 							if cat === "sport_trifecta_points"
 								td= val
 							if cat === "win_per"
-								td= parseFloat(val).toFixed(3)
+								if val == "N/A"
+									td= val
+								else
+									td= parseFloat(val).toFixed(3)
 							if cat === "roto_points"
-								td= parseFloat(val).toFixed(1)
-						
+								if val == "N/A"
+									td= val
+								else
+									td= parseFloat(val).toFixed(1)
+		
+		h3 Profile Matchups 
+		
+		table
+			thead
+				tr
+					th SEASON
+					th BEST OWNER AGAINST
+					th WIN %
+					th POINT DIFFERENTIAL
+					th WORST OWNER AGAINST
+					th WIN %
+					th POINT DIFFERENTIAL
+
+			tbody 
+				each readin2 in matchup_standings
+					tr
+						each val, cat in readin2
+							if cat === "season"
+								td= val
+							if cat === "best_owner"
+								td= val
+							if cat === "best_win_per"
+								td= parseFloat(val).toFixed(3)
+							if cat === "best_pt_diff"
+								if val == "N/A"
+									td= val
+								else
+									td= parseFloat(val).toFixed(1)
+							if cat === "worst_owner"
+								td= val
+							if cat === "worst_win_per"
+								td= parseFloat(val).toFixed(3)
+							if cat === "worst_pt_diff"
+								if val == "N/A"
+									td= val
+								else
+									td= parseFloat(val).toFixed(1)
