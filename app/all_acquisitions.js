@@ -17,18 +17,18 @@ module.exports = function(req, res, db, sport, year, callback) {
 	var total_count = 0;
 
 	// clear sport acquisition all collection
-	db.collection(sport + "_acquisitions_" + year + "_all").remove({}, function(err, results) {
+	db.collection(sport + "_acquisitions_display_" + year + "_all").remove({}, function(err, results) {
 	
 		// for each owner
 		owner_list.forEach(function(owner_number, index) {
 
 			// count number of documents/players per owner 
-			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).count({}, function(err, num) {
+			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_display_" + year).count({}, function(err, num) {
 				total_count += num;
 			})			
 
 			// pull down each owner's acquisition collection to add owner's name
-			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).find({}, {"_id": 0}).toArray(function(e, docs) {
+			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_display_" + year).find({}, {"_id": 0}).toArray(function(e, docs) {
 				
 				//console.log(docs);
 				var team_pull = docs;
@@ -49,7 +49,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 						//console.log(player_pull);
 
 						// add into all acquisition collection
-						db.collection(sport + "_acquisitions_" + year + "_all").insert(player_pull);
+						db.collection(sport + "_acquisitions_display_" + year + "_all").insert(player_pull);
 
 						// each time done, call complete to see when done
 						complete();

@@ -76,7 +76,6 @@ router.get('/owner/:owner_number/profile', function(req, res) {
 			db.collection("owner" + owner_number + "_profile_standings").find({}, {"_id": 0}).toArray(function(e, docs2) {
 				//console.log(docs2);
 				disp_profile_standings = docs2;
-
 				complete();
 
 			})
@@ -87,7 +86,6 @@ router.get('/owner/:owner_number/profile', function(req, res) {
 
 			db.collection("owner" + owner_number + "_profile_matchups").find({}, {"_id": 0}).toArray(function(e, docs3) {
 				disp_profile_matchups = docs3;
-
 				complete();
 			})
 		})

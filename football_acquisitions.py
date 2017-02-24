@@ -11,12 +11,13 @@ from collections import OrderedDict
 def acquisitionValue(db, sport, year, owner_number):
 
 	collection_acquisition = "owner" + owner_number + "_" + sport + "_acquisitions_" + year
+	collection_display = "owner" + owner_number + "_" + sport + "_acquisitions_display_" + year
 
 	db[collection_acquisition].remove({"player": "OFFENSIVE PLAYER"})
 	db[collection_acquisition].remove({"player": "KICKER"})
 	db[collection_acquisition].remove({"player": "TEAM D/ST"})
 
-	db[collection_acquisition].remove({"player": ""})
+	db[collection_display].remove({})
 
 	acquisition_value_chart = range(160, 0, -1)
 	#print acquisition_value_chart
@@ -79,7 +80,7 @@ def acquisitionValue(db, sport, year, owner_number):
 				insert_json["MISC_FUML"] = 0
 				insert_json["MISC_TD"] = 0
 
-				db[collection_acquisition].update({"player": player}, insert_json)
+				db[collection_display].insert(insert_json)
 				continue				
 
 			PTS = each_player["PTS"]
@@ -103,7 +104,7 @@ def acquisitionValue(db, sport, year, owner_number):
 			insert_json["MISC_FUML"] = 0
 			insert_json["MISC_TD"] = 0
 
-			db[collection_acquisition].update({"player": player}, insert_json)
+			db[collection_display].insert(insert_json)
 			continue
 
 		PTS = each_player["PTS"]
@@ -152,9 +153,8 @@ def acquisitionValue(db, sport, year, owner_number):
 		insert_json["MISC_FUML"] = each_player["MISC_FUML"]
 		insert_json["MISC_TD"] = each_player["MISC_TD"]	
 
+		db[collection_display].insert(insert_json)
 
-
-		db[collection_acquisition].update({"player": player}, insert_json)
 
 ##### PYTHON SCRIPT TO EXECUTE #####
 
