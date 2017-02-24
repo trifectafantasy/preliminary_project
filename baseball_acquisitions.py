@@ -12,9 +12,9 @@ def acquisitionValue(db, sport, year, owner_number):
 
 	# set acquisition collection name
 	collection_acquisition = "owner" + owner_number + "_" + sport + "_acquisitions_" + year
+	collection_display = "owner" + owner_number + "_" + sport + "_acquisitions_display_" + year
 
-	# remove all that have a blank player (just in case)
-	db[collection_acquisition].remove({"player":""})
+	db[collection_display].remove({})
 
 	# set list of acquisition weights with pick 1 having greatest weight
 	number_of_draft_picks = db[sport + "_draft_" + year].count()
@@ -82,9 +82,7 @@ def acquisitionValue(db, sport, year, owner_number):
 
 			print insert_json
 
-			# just overwrite whatever player had with new, ordered json
-			db[collection_acquisition].update({"player": player}, insert_json)
-
+			db[collection_display].insert(insert_json)
 			continue
 
 		# try and pull PR
@@ -132,9 +130,7 @@ def acquisitionValue(db, sport, year, owner_number):
 
 			print insert_json
 
-
-			db[collection_acquisition].update({"player": player}, insert_json)
-			# skip rest of for loop and start again
+			db[collection_display].insert(insert_json)
 			continue
 
 		# try to pull IP
@@ -191,8 +187,8 @@ def acquisitionValue(db, sport, year, owner_number):
 			insert_json["hit_or_pit"] = "hitter"
 
 			print insert_json
-			# just overwrite whatever player had with new, ordered json
-			db[collection_acquisition].update({"player": player}, insert_json)
+
+			db[collection_display].insert(insert_json)
 			continue			
 
 		# try to pull GP
@@ -248,15 +244,13 @@ def acquisitionValue(db, sport, year, owner_number):
 			insert_json["hit_or_pit"] = "pitcher"
 
 			print insert_json
-			# just overwrite whatever player had with new, ordered json
-			db[collection_acquisition].update({"player": player}, insert_json)
+			db[collection_display].insert(insert_json)
 			continue
 
 		#print insert_json
 		#print ""
 
-		# just overwrite whatever player had with new, ordered json
-		db[collection_acquisition].update({"player": player}, insert_json)
+		db[collection_display].insert(insert_json)
 		
 
 ##### PYTHON SCRIPT TO EXECUTE #####
