@@ -8,6 +8,7 @@ html
 		header
 			navbar
 				a(href= '/' class = 'navbar') Home Page
+				a(href= '/profile_home_page' class = 'navbar') Owner Profiles
 				a(href= '/standings_home_page/2015/2016' class = 'navbar') 2015-2016 Standings
 				a(href= '/standings_home_page/2016/2017' class = 'navbar') 2016-2017 Standings
 				a(href= '/owner_matchup_home_page' class = 'navbar') Owner 2 Owner Matchup Records
@@ -16,8 +17,8 @@ html
 				a(href= '/origin_home_page' class = 'navbar') Origin Analysis
 				a(href= '/football_coach_home_page' class = 'navbar') Football Coach  
 
-		h2= owner + "'s" + " Profile"
-		h4 Recap of previous seasons
+		h2= owner + "'s" + " Profile Seasons Recap"
+		h4 A recap of previous seasons
 
 		h3 Profile Standings
 		
@@ -91,3 +92,36 @@ html
 									td= val
 								else
 									td= parseFloat(val).toFixed(1)
+
+		h3 Profile Players
+
+		h4 Sorry, but no player analysis for Football 2015 and Basketball 2016
+		table
+			thead
+				tr
+					th SEASON
+					th AWARD
+					th PLAYER
+					th PTS/WEIGHTED PR
+					th ACQUIRED
+					th DRAFT POSITION
+					th ACQUISITION VALUE
+
+			tbody
+				each readin3 in players_standings
+					tr
+						each val, cat in readin3
+							if cat === "season"
+								td= val
+							if cat === "award"
+								td= val
+							if cat === "player"
+								td= val
+							if cat === "score"
+								td= parseFloat(val).toFixed(2)
+							if cat === "acquired"
+								td= val
+							if cat === "draft_position"
+								td= val
+							if cat === "acquisition_value"
+								td= parseFloat(val).toFixed(2)

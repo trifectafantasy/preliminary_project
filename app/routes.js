@@ -49,7 +49,11 @@ router.get('/', function(req, res) {
 	});
 });
 
-router.get('/owner/:owner_number/profile', function(req, res) {
+router.get('/profile_home_page', function(req, res) {
+	res.render('profile_home_page');
+})
+
+router.get('/owner/:owner_number/profile/recap', function(req, res) {
 	var owner_number = req.params.owner_number;
 
 	var start_year = 2015;
@@ -61,6 +65,7 @@ router.get('/owner/:owner_number/profile', function(req, res) {
 
 	var disp_profile_standings = null;
 	var disp_profile_matchups = null;
+	var disp_profile_players = null;
 
 	db.collection('owner' + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs) {
 		owner_name = docs[0]["owner"]
@@ -77,7 +82,6 @@ router.get('/owner/:owner_number/profile', function(req, res) {
 				//console.log(docs2);
 				disp_profile_standings = docs2;
 				complete();
-
 			})
 		})
 
@@ -90,24 +94,33 @@ router.get('/owner/:owner_number/profile', function(req, res) {
 			})
 		})
 
+		pyshell.run('profile_players.py', options, function(err) {
+			console.log('profile players python script done');
+
+			db.collection('owner' + owner_number + "_profile_players").find({}, {"_id": 0}).toArray(function(e, docs4) {
+				disp_profile_players = docs4;
+				complete();
+			})
+		})
+
 	})
 
 var complete = function() {
 
-	if (disp_profile_matchups != null && disp_profile_standings != null) {
+	if ((disp_profile_matchups != null && disp_profile_standings != null) && disp_profile_players != null) {
 
 		console.log("displaying profile stats...");
-		res.render('profile', {
+		res.render('profile_recap', {
 			owner: owner_name,
 			profile_standings: disp_profile_standings,
-			matchup_standings: disp_profile_matchups
+			matchup_standings: disp_profile_matchups,
+			players_standings: disp_profile_players
 		})
 
 	}
 }	
 
 });
-
 
 
 
