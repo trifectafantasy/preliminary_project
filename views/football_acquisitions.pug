@@ -18,10 +18,15 @@ html
 				a(href= '/football_coach_home_page' class = 'navbar') Football Coach  
 
 		if owner === 'all'
-			h2= "Combined Football Acquisition Analysis"
+			h2= "Leaguewide " + year + " Football Acquisition Analysis"
 		else
-			h2= owner + "'s " + year + " Football Acquisition Analysis"				
-		
+			h2= owner + "'s " + year + " Football Acquisition Analysis"	
+
+		p Formula for Draft Value = 160 points for #1 Overall Draft Position, 1 point for #160 Overall Draft Position & Free Agents
+		p Formula for Acquisition Weight = (Draft Value) / 10 / 1.5
+		p * Minimum for Acquisition Weight = 1.5
+		p Formula for Acquisition Value = PTS / Acquisition Weight
+
 		table
 			thead
 				tr
@@ -32,19 +37,6 @@ html
 					th DRAFT POSITION
 					th ACQUISITION WEIGHT
 					th ACQUISITION VALUE
-					th COMP/ATT
-					th PASS YDS
-					th PASS TD
-					th PASS INT
-					th RUSH
-					th RUSH YDS
-					th RUSH TD
-					th REC
-					th REC YDS
-					th REC TD
-					th REC TAR
-					th MISC FUML
-					th MISC TD
 					if owner === 'all'
 						th OWNER
 
@@ -65,32 +57,6 @@ html
 								td= parseFloat(val).toFixed(2)
 							if cat === "acquisition_value"
 								td= parseFloat(val).toFixed(2)
-							if cat === "PASS"
-								td= val
-							if cat === "PASS_YDS"
-								td= val
-							if cat === "PASS_TD"
-								td= val
-							if cat === "PASS_INT"
-								td= val
-							if cat === "RUSH"
-								td= val
-							if cat === "RUSH_YDS"
-								td= val
-							if cat === "RUSH_TD"
-								td= val
-							if cat === "REC"
-								td= val
-							if cat === "REC_YDS"
-								td= val
-							if cat === "REC_TD"
-								td= val
-							if cat === "REC_TAR"
-								td= val
-							if cat === "MISC_FUML"
-								td= val
-							if cat === "MISC_TD"
-								td= val
 							if owner === 'all'
 								if cat === 'owner'
 									td= val		

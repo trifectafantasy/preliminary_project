@@ -63,6 +63,7 @@ def acquisitionValue(db, sport, year, owner_number):
 
 			# add to ordered json for upload
 			insert_json["player"] = player
+			insert_json["hit_or_pit"] = "Pitcher"
 			insert_json["weighted_PR"] = weighted_PR
 			insert_json["acquired"] = each_player["acquired"]
 			insert_json["draft_position"] = each_player["draft_position"]
@@ -78,7 +79,6 @@ def acquisitionValue(db, sport, year, owner_number):
 			insert_json["SV"] = 0
 			insert_json["ERA"] = 0.000
 			insert_json["WHIP"] = 0.000
-			insert_json["hit_or_pit"] = "pitcher"
 
 			print insert_json
 
@@ -110,6 +110,7 @@ def acquisitionValue(db, sport, year, owner_number):
 
 			# set ordered json to insert (with all 0's for player with N/A)
 			insert_json["player"] = player
+			insert_json["hit_or_pit"] = "Hitter/Pitcher"
 			insert_json["weighted_PR"] = 0.0
 			insert_json["acquired"] = each_player["acquired"]
 			insert_json["draft_position"] = each_player["draft_position"]
@@ -126,7 +127,6 @@ def acquisitionValue(db, sport, year, owner_number):
 			insert_json["SO"] = 0
 			insert_json["SB"] = 0
 			insert_json["OBP"] = 0.0000
-			insert_json["hit_or_pit"] = "hitter/pitcher"
 
 			print insert_json
 
@@ -168,6 +168,7 @@ def acquisitionValue(db, sport, year, owner_number):
 
 			# add to ordered json for upload
 			insert_json["player"] = player
+			insert_json["hit_or_pit"] = "Hitter"
 			insert_json["weighted_PR"] = weighted_PR
 			insert_json["acquired"] = each_player["acquired"]
 			insert_json["draft_position"] = each_player["draft_position"]
@@ -184,7 +185,6 @@ def acquisitionValue(db, sport, year, owner_number):
 			insert_json["SO"] = each_player["SO"]
 			insert_json["SB"] = each_player["SB"]
 			insert_json["OBP"] = each_player["OBP"]
-			insert_json["hit_or_pit"] = "hitter"
 
 			print insert_json
 
@@ -205,7 +205,7 @@ def acquisitionValue(db, sport, year, owner_number):
 			if acquired == "Trade":
 				acquisition_weight = "N/A"
 				acquisition_value = "N/A"
-				weighted_PR = round(PR * IP, 2)
+				weighted_PR = round(PR * IP / 2, 2)
 
 			# if drafted, find acquisition weight from chart then divide by 10, then base (1.5)
 			else:
@@ -217,7 +217,7 @@ def acquisitionValue(db, sport, year, owner_number):
 				if acquisition_weight < 1.5:
 					acquisition_weight = 1.5
 
-				weighted_PR = round(PR * IP, 2)
+				weighted_PR = round(PR * IP / 2, 2)
 				# if weighted PR < 0, multiply by acquisition weight
 				if weighted_PR < 0:
 					acquisition_value = round(weighted_PR * acquisition_weight, 2)
@@ -226,6 +226,7 @@ def acquisitionValue(db, sport, year, owner_number):
 
 			# add to ordered json for upload
 			insert_json["player"] = player
+			insert_json["hit_or_pit"] = "Pitcher"
 			insert_json["weighted_PR"] = weighted_PR
 			insert_json["acquired"] = each_player["acquired"]
 			insert_json["draft_position"] = each_player["draft_position"]
@@ -241,7 +242,6 @@ def acquisitionValue(db, sport, year, owner_number):
 			insert_json["SV"] = each_player["SV"]
 			insert_json["ERA"] = each_player["ERA"]
 			insert_json["WHIP"] = each_player["WHIP"]
-			insert_json["hit_or_pit"] = "pitcher"
 
 			print insert_json
 			db[collection_display].insert(insert_json)

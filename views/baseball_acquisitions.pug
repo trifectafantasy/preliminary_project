@@ -18,146 +18,63 @@ html
 				a(href= '/football_coach_home_page' class = 'navbar') Football Coach  
 
 		if owner === 'all'
-			if hit_or_pit == "hitter"
-				h2= "Combined Hitter Baseball Acquisition Analysis"
-			else if hit_or_pit == "pitcher"
-				h2= "Combined Pitcher Baseball Acquisition Analysis"
+			h2= "Leaguewide " + year + " Baseball Acquisition Analysis"
 		else
-			if hit_or_pit == "hitter"
-				h2= owner + "'s " + year + " Hitter Baseball Acquisition Analysis"
-			else if hit_or_pit == "pitcher"
-				h2= owner + "'s " + year + " Pitcher Baseball Acquisition Analysis"
+			h2= owner + "'s " + year + " Baseball Acquisition Analysis"
 
-		if hit_or_pit == "hitter"
-			table
-				thead
+		if year == 2016
+			p Formula for Weighted PR
+			p Hitters: Weighted PR = PR * GP
+			p Pitchers: Weighted PR = PR * IP / 2 
+			p Formula for Draft Value = 230 points for #1 Overall Draft Position, 1 point for #230 Overall Draft Position & Free Agents
+			p Formula for Acquisition Weight = (Draft Value) / 10 / 2 / 1.5
+			p * Minimum for Acquisition Weight = 1.5
+			p Formula for Acquisition Value = Weighted PR / Acquisition Weight			
+
+		else
+			p Formula for Draft Value = 250 points for #1 Overall Draft Position, 1 point for #250 Overall Draft Position & Free Agents
+			p Formula for Acquisition Weight = (Draft Value) / 10 / 2 / 1.5
+			p * Minimum for Acquisition Weight = 1.5
+			p Formula for Acquisition Value = Weighted PR / Acquisition Weight			
+
+		table
+			thead
+				tr
+					th RANK
+					th PLAYER
+					th POSITION
+					th WEIGHTED PR
+					th ACQUIRED
+					th DRAFT POSITION
+					th ACQUISITION WEIGHT
+					th ACQUISITION VALUE
+					th PR
+					if owner === "all"
+						th OWNER
+
+			tbody
+				each readin, rank in acquisitions
 					tr
-						th RANK
-						th PLAYER
-						th WEIGHTED PR
-						th ACQUIRED
-						th DRAFT POSITION
-						th ACQUISITION WEIGHT
-						th ACQUISITION VALUE
-						th PR
-						th GP
-						th AB
-						th H
-						th R
-						th HR
-						th RBI
-						th BB
-						th SO
-						th SB
-						th OBP
-						if owner === "all"
-							th OWNER
-
-				tbody
-					each readin, rank in acquisitions
-						tr
-							td= rank + 1
-							each val, cat in readin
-								if cat === "player"
-									td= val
-								if cat === "weighted_PR"
-									td= parseFloat(val).toFixed(2)
-								if cat === "acquired"
-									td= val
-								if cat === "draft_position"
-									td= val
-								if cat === "acquisition_weight"
-									td= parseFloat(val).toFixed(2)
-								if cat === "acquisition_value"
-									td= parseFloat(val).toFixed(2)
-								if cat === "PR"
-									td= parseFloat(val).toFixed(2)
-								if cat === "GP"
-									td= val
-								if cat === "AB"
-									td= val
-								if cat === "H"
-									td= val
-								if cat === "R"
-									td= val
-								if cat === "HR"
-									td= val
-								if cat === "RBI"
-									td= val
-								if cat === "BB"
-									td= val
-								if cat === "SO"
-									td= val
-								if cat === "SB"
-									td= val
-								if cat === "OBP"
-									td= parseFloat(val).toFixed(3)
-								if owner === 'all'
-									if cat === 'owner'
-										td= val					
+						td= rank + 1
+						each val, cat in readin
+							if cat === "player"
+								td= val
+							if cat === "hit_or_pit"
+								td= val
+							if cat === "weighted_PR"
+								td= parseFloat(val).toFixed(2)
+							if cat === "acquired"
+								td= val
+							if cat === "draft_position"
+								td= val
+							if cat === "acquisition_weight"
+								td= parseFloat(val).toFixed(2)
+							if cat === "acquisition_value"
+								td= parseFloat(val).toFixed(2)
+							if cat === "PR"
+								td= parseFloat(val).toFixed(2)
+							if owner === 'all'
+								if cat === 'owner'
+									td= val					
 
 
-		else if hit_or_pit == "pitcher"
-			table
-					thead
-						tr
-							th RANK
-							th PLAYER
-							th WEIGHTED PR
-							th ACQUIRED
-							th DRAFT POSITION
-							th ACQUISITION WEIGHT
-							th ACQUISITION VALUE
-							th PR
-							th IP
-							th H
-							th BB
-							th K
-							th QS
-							th W
-							th SV
-							th ERA
-							th WHIP
-							if owner === "all"
-								th OWNER
-
-					tbody
-						each readin, rank in acquisitions
-							tr
-								td= rank + 1
-								each val, cat in readin
-									if cat === "player"
-										td= val
-									if cat === "weighted_PR"
-										td= parseFloat(val).toFixed(2)
-									if cat === "acquired"
-										td= val
-									if cat === "draft_position"
-										td= val
-									if cat === "acquisition_weight"
-										td= parseFloat(val).toFixed(2)
-									if cat === "acquisition_value"
-										td= parseFloat(val).toFixed(2)
-									if cat === "PR"
-										td= parseFloat(val).toFixed(2)
-									if cat === "IP"
-										td= val
-									if cat === "HA"
-										td= val
-									if cat === "BBA"
-										td= val
-									if cat === "K"
-										td= val
-									if cat === "QS"
-										td= val
-									if cat === "W"
-										td= val
-									if cat === "SV"
-										td= val
-									if cat === "ERA"
-										td= parseFloat(val).toFixed(2)
-									if cat === "WHIP"
-										td= parseFloat(val).toFixed(2)
-									if owner === 'all'
-										if cat === 'owner'
-											td= val					

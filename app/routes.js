@@ -939,6 +939,10 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 		completed_sport_season = completed_basketball_season;
 	}
 
+	else if (sport === 'baseball') {
+		completed_sport_season = completed_baseball_season;
+	}	
+
 	// if year is greater than what's been completed, scrape
 	if (year > completed_sport_season) {
 
@@ -1142,33 +1146,7 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 				}) // end of pr scrape
 			} 
 		} // end of if basketball
-	}
-	// if don't need to scrape, just pull, sort and display
-	else {
 
-		var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number)
-
-	} // end of if don't need to scrape, just dispaly
-	
-}) // end of route to football and basketball acquisition stats
-
-
-// route to baseball acquisition values given either hitters or pitchers
-router.get('/owner/:owner_number/:sport/acquisitions/:year/:hit_or_pit', function(req, res) {
-
-	// set variables from request url
-	var sport = req.params.sport;
-	var year = req.params.year;
-	var owner_number = req.params.owner_number;
-	var hit_or_pit = req.params.hit_or_pit;
-
-	if (sport === 'baseball') {
-		completed_sport_season = completed_baseball_season;
-	}		
-
-	// if year is in future of last completed season
-	if (year > completed_sport_season) {
-		
 		// make sure sport is baseball
 		if (sport === 'baseball') {
 
@@ -1231,7 +1209,8 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year/:hit_or_pit', functio
 					else {
 						// reset owner number (after it has gone through loop) to all for all display
 						owner_number = 'all';
-						var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number, hit_or_pit)			
+						console.log("all owners done")
+						var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number)			
 					}
 				} // end of all_basketball_acquisitions function
 			
@@ -1265,7 +1244,7 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year/:hit_or_pit', functio
 									// create acquisition values
 									pyshell.run('baseball_acquisitions.py', options, function(err) {
 										console.log("python script done");
-										var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number, hit_or_pit)			
+										var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number)			
 									}) // end of pyshell						
 
 								}) // end of baseball aux include
@@ -1274,16 +1253,16 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year/:hit_or_pit', functio
 					}) // end of pr scrape
 				}) // end of draft scrape			
 			} // end of if individual owner
-		} // end of if baseball check
-	} // end of if need to scrape (current season)
-
-	// if season in past, just scrape
-	else {
-		var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number, hit_or_pit)			
+		} // end of if baseball check		
 	}
+	// if don't need to scrape, just pull, sort and display
+	else {
 
-}) // end of router get for baseball acquisitions
+		var acquisitions_display = require('./acquisitions_display.js')(req, res, db, sport, year, owner_number)
 
+	} // end of if don't need to scrape, just dispaly
+	
+}) // end of route to football and basketball acquisition stats
 
 // route to origin home page
 router.get('/origin_home_page', function(req, res) {
