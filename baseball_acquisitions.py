@@ -4,6 +4,7 @@ import subprocess
 import time
 import sys
 from collections import OrderedDict
+import math
 
 ##### DEFINE FUNCTIONS #####
 
@@ -141,7 +142,9 @@ def acquisitionValue(db, sport, year, owner_number):
 			print "hitter"
 
 			PR = each_player["PR"]
-			GP = each_player["GP"]				
+			GP = each_player["GP"]	
+			if math.isnan(GP):
+				GP = 0			
 
 			# if trade, set acquisition stats as N/A, but still calculate weighted PR
 			if acquired == "Trade":
@@ -199,13 +202,22 @@ def acquisitionValue(db, sport, year, owner_number):
 			print "pitcher"			
 
 			PR = each_player["PR"]
-			IP = each_player["IP"]				
+			IP = each_player["IP"]	
+			if math.isnan(IP):
+				IP = 0
+				
+			if ".1" in str(IP):
+				IP_calc = round(IP,0) + 0.33
+			elif ".2" in str(IP):
+				IP_calc = round(IP,0) + 0.67
+			else:
+				IP_calc = IP
 
 			# if trade, set acquisition stats as N/A, but still calculate weighted PR
 			if acquired == "Trade":
 				acquisition_weight = "N/A"
 				acquisition_value = "N/A"
-				weighted_PR = round(PR * IP / 2, 2)
+				weighted_PR = round(PR * IP_calc / 2, 2)
 
 			# if drafted, find acquisition weight from chart then divide by 10, then base (1.5)
 			else:
@@ -217,7 +229,7 @@ def acquisitionValue(db, sport, year, owner_number):
 				if acquisition_weight < 1.5:
 					acquisition_weight = 1.5
 
-				weighted_PR = round(PR * IP / 2, 2)
+				weighted_PR = round(PR * IP_calc / 2, 2)
 				# if weighted PR < 0, multiply by acquisition weight
 				if weighted_PR < 0:
 					acquisition_value = round(weighted_PR * acquisition_weight, 2)

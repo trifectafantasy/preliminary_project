@@ -115,20 +115,6 @@ html
 						th TOTAL DRAFT PR
 						th TOTAL FA PR
 						th TOTAL TRADE PR
-						th TOTAL HITTER WEIGHTED PR
-						th TOTAL HITTER DRAFT %
-						th TOTAL HITTER FA %
-						th TOTAL HITTER TRADE %
-						th TOTAL HITTER DRAFT PR
-						th TOTAL HITTER FA PR
-						th TOTAL HITTER TRADE PR
-						th TOTAL PITCHER WEIGHTED PR
-						th TOTAL PITCHER DRAFT %
-						th TOTAL PITCHER FA %
-						th TOTAL PITCHER TRADE %
-						th TOTAL PITCHER DRAFT PR
-						th TOTAL PITCHER FA PR
-						th TOTAL PITCHER TRADE PR
 
 				tbody
 					each readin, rank in origin
@@ -151,31 +137,3 @@ html
 									td= parseFloat(val).toFixed(1)
 								if cat === "trade_pr"
 									td= parseFloat(val).toFixed(1)
-								if cat === "hitter_total_pr"
-									td= parseFloat(val).toFixed(1)
-								if cat === "hitter_draft_pct"
-									td= parseFloat(val).toFixed(1) + "%"
-								if cat === "hitter_fa_pct"
-									td= parseFloat(val).toFixed(1) + "%"
-								if cat === "hitter_trade_pct"
-									td= parseFloat(val).toFixed(1) + "%"								
-								if cat === "hitter_draft_pr"
-									td= parseFloat(val).toFixed(1)
-								if cat === "hitter_fa_pr"
-									td= parseFloat(val).toFixed(1)
-								if cat === "hitter_trade_pr"
-									td= parseFloat(val).toFixed(1)
-								if cat === "pitcher_total_pr"
-									td= parseFloat(val).toFixed(1)
-								if cat === "pitcher_draft_pct"
-									td= parseFloat(val).toFixed(1) + "%"
-								if cat === "pitcher_fa_pct"
-									td= parseFloat(val).toFixed(1) + "%"
-								if cat === "pitcher_trade_pct"
-									td= parseFloat(val).toFixed(1) + "%"								
-								if cat === "pitcher_draft_pr"
-									td= parseFloat(val).toFixed(1)
-								if cat === "pitcher_fa_pr"
-									td= parseFloat(val).toFixed(1)
-								if cat === "pitcher_trade_pr"
-									td= parseFloat(val).toFixed(1)	
