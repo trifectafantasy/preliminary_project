@@ -1,6 +1,6 @@
 html
 	head
-		title= "Acquisition Analysis"
+		title= "Roster Stats"
 		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
 		link(rel='stylesheet', href='/css/styles.css')
 
@@ -19,15 +19,11 @@ html
 				a(href= '/football_coach_home_page' class = 'navbar') Football Coach  
 
 		if owner === 'all'
-			h2= "Leaguewide " + year + " Basketball Acquisition Analysis"
+			h2= "Leaguewide " + year + " Basketball Roster Stats"
 		else
-			h2= owner + "'s " + year + " Basketball Acquisition Analysis"
+			h2= owner + "'s " + year + " Basketball Roster Stats"
 
 		p Formula for Weighted PR = PR x GP
-		p Formula for Draft Value = 140 points for #1 Overall Draft Position, 1 point for #140 Overall Draft Position & Free Agents
-		p Formula for Acquisition Weight = (Draft Value) / 10 / 1.5
-		p * Minimum for Acquisition Weight = 1.5
-		p Formula for Acquisition Value = Weighted PR / Acquisition Weight
 
 		table
 			thead
@@ -35,11 +31,19 @@ html
 					th RANK
 					th PLAYER
 					th WEIGHTED PR
-					th ACQUIRED
-					th DRAFT POSITION
-					th ACQUISITION WEIGHT
-					th ACQUISITION VALUE
 					th PR
+					th GP
+					th FG
+					th FG %
+					th FT
+					th FT %
+					th 3PM
+					th REB
+					th AST
+					th STL
+					th BLK
+					th TO
+					th PTS
 					if owner === "all"
 						th OWNER
 
@@ -52,16 +56,32 @@ html
 								td= val
 							if cat === "weighted_PR"
 								td= parseFloat(val).toFixed(2)
-							if cat === "acquired"
-								td= val
-							if cat === "draft_position"
-								td= val
-							if cat === "acquisition_weight"
-								td= parseFloat(val).toFixed(2)
-							if cat === "acquisition_value"
-								td= parseFloat(val).toFixed(2)
 							if cat === "PR"
 								td= parseFloat(val).toFixed(2)
+							if cat === 'GP'
+								td= val
+							if cat === 'FG'
+								td= val
+							if cat === 'FG_PCT'
+								td= parseFloat(val).toFixed(3)
+							if cat === 'FT'
+								td= val
+							if cat === 'FT_PCT'
+								td= parseFloat(val).toFixed(3)
+							if cat === 'THREEPM'
+								td= val
+							if cat === 'REB'
+								td= val
+							if cat === 'AST'
+								td= val
+							if cat === 'STL'
+								td= val
+							if cat === 'BLK'
+								td= val
+							if cat === 'TO'
+								td= val
+							if cat === 'PTS'
+								td= val
 							if owner === 'all'
 								if cat === 'owner'
 									td= val					

@@ -1,6 +1,6 @@
 html
 	head
-		title= "Acquisition Analysis"
+		title= "Roster Stats"
 		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
 		link(rel='stylesheet', href='/css/styles.css')
 
@@ -19,28 +19,30 @@ html
 				a(href= '/football_coach_home_page' class = 'navbar') Football Coach  
 
 		if owner === 'all'
-			h2= "Leaguewide " + year + " Basketball Acquisition Analysis"
+			h2= "Leaguewide " + year + " Football Roster Stats"
 		else
-			h2= owner + "'s " + year + " Basketball Acquisition Analysis"
-
-		p Formula for Weighted PR = PR x GP
-		p Formula for Draft Value = 140 points for #1 Overall Draft Position, 1 point for #140 Overall Draft Position & Free Agents
-		p Formula for Acquisition Weight = (Draft Value) / 10 / 1.5
-		p * Minimum for Acquisition Weight = 1.5
-		p Formula for Acquisition Value = Weighted PR / Acquisition Weight
+			h2= owner + "'s " + year + " Football Roster Stats"	
 
 		table
 			thead
 				tr
 					th RANK
 					th PLAYER
-					th WEIGHTED PR
-					th ACQUIRED
-					th DRAFT POSITION
-					th ACQUISITION WEIGHT
-					th ACQUISITION VALUE
-					th PR
-					if owner === "all"
+					th PTS
+					th PASS
+					th PASS YDS
+					th PASS TD
+					th PASS INT
+					th RUSH
+					th RUSH YDS
+					th RUSH TD
+					th REC
+					th REC YDS
+					th REC TD
+					th REC TAR
+					th MISC FUML
+					th MISC TD
+					if owner === 'all'
 						th OWNER
 
 			tbody
@@ -50,19 +52,34 @@ html
 						each val, cat in readin
 							if cat === "player"
 								td= val
-							if cat === "weighted_PR"
-								td= parseFloat(val).toFixed(2)
-							if cat === "acquired"
+							if cat === "PTS"
+								td= parseFloat(val).toFixed(1)
+							if cat === 'PASS'
 								td= val
-							if cat === "draft_position"
+							if cat === 'PASS_YDS'
 								td= val
-							if cat === "acquisition_weight"
-								td= parseFloat(val).toFixed(2)
-							if cat === "acquisition_value"
-								td= parseFloat(val).toFixed(2)
-							if cat === "PR"
-								td= parseFloat(val).toFixed(2)
+							if cat === 'PASS_TD'
+								td= val
+							if cat === 'PASS_INT'
+								td= val
+							if cat === 'RUSH'
+								td= val
+							if cat === 'RUSH_YDS'
+								td= val
+							if cat === 'RUSH_TD'
+								td= val
+							if cat === 'REC'
+								td= val
+							if cat === 'REC_YDS'
+								td= val
+							if cat === 'REC_TD'
+								td= val
+							if cat === 'REC_TAR'
+								td= val
+							if cat === 'MISC_FUML'
+								td= val
+							if cat === 'MISC_TD'
+								td= val
 							if owner === 'all'
 								if cat === 'owner'
-									td= val					
-
+									td= val
