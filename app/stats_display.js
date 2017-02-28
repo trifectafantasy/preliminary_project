@@ -22,7 +22,7 @@ module.exports = function(req, res, db, sport, year, owner_number, hit_or_pit=nu
 				console.log("update complete");
 
 				// pull database for display
-				db.collection(sport + "_acquisitions_display_" + year + "_all").find({}, {"player": 1, "PTS": 1, "acquired": 1, "draft_position": 1, "acquisition_weight": 1, "acquisition_value": 1, "owner": 1, "_id": 0}, {"sort": [["acquisition_value", "desc"], ["PTS", "desc"], ["acquisition_weight", "asc"]]}).toArray(function(e, docs) {
+				db.collection(sport + "_acquisitions_display_" + year + "_all").find({}, {"acquired": 0, "draft_position": 0, "acquisition_weight": 0, "acquisition_value": 0, "_id": 0}).sort({"PTS": -1}).toArray(function(e, docs) {
 					//console.log(docs);
 					console.log("displaying all acquisition stats...");
 					disp_acquisitions = docs;
@@ -45,7 +45,7 @@ module.exports = function(req, res, db, sport, year, owner_number, hit_or_pit=nu
 						}
 					} // end of for loop for sorting
 
-					res.render(sport + '_acquisitions', {
+					res.render(sport + '_stats', {
 						year: year,
 						acquisitions: disp_acquisitions,
 						owner: owner
@@ -61,7 +61,7 @@ module.exports = function(req, res, db, sport, year, owner_number, hit_or_pit=nu
 				console.log("update complete");
 
 				// pull database for display
-				db.collection(sport + "_acquisitions_display_" + year + "_all").find({}, {"player": 1, "weighted_PR": 1, "acquired": 1, "draft_position": 1, "acquisition_weight": 1, "acquisition_value": 1, "PR": 1, "owner": 1, "_id": 0}, {"sort": [["acquisition_value", "desc"], ["weighted_PR", "desc"], ["acquisition_weight", "asc"]]}).toArray(function(e, docs) {
+				db.collection(sport + "_acquisitions_display_" + year + "_all").find({}, {"acquired": 0, "draft_position": 0, "acquisition_weight": 0, "acquisition_value": 0, "_id": 0}).sort({"weighted_PR": -1}).toArray(function(e, docs) {
 					//console.log(docs);
 					console.log("displaying all acquisition stats...");
 					disp_acquisitions = docs;
@@ -84,7 +84,7 @@ module.exports = function(req, res, db, sport, year, owner_number, hit_or_pit=nu
 						}
 					} // end of for loop for sorting
 
-					res.render(sport + '_acquisitions', {
+					res.render(sport + '_stats', {
 						year: year,
 						acquisitions: disp_acquisitions,
 						owner: owner
@@ -101,7 +101,7 @@ module.exports = function(req, res, db, sport, year, owner_number, hit_or_pit=nu
 				console.log("update complete");
 
 				// pull database for display
-				db.collection(sport + "_acquisitions_display_" + year + "_all").find({}, {"player": 1, "hit_or_pit": 1, "weighted_PR": 1, "acquired": 1, "draft_position": 1, "acquisition_weight": 1, "acquisition_value": 1, "PR": 1, "owner": 1, "_id": 0}, {"sort": [["acquisition_value", "desc"], ["weighted_PR", "desc"], ["acquisition_weight", "asc"]]}).toArray(function(e, docs) {
+				db.collection(sport + "_acquisitions_display_" + year + "_all").find({}, {"acquired": 0, "draft_position": 0, "acquisition_weight": 0, "acquisition_value": 0, "_id": 0}).sort({"weighted_PR": -1}).toArray(function(e, docs) {
 					//console.log(docs);
 					console.log("displaying all acquisition stats...");
 					disp_acquisitions = docs;
@@ -124,7 +124,7 @@ module.exports = function(req, res, db, sport, year, owner_number, hit_or_pit=nu
 						}
 					} // end of for loop for sorting
 
-					res.render(sport + '_acquisitions', {
+					res.render(sport + '_stats', {
 						year: year,
 						acquisitions: disp_acquisitions,
 						owner: owner,
@@ -138,12 +138,12 @@ module.exports = function(req, res, db, sport, year, owner_number, hit_or_pit=nu
 	// if individual owner
 	else {
 
-		// if sport is football or basketball
+		// if sport is football
 		if (sport == 'football') {
 			// pull owner acquisition database for display
-			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_display_" + year).find({}, {"player": 1, "PTS": 1, "acquired": 1, "draft_position": 1, "acquisition_weight": 1, "acquisition_value": 1, "PR": 1, "_id": 0}, {"sort": [["acquisition_value", "desc"], ["PTS", "desc"], ["acquisition_weight", "asc"]]}).toArray(function(e, docs) {
+				db.collection("owner" + owner_number + "_" + sport + "_acquisitions_display_" + year).find({}, {"acquired": 0, "draft_position": 0, "acquisition_weight": 0, "acquisition_value": 0, "_id": 0}).sort({"PTS": -1}).toArray(function(e, docs) {
 				//console.log(docs);
-				console.log("displaying acquisition stats...");
+				console.log("displaying roster stats...");
 				disp_acquisitions = docs;
 
 				// loop from back to front of pulled array
@@ -169,7 +169,7 @@ module.exports = function(req, res, db, sport, year, owner_number, hit_or_pit=nu
 
 					owner_name = docs2[0]["owner"];
 
-					res.render(sport + '_acquisitions', {
+					res.render(sport + '_stats', {
 						year: year,
 						owner: owner_name,
 						acquisitions: disp_acquisitions
@@ -181,9 +181,9 @@ module.exports = function(req, res, db, sport, year, owner_number, hit_or_pit=nu
 		// if sport is basketball
 		else if (sport == 'basketball') {
 			// pull owner acquisition database for display
-			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_display_" + year).find({}, {"player": 1, "weighted_PR": 1, "acquired": 1, "draft_position": 1, "acquisition_weight": 1, "acquisition_value": 1, "PR": 1, "_id": 0}, {"sort": [["acquisition_value", "desc"], ["weighted_PR", "desc"], ["acquisition_weight", "asc"]]}).toArray(function(e, docs) {
+			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_display_" + year).find({}, {"acquired": 0, "draft_position": 0, "acquisition_weight": 0, "acquisition_value": 0, "_id": 0}).sort({"weighted_PR": -1}).toArray(function(e, docs) {
 				//console.log(docs);
-				console.log("displaying acquisition stats...");
+				console.log("displaying roster stats...");
 				disp_acquisitions = docs;
 
 				// loop from back to front of pulled array
@@ -209,7 +209,7 @@ module.exports = function(req, res, db, sport, year, owner_number, hit_or_pit=nu
 
 					owner_name = docs2[0]["owner"];
 
-					res.render(sport + '_acquisitions', {
+					res.render(sport + '_stats', {
 						year: year,
 						owner: owner_name,
 						acquisitions: disp_acquisitions
@@ -222,9 +222,9 @@ module.exports = function(req, res, db, sport, year, owner_number, hit_or_pit=nu
 		else if (sport === 'baseball') {
 
 			// pull owner acquisition database for display
-			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_display_" + year).find({}, {"player": 1, "hit_or_pit": 1, "weighted_PR": 1, "acquired": 1, "draft_position": 1, "acquisition_weight": 1, "acquisition_value": 1, "PR": 1, "_id": 0}, {"sort": [["acquisition_value", "desc"], ["weighted_PR", "desc"], ["acquisition_weight", "asc"]]}).toArray(function(e, docs) {
-				console.log(docs);
-				console.log("displaying acquisition stats...");
+			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_display_" + year).find({}, {"acquired": 0, "draft_position": 0, "acquisition_weight": 0, "acquisition_value": 0, "_id": 0}).sort({"weighted_PR": -1}).toArray(function(e, docs) {
+				//console.log(docs);
+				console.log("displaying roster stats...");
 				disp_acquisitions = docs;
 
 				// loop from back to front of pulled array
@@ -250,7 +250,7 @@ module.exports = function(req, res, db, sport, year, owner_number, hit_or_pit=nu
 
 					owner_name = docs2[0]["owner"];
 
-					res.render(sport + '_acquisitions', {
+					res.render(sport + '_stats', {
 						year: year,
 						owner: owner_name,
 						acquisitions: disp_acquisitions,
