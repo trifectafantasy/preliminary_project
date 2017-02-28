@@ -19,18 +19,7 @@ def originCalculation(db, sport, year, owner_number):
 	#print owner_name
 
 	db[collection_acquisition].remove({"player": ""})
-
 	db[collection_origin].remove({"owner": owner_name})
-
-	hitter_draft_pr = 0.0
-	hitter_fa_pr = 0.0
-	hitter_trade_pr = 0.0
-	hitter_total_pr = 0.0	
-
-	pitcher_draft_pr = 0.0
-	pitcher_fa_pr = 0.0
-	pitcher_trade_pr = 0.0
-	pitcher_total_pr = 0.0
 
 	draft_pr = 0.0
 	fa_pr = 0.0
@@ -43,126 +32,82 @@ def originCalculation(db, sport, year, owner_number):
 	# loop through each document in pull
 	for each_player in acquisition_list:
 		print each_player
-		
-		print "hitter_total_pr", hitter_total_pr
-		print "hitter draft_pr", hitter_draft_pr
-		print "hitter fa pr", hitter_fa_pr
-		print "hitter trade pr", hitter_trade_pr
-		print "pitcher_total_pr", pitcher_total_pr
-		print "pitcher draft pr", pitcher_draft_pr
-		print "pitcher fa pr", pitcher_fa_pr
-		print "pitcher trade pr", pitcher_trade_pr
-		print "total pr", total_pr
-		
 
+		if len(each_player) == 4:
+			continue
+		
 		insert_json = OrderedDict()
-
-		player = each_player["player"]
-		acquired = each_player["acquired"]
 
 		# try and pull PR
 		try:
 			PR = each_player["PR"]
 		# if error
 		except KeyError:
-			PR = 0.0
-			weighted_pr = 0.0
-			print ""
-			continue
-
-		if len(each_player) == 4:
-			continue
+			print "no PR"
+			continue		
 
 		# try to pull IP
 		try:
 			IP = each_player["IP"]
 		# if can't, hitter
 		except KeyError:
-			#print "hitter"
+			print "hitter"
 
-			if math.isnan(each_player["GP"]) == True:
-				continue			
-
-			try:
-				GP = each_player["GP"]
-			except KeyError:
-				weighted_pr = 0.0
-				print ""
-				continue
-
+			player = each_player["player"]
+			acquired = each_player["acquired"]
 			PR = each_player["PR"]
 			GP = each_player["GP"]
-			weighted_pr = PR * GP
-			print "weighted pr", weighted_pr
-
+			if math.isnan(GP):
+				GP = 0	
+			weigheted_PR = PR * GP
+			print player, acquired, PR, GP, weigheted_PR	
 
 			if acquired == "Draft":
-				hitter_draft_pr += weighted_pr
-
-			elif acquired == "FA":
-				hitter_fa_pr += weighted_pr
-
+				draft_pr += weigheted_PR
 			elif acquired == "Trade":
-				hitter_trade_pr += weighted_pr
+				trade_pr += weigheted_PR
+			elif acquired == "FA":
+				fa_pr += weigheted_PR
 
-			hitter_total_pr += weighted_pr
-			total_pr = hitter_total_pr + pitcher_total_pr
+			total_pr += weigheted_PR
 
-
-			print ""
-			continue			
+			continue
 
 		# try to pull GP
 		try:
 			GP = each_player["GP"]
 		# if can't, pitcher
 		except KeyError:
-			#print "pitcher"
+			print "pitcher"
 
-			if math.isnan(each_player["IP"]) == True:
-				continue		
-
-			try:
-				IP = each_player["IP"]
-			except KeyError:
-				weighted_pr = 0.0
-				print ""
-				continue		
-
+			player = each_player["player"]
+			acquired = each_player["acquired"]
 			PR = each_player["PR"]
-			IP = each_player["IP"]				
-			weighted_pr = PR * IP
-			print "weighted pr", weighted_pr
+			IP = each_player["IP"]
+			if math.isnan(IP):
+				IP = 0
 
+			if ".1" in str(IP):
+				IP_calc = round(IP,0) + 0.33
+			elif ".2" in str(IP):
+				IP_calc = round(IP,0) + 0.67
+			else:
+				IP_calc = IP
+			weigheted_PR = PR * IP_calc / 2
+			print player, acquired, PR, IP, weigheted_PR	
 
 			if acquired == "Draft":
-				pitcher_draft_pr += weighted_pr
-
-			elif acquired == "FA":
-				pitcher_fa_pr += weighted_pr
-
+				draft_pr += weigheted_PR
 			elif acquired == "Trade":
-				pitcher_trade_pr += weighted_pr
+				trade_pr += weigheted_PR
+			elif acquired == "FA":
+				fa_pr += weigheted_PR
 
-			pitcher_total_pr += weighted_pr
-			total_pr = hitter_total_pr + pitcher_total_pr
+			total_pr += weigheted_PR
 
+			continue	
 
-			print ""
-			continue
-
-	hitter_draft_pct = hitter_draft_pr / hitter_total_pr * 100
-	hitter_fa_pct = hitter_fa_pr / hitter_total_pr * 100
-	hitter_trade_pct = hitter_trade_pr / hitter_total_pr * 100
-
-	pitcher_draft_pct = pitcher_draft_pr / pitcher_total_pr * 100
-	pitcher_fa_pct = pitcher_fa_pr / pitcher_total_pr * 100
-	pitcher_trade_pct = pitcher_trade_pr / pitcher_total_pr * 100
-
-	draft_pr = hitter_draft_pr + pitcher_draft_pr
-	fa_pr = hitter_fa_pr + pitcher_fa_pr
-	trade_pr = hitter_trade_pr + pitcher_trade_pr
-
+	
 	draft_pct = draft_pr / total_pr * 100
 	fa_pct = fa_pr / total_pr * 100
 	trade_pct = trade_pr / total_pr * 100
@@ -176,28 +121,11 @@ def originCalculation(db, sport, year, owner_number):
 	insert_json["draft_pr"] = round(draft_pr, 1)
 	insert_json["fa_pr"] = round(fa_pr, 1)
 	insert_json["trade_pr"] = round(trade_pr, 1)
-
-	insert_json["hitter_total_pr"] = round(hitter_total_pr, 1)
-	insert_json["hitter_draft_pct"] = round(hitter_draft_pct, 1)
-	insert_json["hitter_fa_pct"] = round(hitter_fa_pct, 1)
-	insert_json["hitter_trade_pct"] = round(hitter_trade_pct, 1)
-	insert_json["hitter_draft_pr"] = round(hitter_draft_pr, 1)
-	insert_json["hitter_fa_pr"] = round(hitter_fa_pr, 1)
-	insert_json["hitter_trade_pr"] = round(hitter_trade_pr, 1)	
-
-	insert_json["pitcher_total_pr"] = round(pitcher_total_pr, 1)
-	insert_json["pitcher_draft_pct"] = round(pitcher_draft_pct, 1)
-	insert_json["pitcher_fa_pct"] = round(pitcher_fa_pct, 1)
-	insert_json["pitcher_trade_pct"] = round(pitcher_trade_pct, 1)
-	insert_json["pitcher_draft_pr"] = round(pitcher_draft_pr, 1)
-	insert_json["pitcher_fa_pr"] = round(pitcher_fa_pr, 1)
-	insert_json["pitcher_trade_pr"] = round(pitcher_trade_pr, 1)
-
+	
 	print insert_json
-	result = db[collection_origin].insert_one(insert_json)
-	print result.inserted_id
+	db[collection_origin].insert(insert_json)
 
-
+	
 		
 
 ##### PYTHON SCRIPT TO EXECUTE #####
