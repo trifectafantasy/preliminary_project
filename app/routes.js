@@ -122,6 +122,23 @@ var complete = function() {
 
 });
 
+router.get('/owner/:owner_number/profile/trophy', function(req, res) {
+	var owner_number = req.params.owner_number;
+
+	db.collection("owner" + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs) {
+		owner_name = docs[0]["owner"];
+
+		db.collection("owner" + owner_number + "_trophies").find({}, {"date": 0, "_id": 0}).sort({"date": 1}).toArray(function(e, docs2) {
+			disp_trophies = docs2;
+
+			res.render('trophy_case', {
+				owner: owner_name,
+				trophies: disp_trophies
+			})
+		})
+	})
+})
+
 
 
 // route to home page for each trifecta season's standings (individual sports and trifefcta)
@@ -1844,16 +1861,32 @@ router.get('/:sport/origin/:year', function(req, res) {
 
 	// if year is in past and just display
 	else {
-		// reset owner number (after it has gone through loop) to all for all display
-		db.collection(sport + "_origin_" + year).find({}, {"_id": 0}).sort({"total_pr": -1}).toArray(function(e, docs) {
-			origin_standings = docs;
-			console.log("displaying origin standings...");
-			res.render('origin', {
-				sport: sport,
-				year: year,
-				origin: origin_standings
-			})
-		})			
+
+		if (sport == "football") {
+					// reset owner number (after it has gone through loop) to all for all display
+			db.collection(sport + "_origin_" + year).find({}, {"_id": 0}).sort({"total_points": -1}).toArray(function(e, docs) {
+				origin_standings = docs;
+				console.log("displaying origin standings...");
+				res.render('origin', {
+					sport: sport,
+					year: year,
+					origin: origin_standings
+				})
+			})			
+		}
+
+		else {
+			// reset owner number (after it has gone through loop) to all for all display
+			db.collection(sport + "_origin_" + year).find({}, {"_id": 0}).sort({"total_pr": -1}).toArray(function(e, docs) {
+				origin_standings = docs;
+				console.log("displaying origin standings...");
+				res.render('origin', {
+					sport: sport,
+					year: year,
+					origin: origin_standings
+				})
+			})	
+		}		
 	} // end of if just display
 
 }); // end of origin route

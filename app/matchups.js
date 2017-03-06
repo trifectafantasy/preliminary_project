@@ -40,7 +40,7 @@ var complete = function() {
 			// pull from mongodb and display new data after python script finishes
 			db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
 				//console.log(docs);
-				console.log("Displaying football matchup data...")
+				//console.log("Displaying football matchup data...")
 				disp_football_matchups = docs;
 				// call display to see if all finds are done
 				display();
@@ -48,7 +48,7 @@ var complete = function() {
 
 			db.collection("owner" + owner_number + "_basketball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
 				//console.log(docs);
-				console.log("Displaying basketball matchup data...")
+				//console.log("Displaying basketball matchup data...")
 				disp_basketball_matchups = docs;
 				// call display to see if all finds are done
 				display();
@@ -56,7 +56,7 @@ var complete = function() {
 
 			db.collection("owner" + owner_number + "_baseball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
 				//console.log(docs);
-				console.log("Displaying baseball matchup data...")
+				//console.log("Displaying baseball matchup data...")
 				disp_baseball_matchups = docs;
 				// call display to see if all finds are done
 				display();
@@ -68,7 +68,7 @@ var complete = function() {
 			// pull from mongodb and display new data after python script finishes
 			db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
 				//console.log(docs);
-				console.log("Displaying football matchup data...")
+				//console.log("Displaying football matchup data...")
 				disp_football_matchups = docs;
 				// call display to see if all finds are done
 				display();
@@ -76,7 +76,7 @@ var complete = function() {
 
 			db.collection("owner" + owner_number + "_basketball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
 				//console.log(docs);
-				console.log("Displaying basketball matchup data...")
+				//console.log("Displaying basketball matchup data...")
 				disp_basketball_matchups = docs;
 				// call display to see if all finds are done
 				display();
@@ -87,7 +87,7 @@ var complete = function() {
 			// pull from mongodb and display new data after python script finishes
 			db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
 				//console.log(docs);
-				console.log("Displaying football matchup data...")
+				//console.log("Displaying football matchup data...")
 				disp_football_matchups = docs;
 				// call display to see if all finds are done
 				display();
