@@ -147,7 +147,6 @@ router.get('/standings_home_page/:year1/:year2', function(req, res) {
 	var year2 = req.params.year2;
 
 	if (year1 == current_year1 && year2 == current_year2) {
-		
 		var football_in_season = true;
 		var basketball_in_season = true;
 		var baseball_in_season = false;
@@ -252,7 +251,6 @@ router.get('/trifecta_standings/:year1/:year2', function(req, res) {
 
 }); // end of trifecta_standings route
 
-
 // route to /football_standings
 router.get('/football_standings/:year', function(req, res) {
 
@@ -352,7 +350,7 @@ router.get('/football_standings/:year', function(req, res) {
 		var stand = require('./football_standings_router_template.js')(req, res, db, year, playoffs);
 	}
 
-}); // end of .get('/foottball_standings')
+}); // end of .get('/football_standings')
 
 
 // route to /basketball_standings
@@ -360,6 +358,7 @@ router.get('/basketball_standings/:year', function(req, res) {
 	
 	// set parameters for requested basketball season
 	var year = req.params.year;
+	var in_season = true;
 	var playoffs = false;
 
 	// initialize display database queries
@@ -458,7 +457,7 @@ router.get('/basketball_standings/:year', function(req, res) {
 	}
 
 	else {
-		var stand = require('./basketball_standings_router_template.js')(req, res, db, year, playoffs);
+		var stand = require('./basketball_standings_router_template.js')(req, res, db, year, in_season, playoffs);
 	}	
 
 }); // end of .get('/basketball_standings')
@@ -469,6 +468,7 @@ router.get('/baseball_standings/:year', function(req, res) {
 	
 	// set parameters for requested year
 	var year = req.params.year;
+	var in_season = false;
 	var playoffs = false;
 
 	// initialize display database queries
@@ -568,7 +568,7 @@ router.get('/baseball_standings/:year', function(req, res) {
 
 	// if this is the current season, scrape
 	else {
-		var stand = require('./baseball_standings_router_template.js')(req, res, db, year, playoffs);
+		var stand = require('./baseball_standings_router_template.js')(req, res, db, year, in_season, playoffs);
 	}		
 		
 }) // end of .get('/baseball_standings')
@@ -609,9 +609,9 @@ router.get('/owner/:owner_number/matchups/:year1/:year2', function(req, res) {
 			// if basketball_in_season is false, skip altogether
 			var basketball_in_season = true;
 			// if basketball_playoffs is true, skip scrape
-			var basketball_playoffs = false;
+			var basketball_playoffs = true;
 			// full regular season = 18 matchups
-			var basketball_completed_matchups = 16;	
+			var basketball_completed_matchups = 18;	
 
 			// baseball variables
 			// if baseball_in_season is false, skip altogether

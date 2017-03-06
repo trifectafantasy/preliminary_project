@@ -29,6 +29,7 @@ print "-----Distribute Trophies-----"
 
 while True:
 	try:
+		# create dictionary of each trophy and associated selection number
 		selection_dictionary = {}
 		selection_count = 1
 
@@ -39,8 +40,10 @@ while True:
 		else:
 			year = raw_input("Year: ")
 
+		# pull from collection of all trophy possibilities according to sport
 		trophy_possibilities = list(db[collection_trophy].find({"sport": sport}, {"name": 1, "_id": 0}))
 
+		# print possibilities and create dictionary 
 		for i in trophy_possibilities:
 			trophy = i["name"]
 			print selection_count, ":", trophy
@@ -49,19 +52,20 @@ while True:
 			selection_count += 1
 		#print selection_dictionary
 
+		# enter trophy number selection
 		trophy_number = raw_input("Trophy Number: ")
 
+		# validation check
 		if 0 < int(trophy_number) < int(selection_count):
 			trophy_won = selection_dictionary["trophy" + trophy_number]
 			print trophy_won
 		else:
 			print "Please enter a valid trophy number"
 
+		# pull description and add extra description as necessary
 		trophy_description = list(db[collection_trophy].find({"sport": sport, "name": trophy_won}, {"description": 1, "_id": 0}))
 		trophy_description = trophy_description[0]["description"]
-
 		print trophy_description
-
 		extra_description = raw_input("Any extra description? ")
 		trophy_description += extra_description
 		#print repr(trophy_description)
@@ -78,6 +82,7 @@ while True:
 		elif sport == "trifecta":
 			season_order = "2.5"
 
+		# create date "year+order"
 		insert_json["date"] = float(year + season_order)
 		if sport == "trifecta":
 			insert_json["season"] = sport.capitalize() + " " + str(int(year) - 1) + "-" + year
@@ -87,6 +92,7 @@ while True:
 		insert_json["description"] = trophy_description
 		print insert_json
 
+		# add to owner trophy collection
 		db["owner" + owner_number + "_trophies"].insert(insert_json)
 		print "Trophy inserted"
 		print ""
