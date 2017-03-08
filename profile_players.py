@@ -46,7 +46,7 @@ def profilePlayers(db, owner_number, sport, year):
 		#print best_value
 
 		insert_json["season"] = sport.capitalize() + " " + year
-		insert_json["award"] = "Best Value Player"
+		insert_json["award"] = "BVP (Best Value Player)"
 		insert_json["player"] = best_value["player"]
 		insert_json["score"] = best_value["PTS"]
 		insert_json["acquired"] = best_value["acquired"]
@@ -66,7 +66,7 @@ def profilePlayers(db, owner_number, sport, year):
 		#print worst_value
 
 		insert_json["season"] = sport.capitalize() + " " + year
-		insert_json["award"] = "Worst Value Player"
+		insert_json["award"] = "LVP (Least Valuable Player)"
 		insert_json["player"] = worst_value["player"]
 		insert_json["score"] = worst_value["PTS"]
 		insert_json["acquired"] = worst_value["acquired"]
@@ -106,7 +106,7 @@ def profilePlayers(db, owner_number, sport, year):
 		best_value = value_pull[0]
 		#print best_value
 		insert_json["season"] = sport.capitalize() + " " + year
-		insert_json["award"] = "Best Value Player"
+		insert_json["award"] = "BVP (Best Value Player)"
 		insert_json["player"] = best_value["player"]
 		insert_json["score"] = best_value["weighted_PR"]
 		insert_json["acquired"] = best_value["acquired"]
@@ -126,7 +126,7 @@ def profilePlayers(db, owner_number, sport, year):
 		worst_value = value_pull[-1]
 		#print worst_value
 		insert_json["season"] = sport.capitalize() + " " + year
-		insert_json["award"] = "Worst Value Player"
+		insert_json["award"] = "LVP (Least Valuable Player)"
 		insert_json["player"] = worst_value["player"]
 		insert_json["score"] = worst_value["weighted_PR"]
 		insert_json["acquired"] = worst_value["acquired"]
@@ -207,10 +207,7 @@ for year1 in start_year_list:
 					profilePlayers(db, owner_number, sport, year)
 			elif sport == "basketball":
 				year = year2
-				if year == 2016:
-					print "Sorry, but no player analysis for Basketball 2016"
-				else:
-					profilePlayers(db, owner_number, sport, year)
+				profilePlayers(db, owner_number, sport, year)
 			elif sport == "baseball":
 				year = year2
 				profilePlayers(db, owner_number, sport, year)
