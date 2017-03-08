@@ -359,7 +359,7 @@ router.get('/basketball_standings/:year', function(req, res) {
 	
 	// set parameters for requested basketball season
 	var year = req.params.year;
-	var in_season = true;
+	var in_season = false;
 	var playoffs = false;
 
 	// initialize display database queries
