@@ -1622,7 +1622,7 @@ router.get('/owner/:owner_number/:sport/stats/:year', function(req, res) {
 	// if don't need to scrape, just pull, sort and display
 	else {
 
-		var acquisitions_display = require('./stats_display.js')(req, res, db, sport, year, owner_number)
+		var stats_display = require('./stats_display.js')(req, res, db, sport, year, owner_number)
 
 	} // end of if don't need to scrape, just dispaly
 	
@@ -1702,6 +1702,7 @@ router.get('/:sport/origin/:year', function(req, res) {
 			// reset owner number (after it has gone through loop) to all for all display
 			db.collection(sport + "_origin_" + year).find({}, {"_id": 0}).sort({"total_points": -1}).toArray(function(e, docs) {
 				origin_standings = docs;
+
 				console.log("displaying origin standings...");
 				res.render('origin', {
 					sport: sport,
