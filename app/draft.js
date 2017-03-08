@@ -61,12 +61,25 @@ module.exports = function(req, res, db, sport, year, callback) {
 						player = player_name.slice(0, player_index);
 						//console.log(player);
 
-						team = player_pull.next();
-						//console.log(team.text());
+						if (sport == 'basketball' && year == 2016){
+							team_html = player_pull.next().html();
+							//console.log(team);
+							index1 = team_html.indexOf("title=") + 7
+							index2 = team_html.indexOf("href=") - 2
+							team = team_html.slice(index1, index2);
+							team = team.replace("&apos;", "\'")
+							//console.log(team)
+						}
+						else {
+							team = player_pull.next();
+							team = team.text();
+							//console.log(team);
+						}
+	
 
 						json["player"] = player;
 						json["draft_position"] = parseInt(draft_position.text());
-						json["team"] = team.text();
+						json["team"] = team;
 
 						//console.log(json);
 

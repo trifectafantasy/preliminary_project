@@ -26,7 +26,7 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 		db.collection(sport + "_draft_" + year).find({}).toArray(function(e, docs2) {
 
 			draft_pull = docs2;
-			//console.log(draft_pull)
+			//console.log(draft_pull);
 
 			// loop through each draft pick
 			draft_pull.forEach(function(draft_pick, index) {
@@ -107,3 +107,20 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
 }
 
+// Have to modify manually as in transaction log have no *, but in roster summary, do have *
+/*
+db.owner4_basketball_acquisitions_2016.update({"player":"Andrew Bogut*"}, {"$set":{"acquired":"FA"}})
+db.owner4_basketball_acquisitions_display_2016.update({"player":"Andrew Bogut*"}, {"$set":{"acquired":"FA"}})
+db.owner4_basketball_acquisitions_2016.update({"player":"Bismack Biyombo*"}, {"$set":{"acquired":"FA"}})
+db.owner4_basketball_acquisitions_display_2016.update({"player":"Bismack Biyombo*"}, {"$set":{"acquired":"FA"}})
+
+db.owner9_basketball_acquisitions_display_2016.update({"player":"Kelly Olynyk*"}, {"$set":{"acquired":"FA"}})
+db.owner9_basketball_acquisitions_2016.update({"player":"Kelly Olynyk*"}, {"$set":{"acquired":"FA"}})
+db.owner9_basketball_acquisitions_display_2016.update({"player":"Mario Chalmers*"}, {"$set":{"acquired":"FA"}})
+db.owner9_basketball_acquisitions_2016.update({"player":"Mario Chalmers*"}, {"$set":{"acquired":"FA"}})
+
+db.owner8_basketball_acquisitions_2016.update({"player":"Andrew Bogut*"}, {"$set":{"acquired":"FA"}})
+db.owner8_basketball_acquisitions_display_2016.update({"player":"Andrew Bogut*"}, {"$set":{"acquired":"FA"}})
+db.owner8_basketball_acquisitions_2016.update({"player":"Bismack Biyombo*"}, {"$set":{"acquired":"FA"}})
+db.owner8_basketball_acquisitions_display_2016.update({"player":"Bismack Biyombo*"}, {"$set":{"acquired":"FA"}})
+*/

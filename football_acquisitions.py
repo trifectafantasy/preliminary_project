@@ -19,8 +19,9 @@ def acquisitionValue(db, sport, year, owner_number):
 
 	db[collection_display].remove({})
 
-	acquisition_value_chart = range(160, 0, -1)
-	#print acquisition_value_chart
+	# set list of acquisition weights with pick 1 having greatest weight
+	number_of_draft_picks = db[sport + "_draft_" + year].count()
+	acquisition_weight_chart = range(number_of_draft_picks, 0, -1)
 
 	acquisition_list = list(db[collection_acquisition].find({}, {"_id": 0}))
 
@@ -49,7 +50,7 @@ def acquisitionValue(db, sport, year, owner_number):
 			if draft_position == "N/A":
 				acquisition_weight = 1.5
 			else:
-				acquisition_weight = float(acquisition_value_chart[draft_position - 1]) / 10 / 1.5
+				acquisition_weight = float(acquisition_weight_chart[draft_position - 1]) / 10 / 1.5
 
 			if acquisition_weight < 1.5:
 				acquisition_weight = 1.5
@@ -119,7 +120,7 @@ def acquisitionValue(db, sport, year, owner_number):
 			if draft_position == "N/A":
 				acquisition_weight = 1.5
 			else:
-				acquisition_weight = float(acquisition_value_chart[draft_position - 1]) / 10 / 1.5
+				acquisition_weight = float(acquisition_weight_chart[draft_position - 1]) / 10 / 1.5
 
 			if acquisition_weight < 1.5:
 				acquisition_weight = 1.5
