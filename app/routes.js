@@ -130,6 +130,7 @@ router.get('/owner/:owner_number/profile/trophy', function(req, res) {
 
 		db.collection("owner" + owner_number + "_trophies").find({}, {"date": 0, "_id": 0}).sort({"date": 1}).toArray(function(e, docs2) {
 			disp_trophies = docs2;
+			console.log("displaying trophy case...")
 
 			res.render('trophy_case', {
 				owner: owner_name,
