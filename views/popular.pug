@@ -1,0 +1,113 @@
+html
+	head
+		title= "Popular Players"
+		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', href='/css/styles.css')
+
+	body
+		header
+			navbar
+				a(href= '/' class = 'navbar') Home Page
+				a(href= '/profile_home_page' class = 'navbar') Owner Profiles
+				a(href= '/standings_home_page/2015/2016' class = 'navbar') 2015-2016 Standings
+				a(href= '/standings_home_page/2016/2017' class = 'navbar') 2016-2017 Standings
+				a(href= '/owner_matchup_home_page' class = 'navbar') Owner 2 Owner Matchup Records
+				a(href= '/trades_home_page' class = 'navbar') Trade Analysis
+				a(href= '/stats_home_page' class = 'navbar') Roster Stats
+				a(href= '/acquisition_value_home_page' class = 'navbar') Acquisition Value
+				a(href= '/origin_home_page' class = 'navbar') Origin Analysis
+				a(href= '/football_coach_home_page' class = 'navbar') Football Coach  
+
+		h2= year + " " + sport.charAt(0).toUpperCase() + sport.substr(1) + " Most Popular Players"
+
+
+		if sport == "football"
+			h4 Leaguewide
+			table
+				thead
+					tr
+						th PLAYER
+						th TEAMS PLAYED FOR
+						th OWNERS
+
+				tbody
+					each readin in popular_all
+						tr
+							each val, cat in readin
+								if cat != "owner"
+									if cat === "player"
+										td= val
+										td= popular_all[0]["owners"].length
+									else if cat === "owners"
+										each owner in val
+											td= owner
+			
+			p
+			
+			h4 Per Owner
+			table
+				thead
+					tr
+						th OWNER
+						th PLAYER
+						th TRANSACTIONS
+						th PTS
+
+				tbody
+					each readin in popular_individual
+						tr
+							each val, cat in readin
+								if cat === "owner"
+									td= val
+								if cat === "player"
+									td= val
+								if cat === "transactions"
+									td= val
+								if cat === "PTS"
+									td= val
+
+		else 
+			h4 Leaguewide
+			table
+				thead
+					tr
+						th PLAYER
+						th TEAMS PLAYED FOR
+						th OWNERS
+
+				tbody
+					each readin in popular_all
+						tr
+							each val, cat in readin
+								if cat != "owner"
+									if cat === "player"
+										td= val
+										td= popular_all[0]["owners"].length
+									else if cat === "owners"
+										each owner in val
+											td= owner
+			
+			p
+
+			h4 Per Owner
+			table
+				thead
+					tr
+						th OWNER
+						th PLAYER
+						th TRANSACTIONS
+						th WEIGHTED PR
+
+				tbody
+					each readin in popular_individual
+						tr
+							each val, cat in readin
+								if cat === "owner"
+									td= val
+								if cat === "player"
+									td= val
+								if cat === "transactions"
+									td= val
+								if cat === "weighted_PR"
+									td= val	
+
