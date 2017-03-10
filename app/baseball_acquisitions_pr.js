@@ -69,14 +69,11 @@ module.exports = function(req, res, db, sport, year, callback) {
 			 				db.collection(sport + "_pr_" + year).insert(json);
 						}
 
-
-					})
-
-
+					}) // end of each rows scrape iteration
 				} // end of if(!error)
-			
 			}) // end of request
 
+		// complete function that when each start index page scrape is done, callback
 		var complete = function() {
 			complete_count += 1;
 
@@ -87,4 +84,3 @@ module.exports = function(req, res, db, sport, year, callback) {
 
 	}) // end of for each
 }
-

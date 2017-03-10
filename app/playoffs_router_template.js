@@ -22,11 +22,13 @@ module.exports = function(req, res, db, sport, year, callback) {
 		// clear playoffs database
 		db.collection(sport + '_playoffs_' + year).remove({});
 
+		// default give every team 0 playoff points
 		for (i = 0; i < team_list.length; i ++) {
 			db.collection(sport + '_playoffs_' + year).insert({"team": team_list[i]["team"], "playoff_trifecta_points": 0});
-		}
-	})
+		} // end of for loop
+	}) // end of taem list pull
 
+	// depending on sport, different url for playoffs
 	if (sport == 'football') {
 		var url = 'http://games.espn.com/ffl/h2hplayoffs?leagueId=154802&seasonId=' + year;
 	}
@@ -329,21 +331,18 @@ module.exports = function(req, res, db, sport, year, callback) {
 
 				// add to playoffs database and regex takes care of half names that playoff bracket sometimes gives
 				db.collection(sport + '_playoffs_' + year).update({"team": { "$regex": winning_team}}, {"$set": {"playoff_trifecta_points": playoff_wins}}, function(err, result) {
-
 					console.log("updated playoffs database");
 					complete();
+				}) // end of update of playoff points
+			} // end of for loop
 
-				})
-			}
+// function that waits until all playoff winners have finished updating, then callback
 var complete = function() {
 	counter += 1;
 	if (counter == playoff_winners.length) {
 		callback();
 	}
-
-}
-
-
+} // end of complete function
 
 		} // end of if(!error)
 	}) // end of request

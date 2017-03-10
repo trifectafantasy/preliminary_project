@@ -75,9 +75,11 @@ module.exports = function(req, res, db, year, owner_number, completed_weeks, cal
 												full_player = players.slice(0, players.length - 3);
 											}
 											else if (players.charAt(players.length - 1) === "D") {
+												// if Doubtful (D)
 												if (players.charAt(players.length - 2) === " ") {
 													full_player = players.slice(0, players.length - 3);
 												}
+												// if Suspended (SSPD)
 												else {
 													full_player = players.slice(0, players.length - 6);
 												}
@@ -90,7 +92,7 @@ module.exports = function(req, res, db, year, owner_number, completed_weeks, cal
 											}
 											//console.log(full_player);
 
-											// if position is kicker, or defense, if neither position is 2 characters length
+											// if position is kicker, or defense, (neither position is 2 characters length)
 											if (full_player.charAt(full_player.length - 1) === "K") {
 												eligible_position = "K"
 											}
@@ -120,6 +122,8 @@ module.exports = function(req, res, db, year, owner_number, completed_weeks, cal
 										} // end of skip headers
 									}) // end of per player row iteration	
 								} // end of if starters
+
+								// if not starters, bench
 								else {
 									//console.log("bench");
 									bench_rows = scrape.siblings();
@@ -142,9 +146,11 @@ module.exports = function(req, res, db, year, owner_number, completed_weeks, cal
 												full_player = players.slice(0, players.length - 3);
 											}
 											else if (players.charAt(players.length - 1) === "D") {
+												// if Doubtful (D)
 												if (players.charAt(players.length - 2) === " ") {
 													full_player = players.slice(0, players.length - 3);
 												}
+												// if Suspended (SSPD)
 												else {
 													full_player = players.slice(0, players.length - 6);
 												}
@@ -195,11 +201,12 @@ module.exports = function(req, res, db, year, owner_number, completed_weeks, cal
 		}) // end of getting football owner number
 	}) // end of remove of scrape
 
+// if all weeks necessary are done, callback
 var complete = function() {
 	complete_count += 1;
 	if (complete_count === completed_weeks) {
 		callback();
 	}
-}
+} // end of complete function
 
 }

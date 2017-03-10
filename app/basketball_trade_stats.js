@@ -90,19 +90,17 @@ module.exports = function(req, res, db, sport, year, owner_number_list, callback
 
 		 				//console.log(json);				
 		 				db.collection("owner" + owner_number + "_" + sport + "_stats_" + year).insert(json)
+		 				
+		 				// if player is empty (last row)
 		 				if (json.player == ""){
 		 					complete();
 		 				}
-
-					})
-
-
+					}) // end of rows 
 				} // end of if(!error)
-			
 			}) // end of request
-
 		}) // end of remove
 
+		// complete function that when all owners done, callback
 		var complete = function() {
 			complete_count += 1;
 

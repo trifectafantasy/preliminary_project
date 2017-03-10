@@ -32,7 +32,6 @@ module.exports = function(req, res, db, year, playoffs) {
 
 			// scraping h2h records and standings
 			// for each team row in the h2h standings
-
 			$("tr[class=tableBody]").each(function(i, element) {
 
 				// store sraped data for each team in json
@@ -67,9 +66,10 @@ module.exports = function(req, res, db, year, playoffs) {
 				// push each team's json of data into array of all teams
 				h2h_standings.push(json1);
 				
-			});
+			}); // end of each h2h row
 			//console.log(h2h_standings);
 
+			// scrape for PF and PA for every other team
 			$('tr.evenRow.bodyCopy.sortableRow').each(function(i, element) {
 
 				var json2 = {
@@ -87,8 +87,9 @@ module.exports = function(req, res, db, year, playoffs) {
 				json2.PA = parseFloat(PA.text()).toFixed(1);
 
 				other_standings.push(json2);
-			});
+			}); // end of each even row
 
+			// scrape for PF and PA for every other team
 			$('tr.oddRow.bodyCopy.sortableRow').each(function(i, element) {
 
 				var json3 = {
@@ -106,7 +107,7 @@ module.exports = function(req, res, db, year, playoffs) {
 				json3.PA = parseFloat(PA.text()).toFixed(1);
 
 				other_standings.push(json3);
-			});
+			}); // end of each odd row
 
 			//console.log(other_standings);
 
@@ -179,6 +180,7 @@ module.exports = function(req, res, db, year, playoffs) {
 						complete();
 					});
 
+					// if playoffs are true (playoffs are done)
 					if (playoffs === true) {
 						// initialize year as argument for python script
 						var options = {
@@ -197,8 +199,9 @@ module.exports = function(req, res, db, year, playoffs) {
 											console.log("Displaying playoff data...");
 											disp_trifecta_standings = docs;
 											complete();
-										});				
+										});	// end of trifecta standings pull		
 								}
+								// if need to scrape
 								else {
 									// if database not complete, run python script to initialize trifecta database
 									pyshell.run('football_playoffs.py', options, function(err) {
@@ -210,14 +213,12 @@ module.exports = function(req, res, db, year, playoffs) {
 											console.log("Displaying playoff data...");
 											disp_trifecta_standings = docs;
 											complete();
-										});				
-									})
+										});	// end of trifecta standings pull
+									}) // end of pyshell
 								}
-							})
-						});
-
-	
-					};
+							}) // end of count number of documents in trifecta standings
+						}); // end of playoff scrape
+					}; // end of if playoffs 
 
 					// function that checks if both finds from mongodb are complete (ie display variables are not empty)
 					var complete = function() {
@@ -245,11 +246,11 @@ module.exports = function(req, res, db, year, playoffs) {
 								});
 							}
 						}
-					}
+					} // end of complete function
 
 				}); // end of pyshell
 			}); // end of insertDocument
 
 		} // end of if(!error)
 	}) // end of request
-}
+} // end of module export

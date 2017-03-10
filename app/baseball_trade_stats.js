@@ -10,16 +10,19 @@ var assert = require('assert');
 // create callback function
 module.exports = function(req, res, db, sport, year, owner_number_list, callback) {
 
-
 	var complete_count = 0;
-
+	
+	// list of filters for active stats scrape 
 	var hitters_pitchers = ["1", "2"];
 
+	// iterate through every owner number
 	owner_number_list.forEach(function(owner_number, index) {
+		
+		//console.log(owner_number);
 
+		// iterate through each filter
 		hitters_pitchers.forEach(function(filter_number, index) {
 
-			//console.log(owner_number);
 			// set and remove collection asynchronously 
 			db.collection("owner" + owner_number + "_" + sport + "_stats_" + year).remove({}, function(err, result) {
 
@@ -42,6 +45,7 @@ module.exports = function(req, res, db, sport, year, owner_number_list, callback
 
 						rows.each(function(j, element) {
 
+			 				// scrape and set variables for hitters
 							if (filter_number == 1) {
 
 								// store scraped data for each team as json
@@ -108,9 +112,9 @@ module.exports = function(req, res, db, sport, year, owner_number_list, callback
 				 				json.SV = 0;
 				 				json.ERA = 0.0;
 				 				json.WHIP = 0.0;				 				
-
-
 			 				}
+
+			 				// scrape and set variables for pitchers
 			 				else if (filter_number == 2) {
 
 								// store scraped data for each team as json
@@ -138,7 +142,6 @@ module.exports = function(req, res, db, sport, year, owner_number_list, callback
 									WHIP: ""
 								}				
 			
-
 								player_row = $(this).children();
 								//console.log(player_row.text());
 								player = player_row.first();
@@ -178,38 +181,34 @@ module.exports = function(req, res, db, sport, year, owner_number_list, callback
 				 				json.SV = parseInt(SV.text());
 				 				json.ERA = parseFloat(ERA.text());
 				 				json.WHIP = parseFloat(WHIP.text());
-
 			 				}
 			 				else {
-			 					//console.log("filter number no funciona")
+			 					console.log("filter number no funciona");
 			 				}
-
 			 				//console.log("inserted");
-
-			 				db.collection("owner" + owner_number + "_" + sport + "_stats_" + year).insert(json)
 
 			 				if (json.player == ""){
 			 					complete();
 			 				}
+			 				else {
+			 					db.collection("owner" + owner_number + "_" + sport + "_stats_" + year).insert(json)
+			 				}
 
-						})
-
-
+						}) // end of each row
 					} // end of if(!error)
-				
 				}) // end of request
-
 			}) // end of remove
 
+			// complete function that when each owner and 2 filters on each owner are done
 			var complete = function() {
 				complete_count += 1;
 
 				if (complete_count == (owner_number_list.length * 2)){
 					callback();
 				}	
-			}
-		})
+			} // end of complete function
+		}) // end of filter forEach loop
 
-	}) // end of forEach loop
+	}) // end of owner forEach loop
 }
 

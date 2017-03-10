@@ -25,7 +25,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 			// count number of documents/players per owner 
 			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).count({}, function(err, num) {
 				total_count += num;
-			})			
+			}) // end of count
 
 			// pull down each owner's acquisition collection to add owner's name
 			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).find({}, {"_id": 0}).toArray(function(e, docs) {
@@ -59,6 +59,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 		}) // end of forEach owner list loop
 	}) // end of remove all acquisiition collection
 
+// complete function
 var complete = function() {
 	complete_count += 1;
 
@@ -73,6 +74,5 @@ var complete = function() {
 	}
 
 } // end of complete function
-	
 
 }

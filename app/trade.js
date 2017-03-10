@@ -149,13 +149,11 @@ module.exports = function(req, res, db, sport, year, callback) {
 							//console.log("owner2 number: ", owner2_number);
 						}
 
-						
 						full_player_string = players.text();
 						//console.log(full_player_string);
 
 						var number_of_traded_players = (full_player_string.match(/traded/g) || []).length;
 						//console.log(number_of_traded_players);
-
 
 						var sliced_player_string = full_player_string;
 
@@ -212,29 +210,21 @@ module.exports = function(req, res, db, sport, year, callback) {
 									players_processed += 1
 									db.collection(sport + "_trades_" + year).insert({"trade_number": trades_processed, "player": player, "owner": owner, "owner_number": owner2_number})
 								}
-
 								else {
 									console.log("no cigar");
 								}
-
 							}
 
 							sliced_player_string = sliced_player_string.slice(portion_index + 7);
 
 						} // end of for loop
-
 					} // end of if trade processed
-
 				}) // end of table.ptsBased.matchup iteration
-
 			} // end of if(!error)
 		
 		// send number of trades back to async function
 		callback(err, owner_number_list, trades_processed, players_processed);
 
 		}) // end of request
-
-
 	}); // end of async remove collection
 }
-

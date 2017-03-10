@@ -147,14 +147,13 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 						}
 						else if (json.player != "BATTER" && json.player != "PITCHER") {
 			 				db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).insert(json)
-
 						} 
 			 			
 					}) // end of rows iterations
 				} // end of if(!error)
-			
 			}) // end of request
 
+		// complete function that when both filters are done, callback
 		var complete = function() {
 			complete_count += 1;
 
@@ -166,4 +165,3 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 		}) // end of for each
 	}) // end of collection remove
 }
-

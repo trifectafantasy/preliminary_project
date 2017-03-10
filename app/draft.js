@@ -61,6 +61,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 						player = player_name.slice(0, player_index);
 						//console.log(player);
 
+						// if basketball 2016, need to pull team name (owner name) to account for Team Fongs
 						if (sport == 'basketball' && year == 2016){
 							team_html = player_pull.next().html();
 							//console.log(team);
@@ -75,12 +76,10 @@ module.exports = function(req, res, db, sport, year, callback) {
 							team = team.text();
 							//console.log(team);
 						}
-	
 
 						json["player"] = player;
 						json["draft_position"] = parseInt(draft_position.text());
 						json["team"] = team;
-
 						//console.log(json);
 
 						db.collection(sport + "_draft_" + year).insert(json);

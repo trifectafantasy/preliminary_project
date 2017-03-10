@@ -77,6 +77,7 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 			}) // end of pr pull
 		}
 
+		// if all teams are done, callback
 		else {
 			callback();
 		}
@@ -106,4 +107,3 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 	} // end of one_done function
 
 }
-
