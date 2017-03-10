@@ -49,6 +49,95 @@ router.get('/', function(req, res) {
 	});
 });
 
+router.get('/:sport/popular/:year', function(req, res) {
+	var sport = req.params.sport;
+	var year = req.params.year;
+
+var all_popular = function(x, owner_list) {
+
+	if (x < owner_list.length) {
+
+		owner_number = owner_list[x];
+
+		var popular = require('./popular.js')(req, res, db, sport, year, owner_number, function(err, call) {
+			console.log("popular scrape done");
+
+			var options = {
+				args: [sport, year, owner_number]
+			}
+			//all_popular(x + 1, owner_list)
+
+			pyshell.run('popular_individual.py', options, function(err) {
+				console.log("popular python script done");
+
+				all_popular(x + 1, owner_list)
+			})
+		})
+	}
+	
+	else {
+		var options = {
+			args: [sport, year]
+		}
+		pyshell.run('popular_all.py', options, function(err) {
+			console.log("all popular python script done");
+
+			db.collection(sport + "_popular_" + year).find({"owner": {"$not": /all/}}, {"_id": 0}, {"sort": [["transactions", "desc"], ["owner", "desc"], [score_cat, "desc"]]}).toArray(function(e, docs) {
+				disp_individual = docs;
+
+				db.collection(sport + "_popular_" + year).find({"owner": "all"}, {"_id": 0}).toArray(function(e, docs2) {
+					disp_all = docs2;
+
+					console.log("displaying most popular players...")
+					res.render('popular', {
+						sport: sport,
+						year: year,
+						popular_individual: disp_individual,
+						popular_all: disp_all
+					})
+				})
+			})
+		})
+	}
+}
+
+// start of script
+	var owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+	if (sport == "football") {
+		completed_sport_season = completed_football_season;
+		score_cat = "PTS";
+	}
+	else if (sport == "basketball") {
+		completed_sport_season = completed_basketball_season;
+		score_cat = "weighted_PR"
+	}
+	else if (sport == "baseball") {
+		completed_sport_season = completed_baseball_season;
+		score_cat = "weighted_PR"
+	}
+
+	if (year > completed_sport_season) {
+		all_popular(0, owner_list);
+	}
+	else {
+		db.collection(sport + "_popular_" + year).find({"owner": {"$not": /all/}}, {"_id": 0}, {"sort": [["transactions", "desc"], ["owner", "desc"], [score_cat, "desc"]]}).toArray(function(e, docs) {
+			disp_individual = docs;
+
+			db.collection(sport + "_popular_" + year).find({"owner": "all"}, {"_id": 0}).toArray(function(e, docs2) {
+				disp_all = docs2;
+
+				console.log("displaying most popular players...")
+				res.render('popular', {
+					sport: sport,
+					year: year,
+					popular_individual: disp_individual,
+					popular_all: disp_all
+				})
+			})
+		})		
+	}
+})
+
 router.get('/profile_home_page', function(req, res) {
 	res.render('profile_home_page');
 })

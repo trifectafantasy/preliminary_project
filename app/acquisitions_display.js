@@ -223,7 +223,7 @@ module.exports = function(req, res, db, sport, year, owner_number, hit_or_pit=nu
 
 			// pull owner acquisition database for display
 			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_display_" + year).find({}, {"player": 1, "hit_or_pit": 1, "weighted_PR": 1, "acquired": 1, "draft_position": 1, "acquisition_weight": 1, "acquisition_value": 1, "PR": 1, "_id": 0}, {"sort": [["acquisition_value", "desc"], ["weighted_PR", "desc"], ["acquisition_weight", "asc"]]}).toArray(function(e, docs) {
-				console.log(docs);
+				//console.log(docs);
 				console.log("displaying acquisition stats...");
 				disp_acquisitions = docs;
 
