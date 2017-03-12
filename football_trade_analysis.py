@@ -10,50 +10,54 @@ from collections import OrderedDict
 # function that combines data from all matchup collections for total season trifecta owner matchup standings
 def footballTrade(db, sport, year):
 
+	# pull trade collection
 	collection_trade = sport + "_trades_" + year
-
 	trade_list = list(db[collection_trade].find({}, {"trade_number": 1, "_id": 0}))
 	#print trade_list
 
 	number_of_trades = 0
 
-
+	# loop through each trade and assign trade counts
 	for trade_number_list in trade_list:
 		trade_number_count = trade_number_list["trade_number"]
 
 		if trade_number_count > number_of_trades:
 			number_of_trades = trade_number_count
 
-
+	# loop through trade numbers
 	for trade_number in range(1, number_of_trades + 1):
 
+		# add owner to list of owners involved in this particular trade
 		owners_list = []
 
+		# pull trade data for trade number
 		trade_pull = list(db[collection_trade].find({"trade_number": trade_number}, {"player": 1, "owner_number": 1, "_id": 0}))
 		#print trade_pull
 		
 		insert_json = OrderedDict()
 
+		# loop through each player in trade
 		for player_pull in trade_pull:
 
+			# pull football owner and convert to real owner number and name
 			football_owner_number = player_pull["owner_number"]
 			#print football_owner_number
-
 			real_owner = list(db["football_owners"].find({"football_owner_number": int(football_owner_number)}, {"owner_number": 1, "_id": 0}))[0]
 			owner_number = str(int(real_owner["owner_number"]))
 			#print owner_number
-
 			owner_name = list(db["owner" + owner_number].find({}, {"owner": 1, "_id": 0}))[0]["owner"]
 			#print owner_name
 
-			collection_stat = "owner" + owner_number + "_" + sport + "_stats_" + year
-
+			# set player
 			player_name = player_pull["player"]
 			#print player_name
 
+			# pull stats for player involved intrade
+			collection_stat = "owner" + owner_number + "_" + sport + "_stats_" + year
 			stat_pull = list(db[collection_stat].find({"player": player_name}, {"_id": 0}))
 			#print stat_pull
 
+			# if can't find owner, player never played and 0 all stats
 			if stat_pull == []:
 				insert_json["trade_number"] = trade_number
 				insert_json["owner_number"] = owner_number
@@ -74,8 +78,8 @@ def footballTrade(db, sport, year):
 				insert_json["MISC_FUML"] = 0
 				insert_json["MISC_TD"] = 0
 
+			# if player played and has stas, assign
 			else: 
-
 				insert_json["trade_number"] = trade_number
 				insert_json["owner_number"] = owner_number
 				insert_json["owner"] = owner_name
@@ -95,23 +99,28 @@ def footballTrade(db, sport, year):
 				insert_json["MISC_FUML"] = stat_pull[0]["MISC_FUML"]
 				insert_json["MISC_TD"] = stat_pull[0]["MISC_TD"]
 
+			# if owner not in list, add to account for this owner in trade
 			if owner_number not in owners_list:
 				owners_list.append(owner_number)
 
+			# update with full, stats for trade collection
 			db[collection_trade].update({"trade_number": trade_number, "player": player_name}, insert_json)
 		
 		#print owners_list
 		
+		# loop through each owner involved in trade to sum
 		for each_owner in owners_list:
 			
+			# pull owner name
 			owner_name = list(db["owner" + each_owner].find({}, {"owner": 1, "_id": 0}))[0]["owner"]
 			print "owner: ", owner_name
 
+			# pull all players per trade number per owner
 			total_pull = list(db[collection_trade].find({"trade_number": trade_number, "owner_number": each_owner}, {"_id": 0}))
 			#print total_pull
 
+			# initialize json and variables
 			total_json = OrderedDict()
-
 			C_upload = 0
 			A_upload = 0
 			PASS_YDS_upload = 0
@@ -128,16 +137,18 @@ def footballTrade(db, sport, year):
 			MISC_TD_upload = 0
 			PTS_upload = 0
 
+			# loop through each player per owner per trade to sum
 			for each_player in total_pull:
-
 				print each_player
 
+				# parse pass completions and attmepts, convert to int, sum, then back to string
 				PASS_pull = each_player["PASS"]
 				PASS_index = PASS_pull.index('/')
 				C_upload += int(PASS_pull[:PASS_index])
 				A_upload += int(PASS_pull[PASS_index + 1:])
 				PASS_upload = str(C_upload) + "/" + str(A_upload)
 
+				# add to total counts
 				PASS_YDS_upload += each_player["PASS_YDS"]
 				PASS_TD_upload += each_player["PASS_TD"]
 				PASS_INT_upload += each_player["PASS_INT"]
@@ -171,7 +182,6 @@ def footballTrade(db, sport, year):
 			total_json["REC_TAR"] = REC_TAR_upload
 			total_json["MISC_FUML"] = MISC_FUML_upload
 			total_json["MISC_TD"] = MISC_TD_upload
-
 
 			db[collection_trade].insert(total_json)			
 		

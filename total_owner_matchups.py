@@ -10,20 +10,19 @@ from collections import OrderedDict
 # function that combines data from all matchup collections for total season trifecta owner matchup standings
 def matchupRecords(db, owner_number, completed_football_season, football_in_season, completed_basketball_season, basketball_in_season,  completed_baseball_season, baseball_in_season):
 
-
-
+	# pull owner name per owner number
 	collection_owner = "owner" + owner_number
 	owner_name = list(db[collection_owner].find({}, {"owner": 1, "_id": 0}))[0]["owner"]
 	print "owner: ", owner_name
 
 
-
+##### FOOTBALL #####
+	# clear all football matchups database
 	collection_owner_football = "owner" + owner_number + "_football_matchups_all"
 	db[collection_owner_football].remove({})
 
-	# set range of available seasons for each sport
+	# set range of available seasons for football
 	starting_football_season = 2015;
-
 	if football_in_season == "true":
 		# add 2 because range is exclusive on back end
 		ending_football_season = int(completed_football_season) + 2
@@ -35,10 +34,11 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 	#print football_seasons
 
 
-
+	# pull most recent football matchup collection
 	collection_owner_list = "owner" + owner_number + "_football_matchups_" + str(ending_football_season - 1)
 	owner_pull = list(db[collection_owner_list].find({}, {"opposing_owner": 1, "_id": 0}))
 
+	# cycle through opposing owners
 	for opposing_owner_list in owner_pull:
 
 		football_json = OrderedDict();
@@ -51,9 +51,11 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 		PA_upload = 0.0
 		pt_diff_upload = 0.0
 
+		# opposing owner
 		opposing_owner = opposing_owner_list["opposing_owner"]
 		#print "opposing owner: ", opposing_owner
 
+		# for each opposing owner iterate through every football season per opposing owner
 		for football_year in football_seasons:
 
 			collection_football = "owner" + owner_number + "_football_matchups_" + str(football_year)
@@ -91,11 +93,12 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 		db[collection_owner_football].insert(football_json)
 
 
+##### BASKETBALL #####
 	collection_owner_basketball = "owner" + owner_number + "_basketball_matchups_all"
 	db[collection_owner_basketball].remove({})
 
+	# set range of available seasons for basketball
 	starting_basketball_season = 2016;
-
 	if basketball_in_season == "true":
 		# add 2 because range is exclusive on back end
 		ending_basketball_season = int(completed_basketball_season) + 2
@@ -106,6 +109,7 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 	basketball_seasons = range(starting_basketball_season, ending_basketball_season)
 	#print basketball_seasons
 
+	# using same owner pull list as above, cycle through each opposing owner
 	for opposing_owner_list in owner_pull:
 
 		basketball_json = OrderedDict()
@@ -115,9 +119,11 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 		ties_upload = 0.0
 		win_per_upload = 0.0
 
+		# set opposing owner
 		opposing_owner = opposing_owner_list["opposing_owner"]
 		#print "opposing owner: ", opposing_owner
 
+		# for each opposing owner iterate through every basketball season per opposing owner
 		for basketball_year in basketball_seasons:		
 
 			collection_basketball = "owner" + owner_number + "_basketball_matchups_" + str(basketball_year)
@@ -128,7 +134,6 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 			losses_upload += basketball_pull[0]["losses"]
 			ties_upload += basketball_pull[0]["ties"]
 			win_per_upload = (wins_upload + (ties_upload / 2)) / (wins_upload + losses_upload + ties_upload)
-
 
 		"""
 		print wins_upload
@@ -146,13 +151,12 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 		db[collection_owner_basketball].insert(basketball_json)
 
 
-
-
+##### BASEBALL #####
 	collection_owner_baseball = "owner" + owner_number + "_baseball_matchups_all"
 	db[collection_owner_baseball].remove({})
 
+	# set range of available seasons for baseball
 	starting_baseball_season = 2016;
-
 	if baseball_in_season == "true":
 		# add 2 because range is exclusive on back end
 		ending_baseball_season = int(completed_baseball_season) + 2
@@ -172,12 +176,12 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 		ties_upload = 0.0
 		win_per_upload = 0.0
 
+		# set opposing owner
 		opposing_owner = opposing_owner_list["opposing_owner"]
-		print "opposing owner: ", opposing_owner
+		#print "opposing owner: ", opposing_owner
 
+		# for each opposing owner iterate through every baseball season per opposing owner
 		for baseball_year in baseball_seasons:
-
-			print baseball_year		
 
 			collection_baseball = "owner" + owner_number + "_baseball_matchups_" + str(baseball_year)
 			baseball_pull = list(db[collection_baseball].find({"opposing_owner": opposing_owner}, {"_id": 0}))
@@ -187,7 +191,6 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 			losses_upload += baseball_pull[0]["losses"]
 			ties_upload += baseball_pull[0]["ties"]
 			win_per_upload = (wins_upload + (ties_upload / 2)) / (wins_upload + losses_upload + ties_upload)
-
 
 		"""
 		print wins_upload
@@ -205,12 +208,12 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 		db[collection_owner_baseball].insert(baseball_json)
 
 	
-
+##### TRIFECTA #####
 	# set tifecta matchups collection and clear it to initialze
 	collection_owner_matchups_all = "owner" + owner_number + "_trifecta_matchups_all"
 	db[collection_owner_matchups_all].remove({})
 
-
+	# using same owner pull list as above, cycle through each opposing owner
 	for opposing_owner_list in owner_pull:
 
 		insert_json = OrderedDict()
@@ -220,6 +223,7 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 		baseball_win_per = 0.0
 		total_win_per = 0.0
 
+		# set opposing owner
 		opposing_owner = opposing_owner_list["opposing_owner"]
 		#print "opposing owner: ", opposing_owner
 
@@ -255,9 +259,6 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 
 		# add into matchup collection
 		db[collection_owner_matchups_all].insert(insert_json)
-
-
-
 
 				
 ##### PYTHON SCRIPT TO EXECUTE #####

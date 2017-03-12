@@ -10,42 +10,46 @@ from collections import OrderedDict
 # function that combines data from all matchup collections for total season trifecta owner matchup standings
 def baseballTrade(db, sport, year):
 
+	# pull all trades in collection
 	collection_trade = sport + "_trades_" + year
-
 	trade_list = list(db[collection_trade].find({}, {"trade_number": 1, "_id": 0}))
 	#print trade_list
 
 	number_of_trades = 0
 
+	# count how many trades there are
 	for trade_number_list in trade_list:
 		trade_number_count = trade_number_list["trade_number"]
 
 		if trade_number_count > number_of_trades:
 			number_of_trades = trade_number_count
-
 	#print number_of_trades
 
+	# loop through each trade number
 	for trade_number in range(1, number_of_trades + 1):
-		owners_list = []	
 
+		# list of owners involved in this trade number
+		owners_list = []	
 		#print "trade number", trade_number
 
-
+		# pull players in specific trade number
 		trade_pull = list(db[collection_trade].find({"trade_number": trade_number}, {"player": 1, "owner_number": 1, "_id": 0}))
 		#print trade_pull
 
 		insert_json = OrderedDict()
 
+		# loop through each player in this trade
 		for player_pull in trade_pull:
 
+			# pull owner number and owner name
 			owner_number = player_pull["owner_number"]
 			owner_name = list(db["owner" + owner_number].find({}, {"owner": 1, "_id": 0}))[0]["owner"]
 			#print owner_name
 
-			collection_stat = "owner" + owner_number + "_" + sport +  "_stats_" + year
-
 			player_name = player_pull["player"]
 
+			# pull stats for this player
+			collection_stat = "owner" + owner_number + "_" + sport +  "_stats_" + year
 			stat_pull = list(db[collection_stat].find({"player": player_name}, {"_id": 0}))[0]
 			#print stat_pull
 
@@ -74,6 +78,7 @@ def baseballTrade(db, sport, year):
 			insert_json["ERA"] = stat_pull["ERA"]
 			insert_json["WHIP"] = stat_pull["WHIP"]
 
+			# add player to owner list of owners involved in trade
 			if owner_number not in owners_list:
 				owners_list.append(owner_number)
 
@@ -81,11 +86,14 @@ def baseballTrade(db, sport, year):
 			
 		#print owners_list
 
+		# for each owner in each trade number to sum
 		for each_owner in owners_list:
 			
+			# pull owner name
 			owner_name = list(db["owner" + each_owner].find({}, {"owner": 1, "_id": 0}))[0]["owner"]
 			#print "owner: ", owner_name
 
+			# pull stats per trade number and owner
 			total_pull = list(db[collection_trade].find({"trade_number": trade_number, "owner_number": each_owner}, {"_id": 0}))
 			#print total_pull
 
@@ -112,10 +120,11 @@ def baseballTrade(db, sport, year):
 			ERA_upload = 0.0
 			WHIP_upload = 0.0
 
+			# for each player per owner and trade number
 			for each_player in total_pull:
-
 				#print each_player
 
+				# sum to totals
 				GP_upload += each_player["GP"]
 				AB_upload += each_player["AB"]
 				H_upload += each_player["H"]
@@ -125,11 +134,13 @@ def baseballTrade(db, sport, year):
 				BB_upload += each_player["BB"]
 				SO_upload += each_player["SO"]
 				SB_upload += each_player["SB"]
+				# calculate OBP
 				if AB_upload + BB_upload == 0:
 					OBP_upload += 0.0
 				else:
 					OBP_upload = float(H_upload + BB_upload) / float(AB_upload + BB_upload)
 
+				# convert 1/3 and 2/3 of innings for IP
 				IP_upload += each_player["IP"]
 				if ".3" in str(IP_upload):
 					IP_upload = IP_upload - 0.3 + 1
@@ -145,6 +156,7 @@ def baseballTrade(db, sport, year):
 				W_upload += each_player["W"]
 				SV_upload += each_player["SV"]
 
+				# convert to 1/3 and 2/3 IP and use for ERA and WHIP calculations
 				if ".1" in str(IP_upload):
 					IP_calc = IP_upload - 0.1 + 0.33333
 				elif ".2" in str(IP_upload):
@@ -161,7 +173,6 @@ def baseballTrade(db, sport, year):
 					WHIP_upload = 0
 				else:
 					WHIP_upload = (HA_upload + BBA_upload) / (IP_calc)
-
 
 			total_json["trade_number"] = trade_number
 			total_json["owner_number"] = each_owner

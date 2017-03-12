@@ -331,10 +331,9 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 						year: year,
 						playoffs: playoffs
 					});
-				}
-			}
-		}				
-	}
+				} 
+			} // end of else
+		} // end of complete function
+	} // end of if in_season false, or just display
 
-	
-} // end of .get('/basketball_standings')
+} 

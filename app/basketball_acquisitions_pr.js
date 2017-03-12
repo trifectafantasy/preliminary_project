@@ -76,6 +76,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 					} // end of if(!error)
 				}) // end of request
 
+			// complete function which when all start index scrapes are done
 			var complete = function() {
 				complete_count += 1;
 

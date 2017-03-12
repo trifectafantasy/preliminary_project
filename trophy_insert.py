@@ -27,6 +27,7 @@ collection_trophy = "trophy_list"
 
 print "-----Distribute Trophies-----"
 
+# while loop and try block to handle KeyboardInterrupt
 while True:
 	try:
 		# create dictionary of each trophy and associated selection number
@@ -43,7 +44,7 @@ while True:
 		# pull from collection of all trophy possibilities according to sport
 		trophy_possibilities = list(db[collection_trophy].find({"sport": sport}, {"name": 1, "_id": 0}))
 
-		# print possibilities and create dictionary 
+		# print possibilities and create dictionary with selection numbers and trophy names for selection
 		for i in trophy_possibilities:
 			trophy = i["name"]
 			print selection_count, ":", trophy

@@ -12,6 +12,7 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 
 	var sport = 'baseball';
 
+	// if in_season is true, scrape
 	if (in_season == true) {
 
 		// url for baseballf standings
@@ -68,7 +69,7 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 				})
 
 				// scraping roto stats and standings
-				// for each team row in roto standings (note space " " in class name; it's possible)
+				// for each team row in roto standings (note space " " in class name; it's possible!)
 				$('tr[class="tableBody sortableRow"]').each(function(i, element) {
 
 					// store scraped data for each team as json
@@ -251,6 +252,7 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 		}) // end of request		
 	}
 
+	// if not season, just display
 	else if (in_season == false) {
 
 		// initialize display database queries
@@ -310,8 +312,8 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 							});				
 						})
 					}
-				})
-			})
+				}) // end of baseball trifecta scrape
+			}) // end of playoff scrape
 
 		};
 
@@ -343,8 +345,7 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 					});
 				}
 			}
-		}				
-	}
+		} // end of complete function
+	} // end of if not in_season and just scrape
 
-	
 } // end of .get('/baseball_standings')

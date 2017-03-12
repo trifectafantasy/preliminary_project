@@ -53,17 +53,13 @@ module.exports = function(req, res, db, sport, year, callback) {
 
 						// each time done, call complete to see when done
 						complete();
-					}				
-				})
+					} // end of for loop to add owner name				
+				}) // end of owner name pulls
+			}) // end of acquisitions display pull
+		}) // end of forEach iterations for each owner
+	}) // end of remove to clear collection
 
-			})
-
-
-		})
-
-
-	})
-
+// complete function to when each player on each owner is done
 var complete = function() {
 	complete_count += 1;
 
@@ -74,11 +70,8 @@ var complete = function() {
 		if (complete_count == total_count) {
 			//console.log("donezo")
 			callback();
-		}		
+		}
 	}
-
-
-}
-	
+} // end of complete function
 
 }

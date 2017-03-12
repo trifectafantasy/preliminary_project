@@ -10,38 +10,44 @@ from collections import OrderedDict
 # function that combines data from all matchup collections for total season trifecta owner matchup standings
 def basketballTrade(db, sport, year):
 
+	# pull trade database
 	collection_trade = sport + "_trades_" + year
-
 	trade_list = list(db[collection_trade].find({}, {"trade_number": 1, "_id": 0}))
 	#print trade_list
 
 	number_of_trades = 0
 
+	# slow, iterating way of checking what the largest/actual number of trades there are
 	for trade_number_list in trade_list:
 		trade_number_count = trade_number_list["trade_number"]
-
 		if trade_number_count > number_of_trades:
 			number_of_trades = trade_number_count
 
+	# loop through however many trades there were
 	for trade_number in range(1, number_of_trades + 1):
-		owners_list = []	
+		
+		# list of owners involved in this trade
+		owners_list = []
 
-
+		# pull all players associated with this trade number
 		trade_pull = list(db[collection_trade].find({"trade_number": trade_number}, {"player": 1, "owner_number": 1, "_id": 0}))
 		#print trade_pull
 
 		insert_json = OrderedDict()
 
+		# loop through each player
 		for player_pull in trade_pull:
 
+			# pull owner number and name
 			owner_number = player_pull["owner_number"]
 			owner_name = list(db["owner" + owner_number].find({}, {"owner": 1, "_id": 0}))[0]["owner"]
 			#print owner_name
 
-			collection_stat = "owner" + owner_number + "_" + sport +  "_stats_" + year
-
+			# set player name
 			player_name = player_pull["player"]
 
+			# pull stats per player in trade
+			collection_stat = "owner" + owner_number + "_" + sport +  "_stats_" + year
 			stat_pull = list(db[collection_stat].find({"player": player_name}, {"_id": 0}))[0]
 			#print stat_pull
 
@@ -62,21 +68,25 @@ def basketballTrade(db, sport, year):
 			insert_json["TO"] = stat_pull["TO"]
 			insert_json["PTS"] = stat_pull["PTS"]
 
+			# if owner not in list, add to keep track of which owners 
 			if owner_number not in owners_list:
 				owners_list.append(owner_number)
 
 			db[collection_trade].update({"trade_number": trade_number, "player": player_name}, insert_json)
-			
+		
 		print owners_list
 
+		# for each owner involved in trade
 		for each_owner in owners_list:
 			
 			owner_name = list(db["owner" + each_owner].find({}, {"owner": 1, "_id": 0}))[0]["owner"]
 			print "owner: ", owner_name
 
+			# pull each player from each owner per trade number
 			total_pull = list(db[collection_trade].find({"trade_number": trade_number, "owner_number": each_owner}, {"_id": 0}))
 			#print total_pull
 
+			# initialize upload variables
 			total_json = OrderedDict()
 
 			GP_upload = 0
@@ -94,6 +104,7 @@ def basketballTrade(db, sport, year):
 			TO_upload = 0
 			PTS_upload = 0
 
+			# loop through each player per owner per trade to sum
 			for each_player in total_pull:
 
 				print each_player

@@ -130,6 +130,7 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 				 				json.PTS = parseFloat(PTS.text());
 							}
 
+							// D/ST stats just killname and points
 							else if (filter_number == "5") {
 								
 								var json = {
@@ -150,7 +151,6 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 				 				json.player = player_name;
 				 				json.PTS = parseFloat(PTS.text());								
 							}
-				 			
 				 			//console.log(json);
 
 				 			// if reach end of page, count for callback								
@@ -169,6 +169,7 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 				
 				}) // end of request
 
+			// complete function that when all filter scrapes are done, callback
 			var complete = function() {
 				complete_count += 1;
 

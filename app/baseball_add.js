@@ -24,7 +24,6 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 		if (end_day < 10) {
 			end_day = "0" + String(end_day)
 		}		
-
 		// to account for month needing to be 2 digits
 		if (end_month < 10) {
 			end_month = "0" + String(end_month)
@@ -82,8 +81,6 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 		callback();
 		}) // end of request
 
-	})
-
+	}) // end of updating all for trades and draft position N/A
 
 }
-
