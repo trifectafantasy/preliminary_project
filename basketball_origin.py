@@ -11,26 +11,33 @@ import math
 # function that combines data from all matchup collections for total season trifecta owner matchup standings
 def originCalculation(db, sport, year, owner_number):
 
+	# name collections
 	collection_acquisition = "owner" + owner_number + "_" + sport + "_acquisitions_" + year
 	collection_origin = sport + "_origin_" + year
 	collection_owner = "owner" + owner_number
 
+	# pull owner name
 	owner_name = list(db[collection_owner].find({}, {"owner": 1, "_id": 0}))[0]["owner"]
 	#print owner_name
 
+	# clear any blank owners
 	db[collection_acquisition].remove({"player": ""})
 
+	# clear this owner's origin collection before new calculation
 	db[collection_origin].remove({"owner": owner_name})
 
+	# pull players and acquisition values
 	acquisition_list = list(db[collection_acquisition].find({}, {"_id": 0}))
 	#print acquisition_list
 
+	# initialize counting variables
 	draft_pr = 0.0
 	fa_pr = 0.0
 	trade_pr = 0.0
 
 	total_pr = 0.0
 
+	# for each player's stats
 	for each_player in acquisition_list:
 		insert_json = OrderedDict()
 		#print each_player
@@ -38,6 +45,7 @@ def originCalculation(db, sport, year, owner_number):
 		player = each_player["player"]
 		acquired = each_player["acquired"]
 		
+		# try to pull PR, if can't PR = 0
 		try:
 			each_player["PR"]
 		except KeyError:
@@ -45,6 +53,7 @@ def originCalculation(db, sport, year, owner_number):
 			weighted_pr = 0.0
 			continue
 
+		# try to pull GP, if no GP. GP & weighted_PR = 0
 		try:
 			each_player["GP"]
 		except KeyError:
@@ -54,22 +63,24 @@ def originCalculation(db, sport, year, owner_number):
 
 		PR = each_player["PR"]
 		GP = each_player["GP"]
+
+		# if GP is Nan
 		if math.isnan(GP) == True:
 			GP = 0
 
 		weighted_pr = PR * GP
 
+		# depending on method of acquisition, add to that total
 		if acquired == "Draft":
 			draft_pr += weighted_pr
-
 		elif acquired == "FA":
 			fa_pr += weighted_pr
-
 		elif acquired == "Trade":
 			trade_pr += weighted_pr
 
 		total_pr += weighted_pr
 
+	# calculate percentages
 	draft_pct = draft_pr / total_pr * 100
 	fa_pct = fa_pr / total_pr * 100
 	trade_pct = trade_pr / total_pr * 100

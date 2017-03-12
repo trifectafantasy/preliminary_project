@@ -27,8 +27,8 @@ collection_trophy = "trophy_list"
 
 print "-----Insert Trophies-----"
 
+# while loop and try block to handle ^C KeyboardInterrupt to end program
 while True:
-
 	try:
 		sport = raw_input("What sport is this award for? > ")
 		name = raw_input("What is the name of the award? > ")
@@ -46,6 +46,7 @@ while True:
 		print "Trophy inserted"
 		print ""
 
+	# handle KeyboardInterrupt and terminate mongod instance
 	except KeyboardInterrupt:
 		print "Goodbye"
 		# sleep and terminate mongodb instance

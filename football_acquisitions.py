@@ -10,34 +10,38 @@ from collections import OrderedDict
 # function that combines data from all matchup collections for total season trifecta owner matchup standings
 def acquisitionValue(db, sport, year, owner_number):
 
+	# set collection names
 	collection_acquisition = "owner" + owner_number + "_" + sport + "_acquisitions_" + year
 	collection_display = "owner" + owner_number + "_" + sport + "_acquisitions_display_" + year
 
+	# remove blank and "header" players
 	db[collection_acquisition].remove({"player": "OFFENSIVE PLAYER"})
 	db[collection_acquisition].remove({"player": "KICKER"})
 	db[collection_acquisition].remove({"player": "TEAM D/ST"})
 
+	# clear acquisisiton display collection
 	db[collection_display].remove({})
 
 	# set list of acquisition weights with pick 1 having greatest weight
 	number_of_draft_picks = db[sport + "_draft_" + year].count()
 	acquisition_weight_chart = range(number_of_draft_picks, 0, -1)
 
+	# pull acquisitions collection per owner
 	acquisition_list = list(db[collection_acquisition].find({}, {"_id": 0}))
-
 	#print acquisition_list
 
+	# iterate through each player
 	for each_player in acquisition_list:
+		#print each_player
 
 		insert_json = OrderedDict()
 
-
-		#print each_player
-
+		# define a player and draft value (number or N/A)
 		player = each_player["player"]
 		acquired = each_player["acquired"]
 		draft_position = each_player["draft_position"]
 
+		# if player has REC then player at least played
 		try:	
 			REC = each_player["REC"]
 
@@ -47,6 +51,7 @@ def acquisitionValue(db, sport, year, owner_number):
 
 			draft_position = each_player["draft_position"]
 
+			# calculate acuisition weight
 			if draft_position == "N/A":
 				acquisition_weight = 1.5
 			else:
@@ -57,6 +62,7 @@ def acquisitionValue(db, sport, year, owner_number):
 
 			insert_json["player"] = each_player["player"]
 
+			# if player has no PTS, then straight 0's for everything but acquisition weight
 			try:
 				PTS = each_player["PTS"]
 			except KeyError:
@@ -84,6 +90,7 @@ def acquisitionValue(db, sport, year, owner_number):
 				db[collection_display].insert(insert_json)
 				continue				
 
+			# if player has PTS and thus acquisition value
 			PTS = each_player["PTS"]
 			acquisition_value = round(PTS / acquisition_weight, 2)
 			insert_json["PTS"] = PTS
@@ -108,15 +115,17 @@ def acquisitionValue(db, sport, year, owner_number):
 			db[collection_display].insert(insert_json)
 			continue
 
+		# if player has receptions, PTS, played games
 		PTS = each_player["PTS"]
 
+		# if player acquired via trade, no acquisition value
 		if acquired == "Trade":
-
 			acquisition_weight = "N/A"
 			acquisition_value = "N/A"
 
+		# if drafted or picked up
 		else:
-
+			# calculate acquisition weight
 			if draft_position == "N/A":
 				acquisition_weight = 1.5
 			else:
@@ -124,14 +133,13 @@ def acquisitionValue(db, sport, year, owner_number):
 
 			if acquisition_weight < 1.5:
 				acquisition_weight = 1.5
-
 			#print acquisition_weight
 
+			# if negative points multiply by acquisition weight to increase negativity
 			if PTS < 0:
 				acquisition_value = round(PTS * acquisition_weight, 2)
 			else:
 				acquisition_value = round(PTS / acquisition_weight, 2)
-
 		#print acquisition_value
 
 		insert_json["player"] = each_player["player"]

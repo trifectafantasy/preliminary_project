@@ -8,7 +8,7 @@ import math
 
 ##### DEFINE FUNCTIONS #####
 
-# function that gets the trifecta standings
+# function that gets the trifecta standings and inserts individual owner's standing into profile_standings database
 def	trifecta_summary(db, owner_number, year1, year2):
 
 	insert_json = OrderedDict()
@@ -19,15 +19,18 @@ def	trifecta_summary(db, owner_number, year1, year2):
 	trifecta_pull = list(db["trifecta_" + str(year1) + "_" + str(year2)].find({}, {"owner": 1, "total_trifecta_points": 1, "_id": 0}).sort("total_trifecta_points", -1))
 	#print trifecta_pull
 
+	# initialize counting variables
 	rank = 0
 	saved_points = 0
 	last_points = 0
 	tie_teams = 0	
 	
+	# iterate for each owner's trifecta standings
 	for each_owner in trifecta_pull:
 		owner = each_owner["owner"]
 		trifecta_points = each_owner["total_trifecta_points"]
 
+		# assigning rank depending on number of trifecta points
 		rank += 1
 
 		if last_points == trifecta_points:
@@ -72,18 +75,22 @@ def profiling(db, owner_number, team_list, sport, year):
 
 	if sport == "baseball":
 
+		# pull trifecta data sport and year
 		sport_trifecta_pull = list(db[sport + "_trifecta_" + year].find({}, {"team": 1, "total_trifecta_points": 1, "_id": 0}).sort("total_trifecta_points", -1))
 		#print sport_trifecta_pull
 
+		# initialize counting variables
 		rank = 0
 		saved_points = 0
 		last_points = 0
 		tie_teams = 0
 
+		# for each team's trifecta data
 		for each_team in sport_trifecta_pull:
 			team = each_team["team"]
 			sport_trifecta_points = each_team["total_trifecta_points"]
 
+			# assign rank depending on total trifecta points
 			rank += 1
 
 			if last_points == sport_trifecta_points:
@@ -104,9 +111,11 @@ def profiling(db, owner_number, team_list, sport, year):
 				#print sport, "rank", rank
 				#print "trifecta points", sport_trifecta_points
 
+		# pull h2h win percentage
 		sport_h2h_pull = list(db[sport + "_h2h_" + year].find({}, {'team': 1, 'win_per': 1, "_id": 0}))
 		#print sport_h2h_pull
 
+		# loop through each team and if right one, pull win_per
 		for each_h2h in sport_h2h_pull:
 			team = each_h2h["team"]
 
@@ -114,9 +123,11 @@ def profiling(db, owner_number, team_list, sport, year):
 				sport_h2h = each_h2h["win_per"]
 				#print sport, "win per", sport_h2h
 
+		# pull roto points
 		sport_roto_pull = list(db[sport + "_roto_" + year].find({}, {"team": 1, "total_roto_points": 1, "_id": 0}))
 		#print sport_roto_pull
 
+		# loop through each team and if right one, pull total roto points
 		for each_roto in sport_roto_pull:
 			team = each_roto["team"]
 
@@ -134,21 +145,25 @@ def profiling(db, owner_number, team_list, sport, year):
 		print insert_json
 		db["owner" + owner_number + "_profile_standings"].insert(insert_json)
 
-
+	# if sport is football or basketball (no roto)
 	else:
 
+		# pull sport trifecta points
 		sport_trifecta_pull = list(db[sport + "_trifecta_" + year].find({}, {"team": 1, "total_trifecta_points": 1, "_id": 0}).sort("total_trifecta_points", -1))
 		#print sport_trifecta_pull
 
+		# initialize counting variables
 		rank = 0
 		saved_points = 0
 		last_points = 0
 		tie_teams = 0
 
+		# loop through each team's trifecta points
 		for each_team in sport_trifecta_pull:
 			team = each_team["team"]
 			sport_trifecta_points = each_team["total_trifecta_points"]
 
+			# assign rank depending on total trifecta points
 			rank += 1
 
 			if last_points == sport_trifecta_points:
@@ -169,9 +184,11 @@ def profiling(db, owner_number, team_list, sport, year):
 				#print sport, "rank", rank
 				#print "trifecta points", sport_trifecta_points
 
+		# pull h2h collections for win_per
 		sport_h2h_pull = list(db[sport + "_h2h_" + year].find({}, {'team': 1, 'win_per': 1, "_id": 0}))
 		#print sport_h2h_pull
 
+		# loop through each team's h2h data
 		for each_h2h in sport_h2h_pull:
 			team = each_h2h["team"]
 
@@ -190,7 +207,6 @@ def profiling(db, owner_number, team_list, sport, year):
 		db["owner" + owner_number + "_profile_standings"].insert(insert_json)
 
 	print ""
-
 
 
 ##### PYTHON SCRIPT TO EXECUTE #####
@@ -220,18 +236,23 @@ baseball_completed_season = str(sys.argv[6])
 
 db["owner" + owner_number + "_profile_standings"].remove({})
 
-
+# for this particular owner, pull all their fantasy team names used
 team_list = list(db["owner" + owner_number].find({}, {"teams": 1, "_id": 0}))[0]["teams"]
 print team_list
 
 sports_list = ["football", "basketball", "baseball"]
 
+# loop through each year we've played
 start_year_list = range(start_year, end_year)
+# set year 1 and year 2
 for year1 in start_year_list:
 	year2 = year1 + 1
 
+	# if current trifecta season
 	if year2 == end_year:
+		# loop through each sport in order
 		for sport in sports_list:
+			# if baseball done, profile all sport and set correct year
 			if baseball_completed_season == "true":
 				if sport == "football":
 					year = year1
@@ -242,6 +263,7 @@ for year1 in start_year_list:
 				elif sport == 'baseball':
 					year = year2
 					profiling(db, owner_number, team_list, sport, year)
+			# if basketball done, profile basketball and football
 			elif basketball_completed_season == "true":
 				if sport == "football":
 					year = year1
@@ -249,13 +271,16 @@ for year1 in start_year_list:
 				elif sport == "basketball":
 					year = year2
 					profiling(db, owner_number, team_list, sport, year)
+			# if football done, profile football
 			elif football_completed_season == "true":
 				if sport == "football":
 					year = year1
 					profiling(db, owner_number, team_list, sport, year)
 
+	# if trifecta season in past (all done)
 	else:
 		for sport in sports_list:
+			# proile each sport and set correct
 			if sport == "football":
 				year = year1
 				profiling(db, owner_number, team_list, sport, year)
@@ -266,6 +291,7 @@ for year1 in start_year_list:
 				year = year2
 				profiling(db, owner_number, team_list, sport, year)
 
+				# if baseball is done, then also do trifeta summary
 				trifecta_summary(db, owner_number, year1, year2)
 
 # sleep and terminate mongodb instance

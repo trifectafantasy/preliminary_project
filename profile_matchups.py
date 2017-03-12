@@ -8,6 +8,7 @@ import math
 
 ##### DEFINE FUNCTIONS #####
 
+# function that pulls best and worst owner against in a trifecta season
 def	profileMatchupsTrifecta(db, owner_number, year1, year2):
 
 	insert_json = OrderedDict()
@@ -15,12 +16,15 @@ def	profileMatchupsTrifecta(db, owner_number, year1, year2):
 	year1 = str(year1)
 	year2 = str(year2)
 
+	# pull trifecta matchups
 	trifecta_pull = list(db["owner" + owner_number + "_trifecta_matchups_" + year1 + "_" + year2].find({}, {"opposing_owner": 1, "total_win_per": 1, "_id": 0}).sort("total_win_per", -1))
 	#print trifecta_pull
 
+	# set best against opposing owner
 	best_against = trifecta_pull[0]
 	#print "best against", best_against
 
+	# set worst against opposing owner
 	worst_against = trifecta_pull[-1]
 	#print "worst against", worst_against
 
@@ -34,7 +38,7 @@ def	profileMatchupsTrifecta(db, owner_number, year1, year2):
 
 	db["owner" + owner_number + "_profile_matchups"].insert(insert_json)
  
-# function that gets the trifecta standings
+# function that gets the matchups against opposing owners for each sport
 def	profileMatchups(db, owner_number, sport, year1, year2):
 
 	insert_json = OrderedDict()
@@ -46,10 +50,15 @@ def	profileMatchups(db, owner_number, sport, year1, year2):
 
 	if sport == "football":
 		year = year1
+
+		# pull matchup data for owner, sport, and year sorted by win_per and point differential
 		sport_pull = list(db["owner" + owner_number + "_" + sport + "_matchups_" + year].find({}, {"win_per": 1, "pt_diff": 1, "opposing_owner": 1, "_id": 0}).sort([("win_per", -1), ("pt_diff", -1)]))
 		
+		# set best against opposing owner
 		best_against = sport_pull[0]
 		#print "best against", best_against
+
+		# set worst against opposing owner
 		worst_against = sport_pull[-1]
 		#print "worst against", worst_against
 
@@ -63,10 +72,15 @@ def	profileMatchups(db, owner_number, sport, year1, year2):
 
 	elif sport == "basketball":
 		year = year2
+
+		# pull matchup data for owner, sport, and year, sorted by win per and wins
 		sport_pull = list(db["owner" + owner_number + "_" + sport + "_matchups_" + year].find({}, {"win_per": 1, "opposing_owner": 1, "_id": 0}).sort([("win_per", -1), ("wins", -1)]))
 		
+		# set best against opposing owner
 		best_against = sport_pull[0]
 		#print "best against", best_against
+
+		# set worst against opposing owner
 		worst_against = sport_pull[-1]
 		#print "worst against", worst_against
 
@@ -80,10 +94,15 @@ def	profileMatchups(db, owner_number, sport, year1, year2):
 
 	elif sport == "baseball":
 		year = year2
+
+		# pull mathup data for owner, sport, and year, sorted by win per and wins
 		sport_pull = list(db["owner" + owner_number + "_" + sport + "_matchups_" + year].find({}, {"win_per": 1, "opposing_owner": 1, "_id": 0}).sort([("win_per", -1), ("wins", -1)]))
 		
+		# set best against opposing owner
 		best_against = sport_pull[0]
 		#print "best against", best_against
+
+		# set worst against opposing owner
 		worst_against = sport_pull[-1]
 		#print "worst against", worst_against
 
@@ -129,12 +148,16 @@ db["owner" + owner_number + "_profile_matchups"].remove({})
 
 sports_list = ["football", "basketball", "baseball"]
 
+# create year list of year1's not including last year
 start_year_list = range(start_year, end_year)
+# set year1 and year2
 for year1 in start_year_list:
 	year2 = year1 + 1
 
+	# if current trifecta season
 	if year2 == end_year:
 		for sport in sports_list:
+			# if baseball completed, profile all sports mathups
 			if baseball_completed_season == "true":
 				if sport == "football":
 					profileMatchups(db, owner_number, sport, year1, year2)
@@ -142,17 +165,21 @@ for year1 in start_year_list:
 					profileMatchups(db, owner_number, sport, year1, year2)
 				elif sport == 'baseball':
 					profileMatchups(db, owner_number, sport, year1, year2)
+			# if basketball completed. profile basketball and football matchups
 			elif basketball_completed_season == "true":
 				if sport == "football":
 					profileMatchups(db, owner_number, sport, year1, year2)
 				elif sport == "basketball":
 					profileMatchups(db, owner_number, sport, year1, year2)
+			# if football completed, profile football machups
 			elif football_completed_season == "true":
 				if sport == "football":
 					profileMatchups(db, owner_number, sport, year1, year2)
 
+	# if season in past
 	else:
 		for sport in sports_list:
+			# if in past, profile all sports matchups
 			if sport == "football":
 				profileMatchups(db, owner_number, sport, year1, year2)
 			elif sport == "basketball":
@@ -160,6 +187,7 @@ for year1 in start_year_list:
 			elif sport == "baseball":
 				profileMatchups(db, owner_number, sport, year1, year2)
 
+				# after baseball, profile trifecta as well
 				profileMatchupsTrifecta(db, owner_number, year1, year2)
 
 # sleep and terminate mongodb instance

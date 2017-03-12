@@ -10,37 +10,45 @@ from collections import OrderedDict
 # function that combines data from all matchup collections for total season trifecta owner matchup standings
 def originCalculation(db, sport, year, owner_number):
 
+	# set collection names
 	collection_acquisition = "owner" + owner_number + "_" + sport + "_acquisitions_" + year
 	collection_origin = sport + "_origin_" + year
 	collection_owner = "owner" + owner_number
 
+	# pull owner name
 	owner_name = list(db[collection_owner].find({}, {"owner": 1, "_id": 0}))[0]["owner"]
 	#print owner_name
 
+	# delete header and empty "players" 
 	db[collection_acquisition].remove({"player": "OFFENSIVE PLAYER"})
 	db[collection_acquisition].remove({"player": "KICKER"})
 	db[collection_acquisition].remove({"player": "TEAM D/ST"})
-
 	db[collection_acquisition].remove({"player": ""})
 
+	# clear origin database for particular owner
 	db[collection_origin].remove({"owner": owner_name})
 
+	# pull acquisition database
 	acquisition_list = list(db[collection_acquisition].find({}, {"_id": 0}))
 	#print acquisition_list
 
+	# initailize counting variables
 	draft_points = 0.0
 	fa_points = 0.0
 	trade_points = 0.0
 
 	total_points = 0.0
 
+	# loop through each player who has stats
 	for each_player in acquisition_list:
 		insert_json = OrderedDict()
 		#print each_player
 
+		# set player and method acquired
 		player = each_player["player"]
 		acquired = each_player["acquired"]
 		
+		# if can't pul PTS, set as 0
 		try:
 			each_player["PTS"]
 		except KeyError:
@@ -49,17 +57,18 @@ def originCalculation(db, sport, year, owner_number):
 
 		PTS = each_player["PTS"]
 
+		# depending on method of acquisition, add to that method total
 		if acquired == "Draft":
 			draft_points += PTS
-
 		elif acquired == "FA":
 			fa_points += PTS
-
 		elif acquired == "Trade":
 			trade_points += PTS
 
+		# add to total total
 		total_points += PTS
 
+	# calculate percentages for eaech method of acquisition
 	draft_pct = draft_points / total_points * 100
 	fa_pct = fa_points / total_points * 100
 	trade_pct = trade_points / total_points * 100
