@@ -38,7 +38,7 @@ var current_year2 = 2017;
 
 // year of most recent totally completed (in the past) season
 var completed_football_season = 2016;
-var completed_basketball_season = 2016;
+var completed_basketball_season = 2017;
 var completed_baseball_season = 2016;
 
 
@@ -64,7 +64,7 @@ router.get('/owner/:owner_number/profile/recap', function(req, res) {
 
 	// per this trifecta season, if true, season complete and can pull finished season stats, if false, skip
 	var football_completed_season = true;
-	var basketball_completed_season = false;
+	var basketball_completed_season = true;
 	var baseball_completed_season = false;
 
 	var disp_profile_standings = null;
@@ -373,7 +373,7 @@ router.get('/basketball_standings/:year', function(req, res) {
 	// set parameters for requested basketball season
 	var year = req.params.year;
 	var in_season = false;
-	var playoffs = false;
+	var playoffs = true;
 
 	// initialize display database queries
 	var disp_h2h_standings = null;
@@ -685,7 +685,7 @@ router.get('/owner/:owner_number/matchups/all', function(req, res) {
 	var owner_number = req.params.owner_number;
 
 	var football_in_season = false;
-	var basketball_in_season = true;
+	var basketball_in_season = false;
 	var baseball_in_season = false;
 
 	var disp_football_matchups = null;
