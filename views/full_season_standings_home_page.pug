@@ -22,7 +22,7 @@ html
 		
 		h2= year1 + "-" + year2 + " Season Standings Home Page"
 
-		if baseball_in_season
+		if baseball_season_started
 			ul 
 				li= year1 + " Football"
 					ul
@@ -44,7 +44,7 @@ html
 						li
 							a(href= '/trifecta_standings' + "/" + year1 + "/" + year2) Standings
 
-		else if basketball_in_season
+		else if basketball_season_started
 			ul 
 				li= year1 + " Football"
 					ul
@@ -61,7 +61,7 @@ html
 						li
 							a(href= '/trifecta_standings' + "/" + year1 + "/" + year2) Standings
 
-		else if football_in_season
+		else if football_season_started
 			ul 
 				li= year1 + " Football"
 					ul
