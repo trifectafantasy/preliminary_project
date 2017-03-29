@@ -75,18 +75,34 @@ router.get('/', function(req, res) {
 router.get('/future_draft_boards/:sport/:year', function(req, res) {
 	var sport = req.params.sport;
 	var year = req.params.year;
-	db.collection("future_draft_boards").find({"sport": sport, "year": year}, {"_id": 0}).toArray(function(e, docs){
-		disp_draft_board = docs[0]["draft_board"]
-		disp_by_team_draft_board = docs[0]["by_team_draft_board"]
+
+	var disp_draft_board = null;
+	var disp_by_team_draft_board = null;
+
+	db.collection(sport + "_draft_board_" + year).find({"draft_board": "overall"}, {"draft_board": 0, "_id": 0}).sort({"round_number": 1}).toArray(function(e, docs){
+		disp_draft_board = docs;
 		//console.log(disp_draft_board);
+		complete();
+	})
+
+	db.collection(sport + "_draft_board_" + year).find({"draft_board": "team"}, {"draft_board": 0, "_id": 0}).toArray(function(e, docs){
+		disp_by_team_draft_board = docs;
 		//console.log(disp_by_team_draft_board);
+		complete();
+	})
+
+var complete = function() {
+
+	if (disp_draft_board != null && disp_by_team_draft_board != null) {
+		console.log("displaying draft board...");
 		res.render('future_draft_boards', {
 			sport: sport,
 			year: year,
 			draft_board: disp_draft_board,
 			by_team_draft_board: disp_by_team_draft_board
 		})
-	})
+	}
+}
 })
 
 // route to profile home page
