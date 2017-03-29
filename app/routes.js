@@ -71,8 +71,13 @@ router.get('/', function(req, res) {
 	});
 });
 
+// route to future draft boards home page
+router.get('/future_draft_boards_home_page', function(req, res) {
+	res.render('future_draft_boards_home_page');
+}); 
+
 // route to future draft boards
-router.get('/future_draft_boards/:sport/:year', function(req, res) {
+router.get('/future_draft_board/:sport/:year', function(req, res) {
 	var sport = req.params.sport;
 	var year = req.params.year;
 
@@ -103,7 +108,7 @@ var complete = function() {
 		})
 	}
 }
-})
+}) // end of route to future draft boards home page
 
 // route to profile home page
 router.get('/profile_home_page', function(req, res) {
@@ -223,6 +228,13 @@ router.get('/standings_home_page/:year1/:year2', function(req, res) {
 			this_football_season_started = true;
 			this_basketball_season_started = true;
 			this_baseball_season_started = true;
+			res.render('full_season_standings_home_page', {
+				year1: year1,
+				year2: year2,
+				football_season_started: this_football_season_started,
+				basketball_season_started: this_basketball_season_started,
+				baseball_season_started: this_baseball_season_started
+			})	// end of res render			
 		}
 
 		else if (year1 > current_year1 || year2 > current_year2) {

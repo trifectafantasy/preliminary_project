@@ -26,14 +26,18 @@ html
 			h2= owner + "'s " + year + " Basketball Acquisition Analysis"
 
 		p Formula for Weighted PR = PR x GP
+
 		if year == 2016
 			p Formula for Draft Value = 130 points for #1 Overall Draft Position, 1 point for #130 Overall Draft Position & Free Agents
 		else
 			p Formula for Draft Value = 140 points for #1 Overall Draft Position, 1 point for #140 Overall Draft Position & Free Agents
+
 		p Formula for Acquisition Weight = (Draft Value) / 10 / 1.5
 		p * Minimum for Acquisition Weight = 1.5
 		p Formula for Acquisition Value = Weighted PR / Acquisition Weight
-
+		
+		if year == 2016
+			p NOTE: Includes stats accumulated after fantasy regular season and playoffs concluded
 		table
 			thead
 				tr

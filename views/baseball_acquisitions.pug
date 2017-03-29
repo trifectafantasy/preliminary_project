@@ -24,21 +24,22 @@ html
 			h2= "Leaguewide " + year + " Baseball Acquisition Analysis"
 		else
 			h2= owner + "'s " + year + " Baseball Acquisition Analysis"
+			
+		p Formula for Weighted PR
+		p Hitters: Weighted PR = PR * GP
+		p Pitchers: Weighted PR = PR * IP / 2 
 
 		if year == 2016
-			p Formula for Weighted PR
-			p Hitters: Weighted PR = PR * GP
-			p Pitchers: Weighted PR = PR * IP / 2 
 			p Formula for Draft Value = 230 points for #1 Overall Draft Position, 1 point for #230 Overall Draft Position & Free Agents
-			p Formula for Acquisition Weight = (Draft Value) / 10 / 2 / 1.5
-			p * Minimum for Acquisition Weight = 1.5
-			p Formula for Acquisition Value = Weighted PR / Acquisition Weight			
-
 		else
 			p Formula for Draft Value = 250 points for #1 Overall Draft Position, 1 point for #250 Overall Draft Position & Free Agents
-			p Formula for Acquisition Weight = (Draft Value) / 10 / 2 / 1.5
-			p * Minimum for Acquisition Weight = 1.5
-			p Formula for Acquisition Value = Weighted PR / Acquisition Weight			
+
+		p Formula for Acquisition Weight = (Draft Value) / 10 / 2 / 1.5
+		p * Minimum for Acquisition Weight = 1.5
+		p Formula for Acquisition Value = Weighted PR / Acquisition Weight	
+
+		if year == 2016
+			p NOTE: Includes stats accumulated after fantasy regular season and playoffs concluded
 
 		table
 			thead
