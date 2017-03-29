@@ -1,6 +1,6 @@
 html
 	head
-		title= "Origin Home Page"
+		title= "Future Draft Board"
 		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
 		link(rel='stylesheet', href='/css/styles.css')
 
@@ -19,26 +19,37 @@ html
 				a(href= '/football_coach_home_page' class = 'navbar') Football Coach 
 				a(href= '/popular_home_page' class = 'navbar') Most Popular Players
 				a(href= '/future_draft_boards_home_page' class = 'navbar') Future Draft Boards
-				
-		
-		h2 Origin Analysis
-		h4 Where did your value come from? The draft? The waiver wire? The trade block?
 
-		ul Football
 
-			li Sorry no origin analysis for Football 2015
-			li 
-				a(href= '/football/origin/2016') 2016 Season
+		h2= sport.charAt(0).toUpperCase() + sport.slice(1) + " " + year + " Draft Board"
 
-		ul Basketball
+		h4 Overall Draft Board
+		table
+			tbody
+				each readin in draft_board
+					tr
+						each val, cat in readin
+							if cat == "round_number"
+								td= "Round " + val
+							if cat == "picks"
+								each pick in val
+									td= pick
 
-			li 
-				a(href= '/basketball/origin/2016') 2016 Season
-			li
-				a(href= '/basketball/origin/2017') 2017 Season
+		h4 By Team Draft Board
+		table
+			thead
+				tr
+					th TEAM
+					th PICKS
 
-		ul Baseball
+		each readin2 in by_team_draft_board
+			table
 
-			li 
-				a(href= '/baseball/origin/2016') 2016 Season
-
+				tbody
+					tr
+						each val, cat in readin2
+							if cat == "owner_name"
+								td= val
+							if cat == "picks"
+								each pick in val
+									td= pick
