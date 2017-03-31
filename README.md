@@ -29,3 +29,7 @@ To run:
 In different terminal windows in preliminary_project directory:
 + mongod
 + nodemon server.js
+
+To open tunnel:
++ sign up for free ngrok account
++ follow instructions at: https://dashboard.ngrok.com/get-started
