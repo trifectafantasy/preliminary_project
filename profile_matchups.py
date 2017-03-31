@@ -121,10 +121,6 @@ def	profileMatchups(db, owner_number, sport, year1, year2):
 
 ##### PYTHON SCRIPT TO EXECUTE #####
 
-# in a subprocess, open mongodb connection
-mongod = subprocess.Popen(["mongod"])
-time.sleep(.5)
-
 # connect to MongoDB
 try:
 	client = MongoClient('mongodb://localhost:27017')
@@ -189,7 +185,3 @@ for year1 in start_year_list:
 
 				# after baseball, profile trifecta as well
 				profileMatchupsTrifecta(db, owner_number, year1, year2)
-
-# sleep and terminate mongodb instance
-time.sleep(.5)
-mongod.terminate()
