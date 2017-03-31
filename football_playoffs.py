@@ -61,10 +61,6 @@ def combine_databases(db, collection_h2h, collection_playoffs, year):
 
 ##### PYTHON SCRIPT TO EXECUTE #####
 
-# in a subprocess, open mongodb connection
-mongod = subprocess.Popen(["mongod"])
-time.sleep(.5)
-
 # connect to MongoDB
 try:
 	client = MongoClient('mongodb://localhost:27017')
@@ -81,9 +77,4 @@ year = str(sys.argv[1])
 collection_h2h = "football_h2h_" + year
 collection_playoffs = "football_playoffs_" + year
 
-
 combine_databases(db, collection_h2h, collection_playoffs, year)
-
-# sleep and terminate mongodb instance
-time.sleep(.5)
-mongod.terminate()

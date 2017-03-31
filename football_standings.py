@@ -105,10 +105,6 @@ def trifecta_points(db, collection):
 
 ##### PYTHON SCRIPT TO EXECUTE #####
 
-# in a subprocess, open mongodb connection
-mongod = subprocess.Popen(["mongod"])
-time.sleep(.5)
-
 # connect to MongoDB
 try:
 	client = MongoClient('mongodb://localhost:27017')
@@ -127,7 +123,3 @@ collection_roto = "football_roto_" + year
 
 combine_databases(db, collection_h2h, collection_roto)
 trifecta_points(db, collection_h2h)
-
-# sleep and terminate mongodb instance
-time.sleep(.5)
-mongod.terminate()

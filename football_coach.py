@@ -129,10 +129,6 @@ def coachAnalysis(db, year, owner_number, completed_weeks):
 
 ##### PYTHON SCRIPT TO EXECUTE #####
 
-# in a subprocess, open mongodb connection
-mongod = subprocess.Popen(["mongod"])
-time.sleep(.5)
-
 # connect to MongoDB
 try:
 	client = MongoClient('mongodb://localhost:27017')
@@ -149,9 +145,4 @@ year = str(sys.argv[1])
 owner_number = str(sys.argv[2])
 completed_weeks = str(sys.argv[3])
 
-
 coachAnalysis(db, year, owner_number, completed_weeks)
-
-# sleep and terminate mongodb instance
-time.sleep(.5)
-mongod.terminate()

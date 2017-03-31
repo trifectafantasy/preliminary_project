@@ -121,10 +121,6 @@ def trade_picks(db, sport, year):
 
 ##### PYTHON SCRIPT TO EXECUTE #####
 
-# in a subprocess, open mongodb connection
-mongod = subprocess.Popen(["mongod"])
-time.sleep(.5)
-
 # connect to MongoDB
 try:
 	client = MongoClient('mongodb://localhost:27017')
@@ -145,8 +141,3 @@ print "Let's make a trade!"
 trade_picks(db, sport, year)
 
 print "Trade complete!"
-
-# sleep and terminate mongodb instance
-time.sleep(.5)
-mongod.terminate()
-

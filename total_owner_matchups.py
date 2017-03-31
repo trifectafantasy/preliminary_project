@@ -263,10 +263,6 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 				
 ##### PYTHON SCRIPT TO EXECUTE #####
 
-# in a subprocess, open mongodb connection
-mongod = subprocess.Popen(["mongod"])
-time.sleep(.5)
-
 # connect to MongoDB
 try:
 	client = MongoClient('mongodb://localhost:27017')
@@ -291,7 +287,3 @@ completed_baseball_season = str(sys.argv[6])
 baseball_in_season = str(sys.argv[7])
 
 matchupRecords(db, owner_number, completed_football_season, football_in_season, completed_basketball_season, basketball_in_season, completed_baseball_season, baseball_in_season)
-
-# sleep and terminate mongodb instance
-time.sleep(.5)
-mongod.terminate()

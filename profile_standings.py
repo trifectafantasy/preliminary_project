@@ -211,10 +211,6 @@ def profiling(db, owner_number, team_list, sport, year):
 
 ##### PYTHON SCRIPT TO EXECUTE #####
 
-# in a subprocess, open mongodb connection
-mongod = subprocess.Popen(["mongod"])
-time.sleep(.5)
-
 # connect to MongoDB
 try:
 	client = MongoClient('mongodb://localhost:27017')
@@ -293,7 +289,3 @@ for year1 in start_year_list:
 
 				# if baseball is done, then also do trifeta summary
 				trifecta_summary(db, owner_number, year1, year2)
-
-# sleep and terminate mongodb instance
-time.sleep(.5)
-mongod.terminate()

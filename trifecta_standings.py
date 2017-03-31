@@ -293,10 +293,6 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 
 ##### PYTHON SCRIPT TO EXECUTE #####
 
-# in a subprocess, open mongodb connection
-mongod = subprocess.Popen(["mongod"])
-time.sleep(.5)
-
 # connect to MongoDB
 try:
 	client = MongoClient('mongodb://localhost:27017')
@@ -318,7 +314,3 @@ baseball_in_season = str(sys.argv[5])
 
 
 trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_season, baseball_in_season)
-
-# sleep and terminate mongodb instance
-time.sleep(.5)
-mongod.terminate()

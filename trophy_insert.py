@@ -7,10 +7,6 @@ from collections import OrderedDict
 
 ##### PYTHON SCRIPT TO EXECUTE #####
 
-# in a subprocess, open mongodb connection
-mongod = subprocess.Popen(["mongod"])
-time.sleep(.5)
-
 # connect to MongoDB
 try:
 	client = MongoClient('mongodb://localhost:27017')
@@ -100,7 +96,4 @@ while True:
 
 	except KeyboardInterrupt:
 		print "Goodbye"
-		# sleep and terminate mongodb instance
-		time.sleep(.5)
-		mongod.terminate()
 		break
