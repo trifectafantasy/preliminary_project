@@ -7,10 +7,6 @@ from collections import OrderedDict
 
 ##### PYTHON SCRIPT TO EXECUTE #####
 
-# in a subprocess, open mongodb connection
-mongod = subprocess.Popen(["mongod"])
-time.sleep(.5)
-
 # connect to MongoDB
 try:
 	client = MongoClient('mongodb://localhost:27017')
@@ -110,7 +106,3 @@ for index in range(len(teams_list)):
 	this_team["picks"] = each_team_picks
 
 	db[sport + "_draft_board_" + year].insert(this_team)
-
-# sleep and terminate mongodb instance
-time.sleep(.5)
-mongod.terminate()

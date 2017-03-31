@@ -167,10 +167,6 @@ def acquisitionValue(db, sport, year, owner_number):
 
 ##### PYTHON SCRIPT TO EXECUTE #####
 
-# in a subprocess, open mongodb connection
-mongod = subprocess.Popen(["mongod"])
-time.sleep(.5)
-
 # connect to MongoDB
 try:
 	client = MongoClient('mongodb://localhost:27017')
@@ -187,9 +183,4 @@ sport = str(sys.argv[1])
 year = str(sys.argv[2])
 owner_number = str(sys.argv[3])
 
-
 acquisitionValue(db, sport, year, owner_number)
-
-# sleep and terminate mongodb instance
-time.sleep(.5)
-mongod.terminate()

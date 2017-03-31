@@ -204,10 +204,6 @@ def baseballTrade(db, sport, year):
 				
 ##### PYTHON SCRIPT TO EXECUTE #####
 
-# in a subprocess, open mongodb connection
-mongod = subprocess.Popen(["mongod"])
-time.sleep(.5)
-
 # connect to MongoDB
 try:
 	client = MongoClient('mongodb://localhost:27017')
@@ -223,9 +219,4 @@ db = client.espn
 sport = str(sys.argv[1])
 year = str(sys.argv[2])
 
-
 baseballTrade(db, sport, year)
-
-# sleep and terminate mongodb instance
-time.sleep(.5)
-mongod.terminate()

@@ -248,10 +248,6 @@ def roto_trifecta(db, collection):
 
 ##### PYTHON SCRIPT TO EXECUTE #####
 
-# in a subprocess, open mongodb connection
-mongod = subprocess.Popen(["mongod"])
-time.sleep(.5)
-
 # connect to MongoDB
 try:
 	client = MongoClient('mongodb://localhost:27017')
@@ -270,7 +266,3 @@ collection2 = "baseball_roto_" + year
 
 h2h_trifecta(db, collection1)
 roto_trifecta(db, collection2)
-
-# sleep and terminate mongodb instance
-time.sleep(.5)
-mongod.terminate()
