@@ -33,3 +33,9 @@ In different terminal windows in preliminary_project directory:
 To open tunnel:
 + sign up for free ngrok account
 + follow instructions at: https://dashboard.ngrok.com/get-started
+
+Add new sport:
++ In routes.js...
+  - lines 39-64, change this_(sport)_season_started and this_(sport)_in_season to true
+  - Add menu options for new year to view pug files
+  - Run add_team_name.py to add team names
