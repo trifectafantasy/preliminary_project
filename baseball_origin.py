@@ -68,6 +68,8 @@ def originCalculation(db, sport, year, owner_number):
 			# if GP is Nan same as 0
 			if math.isnan(GP):
 				GP = 0
+			if math.isnan(PR):
+				PR = 0
 
 			# calculate weighted PR
 			weigheted_PR = PR * GP
@@ -99,6 +101,8 @@ def originCalculation(db, sport, year, owner_number):
 			# check if IP is Nan
 			if math.isnan(IP):
 				IP = 0
+			if math.isnan(PR):
+				PR = 0
 
 			# convert IP to usable 1/3 and 2/3 of innings
 			if ".1" in str(IP):

@@ -56,12 +56,12 @@ var this_basketball_completed_season = true;
 var basketball_completed_matchups = 18;	
 
 // baseball status variables
-var this_baseball_season_started = false;
+var this_baseball_season_started = true;
 //set to false if want to stop scraping roto standings after regular season has ended
-var this_baseball_in_season = false;
+var this_baseball_in_season = true;
 var this_baseball_completed_season = false;
 // full regular season = 22 matchups
-var baseball_completed_matchups = 1;
+var baseball_completed_matchups = 0;
 
 
 // Route to Home/Root page
@@ -673,6 +673,19 @@ router.get('/owner/:owner_number/matchups/:year1/:year2', function(req, res) {
 	else {
 		// if the given years are the current ones, set appropriate parameters
 		if (year1 == current_year1 && year2 == current_year2) {
+
+			// if no matchups have been completed yet, it's like the sport isn't in season yet
+			if (football_completed_matchups == 0) {
+				this_football_season_started = false;
+			}
+
+			if (basketball_completed_matchups == 0) {
+				this_basketball_season_started = false;
+			}
+
+			if (baseball_completed_matchups == 0) {
+				this_baseball_season_started = false;
+			}
 			
 			// current year's sports status variables set at ~Line 40
 
@@ -724,6 +737,9 @@ router.get('/owner/:owner_number/matchups/all', function(req, res) {
 
 	if (this_football_season_started == true && this_football_completed_season == false) {
 		var football_in_season = true;
+		if (football_completed_matchups == 0) {
+			var football_in_season = false;
+		}
 	}
 	else {
 		var football_in_season = false;
@@ -731,6 +747,9 @@ router.get('/owner/:owner_number/matchups/all', function(req, res) {
 
 	if (this_basketball_season_started == true && this_basketball_completed_season == false) {
 		var basketball_in_season = true;
+		if (basketball_completed_matchups == 0) {
+			var basketball_in_season = false;
+		}		
 	}
 	else {
 		var basketball_in_season = false;
@@ -738,6 +757,9 @@ router.get('/owner/:owner_number/matchups/all', function(req, res) {
 
 	if (this_baseball_season_started == true && this_baseball_completed_season == false) {
 		var baseball_in_season = true;
+		if (baseball_completed_matchups == 0) {
+			var baseball_in_season = false;
+		}		
 	}
 	else {
 		var baseball_in_season = false;
@@ -846,93 +868,99 @@ router.get('/:sport/trades/:year', function(req, res) {
 			console.log("trades processed: ", trades_processed)
 			console.log("players processed: ", players_processed)
 
-			// if sport is football
-			if (sport === 'football') {
+			if (trades_processed == 0) {
+				res.send("Oh no! No trades have been made!")
+			}
 
-				// send to football_trade_stats to scrape active stats for players in trades
-				var trade_stats = require('./football_trade_stats.js')(req, res, db, sport, year, owner_number_list, function(err, call) {
-					console.log("scrape done");
+			else {
+				// if sport is football
+				if (sport === 'football') {
 
-					var options = {
-						args: [sport, year]
-					}
+					// send to football_trade_stats to scrape active stats for players in trades
+					var trade_stats = require('./football_trade_stats.js')(req, res, db, sport, year, owner_number_list, function(err, call) {
+						console.log("scrape done");
 
-					// run python script to associate traded players with their active stats and sum to make total 
-					pyshell.run('football_trade_analysis.py', options, function(err) {
-						if (err) throw err;
-						console.log('trade python script complete');
+						var options = {
+							args: [sport, year]
+						}
 
-						// sort and pull from trade database for rendering
-						db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["player", "asc"], ["owner", "asc"], ["PTS", "asc"]]}).toArray(function(e, docs) {
-							console.log('displaying trade analysis...');
-							//console.log(docs);
-							disp_trade = docs;
-							res.render('football_trade', {
-								year: year,
-								trader: disp_trade,
-							})
-						}) // end of pull for trade display
-					}) // end of pyshell
-				}) // end of trade stats
-			} // end of if football
+						// run python script to associate traded players with their active stats and sum to make total 
+						pyshell.run('football_trade_analysis.py', options, function(err) {
+							if (err) throw err;
+							console.log('trade python script complete');
 
-			// if sport is basketball
-			else if (sport === 'basketball') {
+							// sort and pull from trade database for rendering
+							db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["player", "asc"], ["owner", "asc"], ["PTS", "asc"]]}).toArray(function(e, docs) {
+								console.log('displaying trade analysis...');
+								//console.log(docs);
+								disp_trade = docs;
+								res.render('football_trade', {
+									year: year,
+									trader: disp_trade,
+								})
+							}) // end of pull for trade display
+						}) // end of pyshell
+					}) // end of trade stats
+				} // end of if football
 
-				// send to basketball_trade_stats to scrape active stats for players in trade
-				var trade_stats = require('./basketball_trade_stats.js')(req, res, db, sport, year, owner_number_list, function(err, call) {
-					console.log("scrape done");
+				// if sport is basketball
+				else if (sport === 'basketball') {
 
-					var options = {
-						args: [sport, year]
-					}
+					// send to basketball_trade_stats to scrape active stats for players in trade
+					var trade_stats = require('./basketball_trade_stats.js')(req, res, db, sport, year, owner_number_list, function(err, call) {
+						console.log("scrape done");
 
-					// run python sript to associate traded players with their active stats and sum to make total
-					pyshell.run('basketball_trade_analysis.py', options, function(err) {
-						if (err) throw err;
-						console.log('trade python script complete');
+						var options = {
+							args: [sport, year]
+						}
 
-						// sort and pull from trade database for rendering
-						db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["player", "asc"], ["owner", "asc"], ["GP", "asc"]]}).toArray(function(e, docs) {
-							console.log('displaying trade analysis...');
-							//console.log(docs);
-							disp_trade = docs;
-							res.render('basketball_trade', {
-								year: year,
-								trader: disp_trade
-							})
-						}) // end of trade display
-					}) // end of pyshell
-				}) // end of trade stats
-			} // end of if basketball
+						// run python sript to associate traded players with their active stats and sum to make total
+						pyshell.run('basketball_trade_analysis.py', options, function(err) {
+							if (err) throw err;
+							console.log('trade python script complete');
 
-			// if sport is baseball
-			else if (sport === 'baseball') {
-				var trade_stats = require('./baseball_trade_stats.js')(req, res, db, sport, year, owner_number_list, function(err, call) {
-					console.log("scrape done");
+							// sort and pull from trade database for rendering
+							db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["player", "asc"], ["owner", "asc"], ["GP", "asc"]]}).toArray(function(e, docs) {
+								console.log('displaying trade analysis...');
+								//console.log(docs);
+								disp_trade = docs;
+								res.render('basketball_trade', {
+									year: year,
+									trader: disp_trade
+								})
+							}) // end of trade display
+						}) // end of pyshell
+					}) // end of trade stats
+				} // end of if basketball
 
-					var options = {
-						args: [sport, year]
-					}
+				// if sport is baseball
+				else if (sport === 'baseball') {
+					var trade_stats = require('./baseball_trade_stats.js')(req, res, db, sport, year, owner_number_list, function(err, call) {
+						console.log("scrape done");
 
-					// run python script to associate traded players with their active stats and sum to make total
-					pyshell.run('baseball_trade_analysis.py', options, function(err) {
-						if (err) throw err;
-						console.log('trade python script complete');
+						var options = {
+							args: [sport, year]
+						}
 
-						// sort and pull from trade database for rendering
-						db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["player", "asc"], ["owner", "asc"]]}).toArray(function(e, docs) {
-							console.log('displaying trade analysis...');
-							//console.log(docs);
-							disp_trade = docs;
-							res.render('baseball_trade', {
-								year: year,
-								trader: disp_trade,
-							})
-						}) // end of trade display
-					}) // end of pyshell
-				}) // end of trade stats
-			} // end of if baseball
+						// run python script to associate traded players with their active stats and sum to make total
+						pyshell.run('baseball_trade_analysis.py', options, function(err) {
+							if (err) throw err;
+							console.log('trade python script complete');
+
+							// sort and pull from trade database for rendering
+							db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["player", "asc"], ["owner", "asc"]]}).toArray(function(e, docs) {
+								console.log('displaying trade analysis...');
+								//console.log(docs);
+								disp_trade = docs;
+								res.render('baseball_trade', {
+									year: year,
+									trader: disp_trade,
+								})
+							}) // end of trade display
+						}) // end of pyshell
+					}) // end of trade stats
+				} // end of if baseball				
+			} // end of if no trades were made
 
 		}) // end of trade script
 	} // end of need to scrape

@@ -65,8 +65,10 @@ def originCalculation(db, sport, year, owner_number):
 		GP = each_player["GP"]
 
 		# if GP is Nan
-		if math.isnan(GP) == True:
+		if math.isnan(GP):
 			GP = 0
+		if math.isnan(PR):
+			PR = 0
 
 		weighted_pr = PR * GP
 

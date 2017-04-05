@@ -82,7 +82,7 @@ html
 								if cat === "h2h_trifecta_points"
 									td= val
 
-			h4= "Roto Standings"
+			h4= "Roto Points per Category"
 			table
 				thead
 					tr
@@ -101,6 +101,58 @@ html
 						th WHIP
 						th TOTAL ROTO POINTS
 						th ROTO TRIFECTA POINTS
+				tbody
+					each next in roto_standings
+						tr
+							each val, cat in next
+								if cat === "team"
+									td= val
+								if cat === "category_points_R"
+									td= val
+								if cat === "category_points_HR"
+									td= val
+								if cat === "category_points_RBI"
+									td= val
+								if cat === "category_points_SO"
+									td= val
+								if cat === "category_points_SB"
+									td= val
+								if cat === "category_points_OBP"
+									td= val
+								if cat === "category_points_K"
+									td= val
+								if cat === "category_points_QS"
+									td= val
+								if cat === "category_points_W"
+									td= val
+								if cat === "category_points_SV"
+									td= val
+								if cat === "category_points_ERA"
+									td= val
+								if cat === "category_points_WHIP"
+									td= val
+								if cat === "total_roto_points"
+									td= val
+								if cat === "roto_trifecta_points"
+									td= val
+
+			h4= "Roto Stats"
+			table
+				thead
+					tr
+						th TEAM
+						th R
+						th HR
+						th RBI
+						th SO
+						th SB
+						th OBP
+						th K 
+						th QS
+						th W
+						th SV
+						th ERA
+						th WHIP
 				tbody
 					each next in roto_standings
 						tr
@@ -131,10 +183,7 @@ html
 									td= parseFloat(val).toFixed(3)
 								if cat === "WHIP"
 									td= parseFloat(val).toFixed(3)
-								if cat === "total_roto_points"
-									td= val
-								if cat === "roto_trifecta_points"
-									td= val													
+
 
 		else
 
@@ -168,7 +217,7 @@ html
 								if cat === "h2h_trifecta_points"
 									td= val
 
-			h4= "Roto Standings"
+			h4= "Roto Points per Category"
 			table
 				thead
 					tr
@@ -187,6 +236,58 @@ html
 						th WHIP
 						th TOTAL ROTO POINTS
 						th ROTO TRIFECTA POINTS
+				tbody
+					each next in roto_standings
+						tr
+							each val, cat in next
+								if cat === "team"
+									td= val
+								if cat === "category_points_R"
+									td= val
+								if cat === "category_points_HR"
+									td= val
+								if cat === "category_points_RBI"
+									td= val
+								if cat === "category_points_SO"
+									td= val
+								if cat === "category_points_SB"
+									td= val
+								if cat === "category_points_OBP"
+									td= val
+								if cat === "category_points_K"
+									td= val
+								if cat === "category_points_QS"
+									td= val
+								if cat === "category_points_W"
+									td= val
+								if cat === "category_points_SV"
+									td= val
+								if cat === "category_points_ERA"
+									td= val
+								if cat === "category_points_WHIP"
+									td= val
+								if cat === "total_roto_points"
+									td= val
+								if cat === "roto_trifecta_points"
+									td= val
+
+			h4= "Roto Stats"
+			table
+				thead
+					tr
+						th TEAM
+						th R
+						th HR
+						th RBI
+						th SO
+						th SB
+						th OBP
+						th K 
+						th QS
+						th W
+						th SV
+						th ERA
+						th WHIP
 				tbody
 					each next in roto_standings
 						tr
@@ -217,8 +318,3 @@ html
 									td= parseFloat(val).toFixed(3)
 								if cat === "WHIP"
 									td= parseFloat(val).toFixed(3)
-								if cat === "total_roto_points"
-									td= val
-								if cat === "roto_trifecta_points"
-									td= val																
-
