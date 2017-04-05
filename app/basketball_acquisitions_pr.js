@@ -12,6 +12,9 @@ var assert = require('assert');
 // create callback function
 module.exports = function(req, res, db, sport, year, callback) {
 
+	// clear collection ahead of new scrape
+	db.collection(sport + "_pr_" + year).remove({})
+
 	// list of start indexes to cycle through top 400 players
 	var start_index_list = ["0", "50", "100", "150", "200", "250", "300", "350", "400"];
 

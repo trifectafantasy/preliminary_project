@@ -8,7 +8,7 @@ var pyshell = require('python-shell');
 var mongo = require('mongodb');
 var assert = require('assert');
 
-module.exports = function(req, res, db, sport, year, owner_number, hit_or_pit=null) {
+module.exports = function(req, res, db, sport, year, owner_number) {
 
 	// if all owners
 	if (owner_number == 'all') {

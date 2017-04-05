@@ -141,8 +141,8 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 				var insertDocument = function(db, year, callback) {
 
 					// set collections
-					var collection1 = db.collection('baseball_h2h' + year);
-					var collection2 = db.collection('baseball_roto' + year);
+					var collection1 = db.collection('baseball_h2h_' + year);
+					var collection2 = db.collection('baseball_roto_' + year);
 
 					// remove all documents from collections to start fresh
 					collection1.remove({});
