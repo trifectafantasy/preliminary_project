@@ -86,6 +86,12 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 					# set path for finding owner through team name
 					path = "teams." + football_team
 					#print path
+					if path.find(".", 6) != -1:
+						period_index = path.find(".", 6)
+						#print period_index
+						path = path[:period_index] + "\uff0E" + path[period_index + 1:]
+						football_team = football_team[:period_index - 6] + "\uff0E" + football_team[period_index + 1 - 6:]
+						#print football_team						
 
 					owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
 					#print owner_check
@@ -126,6 +132,13 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 					#print basketball_team
 
 					path = "teams." + basketball_team
+					# print path
+					if path.find(".", 6) != -1:
+						period_index = path.find(".", 6)
+						#print period_index
+						path = path[:period_index] + "\uff0E" + path[period_index + 1:]
+						basketball_team = basketball_team[:period_index - 6] + "\uff0E" + basketball_team[period_index + 1 - 6:]
+						#print basketball_team	
 
 					owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
 					#print owner_check
@@ -223,9 +236,15 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 
 					path = "teams." + baseball_team
 					#print path
+					if path.find(".", 6) != -1:
+						period_index = path.find(".", 6)
+						#print period_index
+						path = path[:period_index] + "\uff0E" + path[period_index + 1:]
+						baseball_team = baseball_team[:period_index - 6] + "\uff0E" + baseball_team[period_index + 1 - 6:]
+						#print baseball_team		
 
 					owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
-					#print owner_check
+					print owner_check
 					owner_name_check = owner_check["teams"][baseball_team]["owner"]
 					#print owner_name_check
 
@@ -249,8 +268,17 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 					path = "teams." + baseball_team
 					#print path
 
+					if path.find(".", 6) != -1:
+						period_index = path.find(".", 6)
+						#print period_index
+						path = path[:period_index] + "\uff0E" + path[period_index + 1:]
+						baseball_team = baseball_team[:period_index - 6] + "\uff0E" + baseball_team[period_index + 1 - 6:]
+						#print baseball_team						
+
 					owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
 					#print owner_check
+					print "baseball_team", baseball_team
+
 					owner_name_check = owner_check["teams"][baseball_team]["owner"]
 					#print owner_name_check
 
