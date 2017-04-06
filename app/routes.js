@@ -1083,6 +1083,7 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 					if (x < owner_list.length) {
 
 						owner_number = owner_list[x];
+						console.log("owner number", owner_number);
 
 						var active_stats = require('./football_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call){
 							console.log("active stats scrape done");
@@ -1183,6 +1184,7 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 				if (x < owner_list.length) {
 
 					owner_number = owner_list[x];
+					console.log("owner number", owner_number);
 
 					var active_stats = require('./basketball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call){
 						console.log("active stats scrape done");
@@ -1290,6 +1292,7 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 
 						// set owner number
 						owner_number = owner_list[x];
+						console.log("owner number", owner_number);
 
 						// scrape active stats
 						var active_stats = require('./baseball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call1) {
@@ -1430,6 +1433,7 @@ router.get('/owner/:owner_number/:sport/stats/:year', function(req, res) {
 					if (x < owner_list.length) {
 
 						owner_number = owner_list[x];
+						console.log("owner number", owner_number);
 
 						var active_stats = require('./football_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call){
 							console.log("active stats scrape done");
@@ -1530,6 +1534,7 @@ router.get('/owner/:owner_number/:sport/stats/:year', function(req, res) {
 				if (x < owner_list.length) {
 
 					owner_number = owner_list[x];
+					console.log("owner number", owner_number);
 
 					var active_stats = require('./basketball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call){
 						console.log("active stats scrape done");
@@ -1637,6 +1642,7 @@ router.get('/owner/:owner_number/:sport/stats/:year', function(req, res) {
 
 						// set owner number
 						owner_number = owner_list[x];
+						console.log("owner number", owner_number);
 
 						// scrape active stats
 						var active_stats = require('./baseball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call1) {
@@ -1768,6 +1774,7 @@ router.get('/:sport/origin/:year', function(req, res) {
 		if (x < owner_list.length) {
 
 			owner_number = owner_list[x];
+			console.log("owner number", owner_number);
 
 			var active_stats = require('./football_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call){
 				console.log("active stats scrape done");
@@ -1837,6 +1844,7 @@ router.get('/:sport/origin/:year', function(req, res) {
 		if (x < owner_list.length) {
 
 			owner_number = owner_list[x];
+			console.log("owner number", owner_number);
 
 			var active_stats = require('./basketball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call){
 				console.log("active stats scrape done");
@@ -1908,6 +1916,7 @@ router.get('/:sport/origin/:year', function(req, res) {
 
 			// set owner number
 			owner_number = owner_list[x];
+			console.log("owner number", owner_number);
 
 			// scrape active stats
 			var active_stats = require('./baseball_active_stats.js')(req, res, db, sport, year, owner_number, function(err, call1) {
@@ -2012,6 +2021,7 @@ router.get('/football/coach/:year', function(req, res) {
 
 			// set owner number
 			owner_number = owner_list[x];
+			console.log("owner number", owner_number);
 
 			// scrape starting lineups and benches from each week
 			var coach_scrape = require('./coach_scrape.js')(req, res, db, year, owner_number, completed_weeks, function(err, call) {
@@ -2081,6 +2091,7 @@ var all_popular = function(x, owner_list) {
 
 	if (x < owner_list.length) {
 		owner_number = owner_list[x];
+		console.log("owner number", owner_number);
 
 		var popular = require('./popular.js')(req, res, db, sport, year, owner_number, function(err, call) {
 			console.log("popular scrape done");
