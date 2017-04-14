@@ -19,6 +19,7 @@ def h2h_trifecta(db, collection):
 	# initialize factors to determine trifecta points if there is a tie
 	skipped_team = False
 	points_hold = []
+	times_dist = 0
 
 	# loop through the sorted h2h standings from best to worst
 	for i in range(len(sorted_h2h)):
@@ -48,9 +49,15 @@ def h2h_trifecta(db, collection):
 				points_hold = range((trifecta_h2h_points + 1 - same_records), trifecta_h2h_points + 1) # need the +1 at the end since range is exclusive on the end
 				# range of points allocated is summed and averaged
 				dist_points = float(sum(points_hold)) / same_records
-			
+
 			# now that points have been averaged (whether it was initialized this time or last), each tied team gets this same number of distributed points
 			individual_trifecta_h2h_points = dist_points
+			times_dist += 1
+
+			# if all the tied team's points have been distributed, reset counts
+			if times_dist == same_records:
+				points_hold = []
+				times_dist = 0
 
 		# if there are no ties, this team gets the number of trifecta points according to their sorted rank (10 -> 1)
 		else:
@@ -58,8 +65,8 @@ def h2h_trifecta(db, collection):
 
 		# at the end of each loop of each team, decrease number of trifecta points (10 -> 1)
 		trifecta_h2h_points -= 1
-		print("team: ", current_team)
-		print("h2h trifecta points: ", float(individual_trifecta_h2h_points))
+		print "team: ", current_team
+		print "h2h trifecta points: ", float(individual_trifecta_h2h_points)
 
 		# update (not upsert or creating new document) each team's document with new field "h2h_trifecta_points"
 		db[collection].update({"team": current_team}, {"$set": {"h2h_trifecta_points": individual_trifecta_h2h_points}})
@@ -210,6 +217,7 @@ def roto_trifecta(db, collection):
 	for i in range(len(sorted_roto_rank)):
 
 		same_records = 0
+
 
 		current_team = sorted_roto_rank[i]["team"]
 		current_team_roto_points = sorted_roto_rank[i]["total_roto_points"]
