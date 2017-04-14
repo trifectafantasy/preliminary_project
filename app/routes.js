@@ -81,20 +81,38 @@ router.get('/future_draft_board/:sport/:year', function(req, res) {
 	var sport = req.params.sport;
 	var year = req.params.year;
 
-	var disp_draft_board = null;
-	var disp_by_team_draft_board = null;
+	if (year > current_year2 + 1) {
+		res.send("Too far in advance, enter an earlier season. Can only go one year ahead of current sport.");
+	}
 
-	db.collection(sport + "_draft_board_" + year).find({"draft_board": "overall"}, {"draft_board": 0, "_id": 0}).sort({"round_number": 1}).toArray(function(e, docs){
-		disp_draft_board = docs;
-		//console.log(disp_draft_board);
-		complete();
-	})
+	else if (year > current_year1 + 1 && sport == "football") {
+		res.send("Too far in advance, enter an earlier season. Can only go one year ahead of current sport.");
+	}
 
-	db.collection(sport + "_draft_board_" + year).find({"draft_board": "team"}, {"draft_board": 0, "_id": 0}).toArray(function(e, docs){
-		disp_by_team_draft_board = docs;
-		//console.log(disp_by_team_draft_board);
-		complete();
-	})
+	else {
+		set_board_sport = "football";
+		if (sport == set_board_sport) {
+			set_board = true;
+		}
+		else {
+			set_board = false;
+		}
+
+		var disp_draft_board = null;
+		var disp_by_team_draft_board = null;
+
+		db.collection(sport + "_draft_board_" + year).find({"draft_board": "overall"}, {"draft_board": 0, "_id": 0}).sort({"round_number": 1}).toArray(function(e, docs){
+			disp_draft_board = docs;
+			//console.log(disp_draft_board);
+			complete();
+		})
+
+		db.collection(sport + "_draft_board_" + year).find({"draft_board": "team"}, {"draft_board": 0, "_id": 0}).toArray(function(e, docs){
+			disp_by_team_draft_board = docs;
+			//console.log(disp_by_team_draft_board);
+			complete();
+		})
+	}
 
 var complete = function() {
 
@@ -104,7 +122,8 @@ var complete = function() {
 			sport: sport,
 			year: year,
 			draft_board: disp_draft_board,
-			by_team_draft_board: disp_by_team_draft_board
+			by_team_draft_board: disp_by_team_draft_board,
+			set_board: set_board
 		})
 	}
 }

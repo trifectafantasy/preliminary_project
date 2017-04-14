@@ -23,17 +23,19 @@ html
 
 		h2= sport.charAt(0).toUpperCase() + sport.slice(1) + " " + year + " Draft Board"
 
-		h4 Overall Draft Board
-		table
-			tbody
-				each readin in draft_board
-					tr
-						each val, cat in readin
-							if cat == "round_number"
-								td= "Round " + val
-							if cat == "picks"
-								each pick in val
-									td= pick
+		if set_board
+
+			h4 Overall Draft Board
+			table
+				tbody
+					each readin in draft_board
+						tr
+							each val, cat in readin
+								if cat == "round_number"
+									td= "Round " + val
+								if cat == "picks"
+									each pick in val
+										td= pick
 
 		h4 By Team Draft Board
 		table
