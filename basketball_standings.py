@@ -19,6 +19,7 @@ def h2h_trifecta(db, collection):
 	# initialize factors to determine trifecta points if there is a tie
 	skipped_team = False
 	points_hold = []
+	times_dist = 0
 
 	# loop through the sorted h2h standings from best to worst
 	for i in range(len(sorted_h2h)):
@@ -51,6 +52,12 @@ def h2h_trifecta(db, collection):
 			
 			# now that points have been averaged (whether it was initialized this time or last), each tied team gets this same number of distributed points
 			individual_trifecta_h2h_points = dist_points
+			times_dist += 1
+
+			# if all the tied team's points have been distributed, reset counts
+			if times_dist == same_records:
+				points_hold = []
+				times_dist = 0
 
 		# if there are no ties, this team gets the number of trifecta points according to their sorted rank (10 -> 1)
 		else:
