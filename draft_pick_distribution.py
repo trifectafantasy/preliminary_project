@@ -18,7 +18,7 @@ except pymongo.errors.ConnectionFailure, e:
 # use collection 'espn'
 db = client.espn
 
-print "Create default draft board"
+print "Assign starting draft picks"
 sport = raw_input("Sport: ")
 year = raw_input("Year: ")
 
@@ -46,57 +46,16 @@ for i in range(1, teams + 1):
 
 db[sport + "_draft_board_" + year].remove({})
 
-for round_number in range(number_of_rounds):
-	#print "round number:", round_number + 1
-	round_input = []
-
-	draft_round = all_picks[round_number * teams: (round_number * teams) + teams]
-	if (round_number + 1) % 2 == 0:
-		#print "even"
-		draft_round = list(reversed(draft_round))
-	#print draft_round
-	
-	for i in range(teams):
-		string = "Pick " + str(draft_round[i]) + ": " + teams_list[i]
-		round_input.append(string)
-	#print round_input
-
-	this_round = OrderedDict()
-	this_round["draft_board"] = "overall"
-	this_round["round_number"] = round_number + 1
-	this_round["picks"] = round_input
-	#print this_round
-
-	db[sport + "_draft_board_" + year].insert(this_round)
-
 for index in range(len(teams_list)):
 	each_team = teams_list[index]
 	#print each_team
 
 	each_team_picks = []
-	for round_number in range(2):
-		#print "round number:", round_number + 1
-		round_input = []
-
-		draft_round = all_picks[round_number * teams: (round_number * teams) + teams]
-		if (round_number + 1) % 2 == 0:
-			#print "even"
-			draft_round = list(reversed(draft_round))
-		#print draft_round
-
-		pick_number = draft_round[index]
-		#print pick_number
-		if round_number == 0:
-			pick1 = pick_number
-		elif round_number == 1:
-			pick2 = pick_number
-
-
-	while ((pick1 or pick2) <= (number_of_rounds * teams)):
-		each_team_picks.append(pick1)
-		each_team_picks.append(pick2)
-		pick1 += 20
-		pick2 += 20
+	for round_number in range(1, number_of_rounds + 1):
+		#print "round number:", round_number
+		
+		round_selection = "R" + str(round_number)
+		each_team_picks.append(round_selection)
 
 	#print each_team_picks
 
