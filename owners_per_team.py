@@ -36,13 +36,13 @@ def createCollection(db):
 
 			# create dictionary path through each_team_name
 			path = "teams." + each_team_name
-			print path
+			#print path
 
 			if path.find(".", 6) != -1:
 				period_index = path.find(".", 6)
-				print period_index
+				#print period_index
 				path = path[:period_index] + "\uff0E" + path[period_index + 1:]
-				print path
+				#print path
 
 			# add to collection dictionary of form: {team name: owner name} all inside teams dictionary
 			db["owners_per_team_name"].update({}, {"$set": {path: owner_name}})

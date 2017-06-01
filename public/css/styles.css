@@ -16,5 +16,24 @@ td {
 }
 
 a {
+	color: blue;
+}
+
+#home-hover {
+	display: none;
+}
+
+a:hover #home-hover {
+	display: block;
+	color: red;
+}
+
+#profile-hover {
+	display: none;
+}
+
+
+a:hover #profile-hover {
+	display: block;
 	color: green;
 }
