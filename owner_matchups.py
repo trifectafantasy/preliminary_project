@@ -51,12 +51,19 @@ def matchupRecords(db, owner_number, year1, year2, football_in_season, basketbal
 			collection_baseball = "owner" + owner_number + "_baseball_matchups_" + year2
 			baseball_pull = list(db[collection_baseball].find({"opposing_owner": opposing_owner}, {"win_per": 1, "_id": 0}))
 			#print baseball_pull
-			baseball_win_per = baseball_pull[0]["win_per"]
+			try:
+				baseball_win_per = baseball_pull[0]["win_per"]
+			except IndexError:
+				baseball_win_per = "N/A"
 			print "baseball: ", baseball_win_per			
 
 			# calculate averaged total win_per
-			total_win_per = (football_win_per + basketball_win_per + baseball_win_per) / 3
-			total_win_per = round(total_win_per, 3)
+			if baseball_win_per == "N/A":
+				total_win_per = (football_win_per + basketball_win_per) / 2
+				total_win_per = round(total_win_per, 3)
+			else:
+				total_win_per = (football_win_per + basketball_win_per + baseball_win_per) / 3
+				total_win_per = round(total_win_per, 3)
 			print "total: ", total_win_per
 
 			# insert into ordered dictionary for input
@@ -82,12 +89,19 @@ def matchupRecords(db, owner_number, year1, year2, football_in_season, basketbal
 			collection_basketball = "owner" + owner_number + "_basketball_matchups_" + year2
 			basketball_pull = list(db[collection_basketball].find({"opposing_owner": opposing_owner}, {"win_per": 1, "_id": 0}))
 			#print basketball_pull
-			basketball_win_per = basketball_pull[0]["win_per"]
+			try:
+				basketball_win_per = basketball_pull[0]["win_per"]
+			except IndexError:
+				basketball_win_per = "N/A"
 			print "basketball: ", basketball_win_per
 
 			# calculate averaged total win_per
-			total_win_per = (football_win_per + basketball_win_per) / 2
-			total_win_per = round(total_win_per, 3)
+			if basketball_win_per == "N/A":
+				total_win_per = football_win_per
+				total_win_per = round(total_win_per, 3)
+			else:				
+				total_win_per = (football_win_per + basketball_win_per) / 2
+				total_win_per = round(total_win_per, 3)
 			print "total: ", total_win_per
 
 			# insert into ordered dictionary for insert
@@ -105,12 +119,18 @@ def matchupRecords(db, owner_number, year1, year2, football_in_season, basketbal
 			# pull individual football matchup win_per
 			football_pull = list(db[collection_football].find({"opposing_owner": opposing_owner}, {"win_per": 1, "_id": 0}))
 			#print football_pull
-			football_win_per = football_pull[0]["win_per"]
+			try: 
+				football_win_per = football_pull[0]["win_per"]
+			except IndexError:
+				football_win_per = "N/A"
 			print "football:", football_win_per
 
 			# calculate averaged total win_per
-			total_win_per = football_win_per
-			total_win_per = round(total_win_per, 3)
+			if football_win_per == "N/A":
+				total_win_per = "N/A"
+			else:
+				total_win_per = football_win_per
+				total_win_per = round(total_win_per, 3)
 			print "total: ", total_win_per
 
 			# insert into ordered dictionary for insert
