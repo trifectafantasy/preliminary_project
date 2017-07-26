@@ -9,6 +9,7 @@ header {
 table {
   border-collapse: separate;
   border-spacing: 25px 0;
+  table-layout: fixed;
 }
 
 td {
@@ -36,4 +37,22 @@ a:hover #home-hover {
 a:hover #profile-hover {
 	display: block;
 	color: green;
+}
+
+/* Draft Board CSS */
+#overall_draft_board_round {
+	width: 75px;
+	font-weight: bold;
+}
+
+#overall_draft_board_picks {
+	table-layout: auto;
+}
+
+#by_team_draft_board_round {
+	width: 150px;
+}
+
+#by_team_draft_board_picks {
+	width: 25px;
 }
