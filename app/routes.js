@@ -61,7 +61,7 @@ var this_baseball_season_started = true;
 var this_baseball_in_season = true;
 var this_baseball_completed_season = false;
 // full regular season = 22 matchups
-var baseball_completed_matchups = 8;
+var baseball_completed_matchups = 15;
 
 
 // Route to Home/Root page
