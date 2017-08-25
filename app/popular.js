@@ -188,7 +188,7 @@ var start_scrape = function(url) {
 				}
 
 				// url for scrape
-				var url = 'http://games.espn.com/ffl/recentactivity?leagueId=154802&seasonId=' + year + '&activityType=2&startDate=' + year + '0801&endDate=' + end_year + end_month + end_day + '&teamId=' + football_owner_number + '&tranType=-2';
+				var url = 'http://games.espn.com/ffl/recentactivity?leagueId=154802&seasonId=' + year + '&activityType=2&startDate=' + year + '0901&endDate=' + end_year + end_month + end_day + '&teamId=' + football_owner_number + '&tranType=-2';
 				//console.log(url)
 				start_scrape(url);
 			})
@@ -212,7 +212,7 @@ var start_scrape = function(url) {
 			}
 
 			// url for scrape
-			var url = 'http://games.espn.com/fba/recentactivity?leagueId=100660&seasonId=' + year + '&activityType=2&startDate=' + start_year + '1001&endDate=' + end_year + end_month + end_day + '&teamId=' + owner_number + '&tranType=-2';
+			var url = 'http://games.espn.com/fba/recentactivity?leagueId=100660&seasonId=' + year + '&activityType=2&startDate=' + start_year + '1010&endDate=' + end_year + end_month + end_day + '&teamId=' + owner_number + '&tranType=-2';
 			//console.log(url)
 			start_scrape(url);
 			
@@ -234,7 +234,7 @@ var start_scrape = function(url) {
 			}		
 
 			// url for scrape
-			var url = 'http://games.espn.com/flb/recentactivity?leagueId=109364&seasonId=' + year + '&activityType=2&startDate=' + year + '0301&endDate=' + end_year + end_month + end_day + '&teamId=' + owner_number + '&tranType=-2';
+			var url = 'http://games.espn.com/flb/recentactivity?leagueId=109364&seasonId=' + year + '&activityType=2&startDate=' + year + '0320&endDate=' + end_year + end_month + end_day + '&teamId=' + owner_number + '&tranType=-2';
 			//console.log(url)
 			start_scrape(url);
 		}
