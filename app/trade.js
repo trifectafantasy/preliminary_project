@@ -37,16 +37,16 @@ module.exports = function(req, res, db, sport, year, callback) {
 
 		// url for scrape
 		if (sport === "football") {
-			var url = 'http://games.espn.com/ffl/recentactivity?leagueId=154802&seasonId=' + year + '&activityType=2&startDate=' + year + '0801&endDate=' + end_year + end_month + end_day + '&teamId=-1&tranType=4';
+			var url = 'http://games.espn.com/ffl/recentactivity?leagueId=154802&seasonId=' + year + '&activityType=2&startDate=' + year + '0901&endDate=' + end_year + end_month + end_day + '&teamId=-1&tranType=4';
 		}
 
 		else if (sport === "basketball") {
 			var start_year = String(parseInt(year) - 1);
-			var url = 'http://games.espn.com/fba/recentactivity?leagueId=100660&seasonId=' + year + '&activityType=2&startDate=' + start_year + '1001&endDate=' + end_year + end_month + end_day + '&teamId=-1&tranType=4';
+			var url = 'http://games.espn.com/fba/recentactivity?leagueId=100660&seasonId=' + year + '&activityType=2&startDate=' + start_year + '1010&endDate=' + end_year + end_month + end_day + '&teamId=-1&tranType=4';
 		}
 
 		else if (sport === "baseball") {
-			var url = 'http://games.espn.com/flb/recentactivity?leagueId=109364&seasonId=' + year + '&activityType=2&startDate=' + year + '0301&endDate=' + end_year + end_month + end_day + '&teamId=-1&tranType=4';
+			var url = 'http://games.espn.com/flb/recentactivity?leagueId=109364&seasonId=' + year + '&activityType=2&startDate=' + year + '0320&endDate=' + end_year + end_month + end_day + '&teamId=-1&tranType=4';
 		}
 
 		// request for scrape
