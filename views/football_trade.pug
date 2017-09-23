@@ -2,80 +2,13 @@ html
 	head
 		title= "Trade Analysis"
 		include ./JADE-Bootstrap/_bootstrap
+		include mixins.pug
 		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
 		link(rel='stylesheet', type="text/css", href='/css/styles.css')
 
 	body
 		header
-			+navbar("Menu","dropdown_menu", "inverse")
-				
-				+nav_item("/", "active") Home
-
-				+nav_item("/profile_home_page") Owner Profiles
-
-				+nav_item_dropdown("/standings_home_page/2015/2016")(label="2015-2016 Standings")
-					+nav_item("/football_standings/2015") 2015 Football
-					+nav_item("/basketball_standings/2016") 2016 Basketball
-					+nav_item("/baseball_standings/2016") 2016 Baseball
-					+nav_item("/trifecta_standings/2015/2016") 2015-2016 Trifecta
-
-				+nav_item_dropdown("/standings_home_page/2016/2017")(label="2016-2017 Standings")
-					+nav_item("/football_standings/2016") 2016 Football
-					+nav_item("/basketball_standings/2017") 2017 Basketball
-					+nav_item("/baseball_standings/2017") 2017 Baseball
-					+nav_item("/trifecta_standings/2016/2017") 2016-2017 Trifecta				
-
-				+nav_item("/owner_matchup_home_page") Owner vs Owner Matchup Records
-
-				+nav_item_dropdown("/trades_home_page")(label="Trade Analysis")
-					+nav_item("#") Who did you rip off? Who scalped you? Who won the trade?
-					+nav_divider()
-					+nav_item("#") Sorry no trade analysis for 2015 Football
-					+nav_item("/football/trades/2016") 2016 Football
-					+nav_divider()
-					+nav_item("#") Sorry no trades were made in 2016 Basketball
-					+nav_item("/basketball/trades/2017") 2017 Basketball
-					+nav_divider()
-					+nav_item("/baseball/trades/2016") 2016 Baseball
-					+nav_item("/baseball/trades/2017") 2017 Baseball
-
-				+nav_item("/stats_home_page") Roster Stats
-
-				+nav_item("/acquisition_value_home_page") Acquisition Value
-
-				+nav_item_dropdown("/origin_home_page")(label="Origin Analysis")
-					+nav_item("#") Where did your value come from? Draft? Waiver wire? Trades?
-					+nav_divider()
-					+nav_item("#") Sorry no origin analysis for 2015 Football
-					+nav_item("/football/origin/2016") 2016 Football
-					+nav_divider()
-					+nav_item("/basketball/origin/2016") 2016 Basketball
-					+nav_item("/basketball/origin/2017") 2017 Basketball
-					+nav_divider()
-					+nav_item("/baseball/origin/2016") 2016 Baseball
-					+nav_item("/baseball/origin/2017") 2017 Baseball
-				
-				+nav_item_dropdown("/popular_home_page")(label="Most Popular Players")
-					+nav_item("#") Which player did you make the most transactions with? Who were your "favorites"?
-					+nav_divider()
-					+nav_item("#") Sorry no most popular player analysis for 2015 Football
-					+nav_item("/football/popular/2016") 2016 Football
-					+nav_divider()
-					+nav_item("/basketball/popular/2016") 2016 Basketball
-					+nav_item("/basketball/popular/2017") 2017 Basketball
-					+nav_divider()
-					+nav_item("/baseball/popular/2016") 2016 Baseball
-					+nav_item("/baseball/popular/2017") 2017 Baseball
-
-				+nav_item_dropdown("/football_coach_home_page")(label="Football Coach")
-					+nav_item("#") Were you a good fantasy football coach? Did you ever start the optimal lineup?
-					+nav_item("#") Sorry no coach analysis for 2015 Football
-					+nav_item("/football/coach/2016") 2016 Football
-
-				+nav_item_dropdown("/future_draft_boards_home_page")(label="2017-2018 Future Draft Boards")
-					+nav_item("/future_draft_board/football/2017") 2017 Football
-					+nav_item("/future_draft_board/basketball/2018") 2018 Basketball
-					+nav_item("/future_draft_board/baseball/2018") 2018 Baseball
+			+headliner
 
 					
 		h2= year + " Football Trade Analysis"

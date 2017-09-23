@@ -87,6 +87,9 @@ module.exports = function(req, res, db, year, owner_number, completed_weeks, cal
 											else if (players.charAt(players.length - 1) === "O") {
 												full_player = players.slice(0, players.length - 3);
 											}
+											else if (players.charAt(players.length - 2) === "I") {
+												full_player = players.slice(0, players.length - 4);
+											}
 											else {
 												full_player = players;
 											}
@@ -113,9 +116,12 @@ module.exports = function(req, res, db, year, owner_number, completed_weeks, cal
 												points = parseFloat(points_scrape.text());
 											}
 											//console.log(points);
+											lineup_position = lineup_position.text();
+											//console.log(lineup_position)
+											//console.log(eligible_position);
 
 											// upsert to starters collection per week
-											db.collection("owner" + owner_number + "_coach_scrape_" + year).update({"week": week, "status": "starters"}, {"$push": {[lineup_position.text()]: points}}, {upsert: true})
+											db.collection("owner" + owner_number + "_coach_scrape_" + year).update({"week": week, "status": "starters"}, {"$push": {[lineup_position]: points}}, {upsert: true})
 
 											// upsert to all collection per week
 											db.collection("owner" + owner_number + "_coach_scrape_" + year).update({"week": week, "status": "all"}, {"$push": {[eligible_position]: points}}, {upsert: true})
@@ -158,6 +164,10 @@ module.exports = function(req, res, db, year, owner_number, completed_weeks, cal
 											else if (players.charAt(players.length - 1) === "O") {
 												full_player = players.slice(0, players.length - 3);
 											}
+											else if (players.charAt(players.length - 2) === "I") {
+												full_player = players.slice(0, players.length - 4);
+											}
+
 											else {
 												full_player = players;
 											}
@@ -184,6 +194,7 @@ module.exports = function(req, res, db, year, owner_number, completed_weeks, cal
 												points = parseFloat(points_scrape.text());
 											}
 											//console.log(points);
+											//console.log(eligible_position);
 
 											// upsert to all collection
 											db.collection("owner" + owner_number + "_coach_scrape_" + year).update({"week": week, "status": "all"}, {"$push": {[eligible_position]: points}}, {upsert: true})
@@ -195,6 +206,9 @@ module.exports = function(req, res, db, year, owner_number, completed_weeks, cal
 						}) // end of initial scrape
 
 					} // end of if(!error)
+					else {
+						console.log("--------------ERROR-------------")
+					}
 				}) // end of request
 			complete();
 			}) // end of forEach loop for each week
