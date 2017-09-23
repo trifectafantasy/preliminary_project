@@ -86,7 +86,8 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 					# set path for finding owner through team name
 					path = "teams." + football_team
 					#print path
-					if path.find(".", 6) != -1:
+					while path.find(".", 6) != -1:
+					#if path.find(".", 6) != -1:
 						period_index = path.find(".", 6)
 						#print period_index
 						path = path[:period_index] + "\uff0E" + path[period_index + 1:]

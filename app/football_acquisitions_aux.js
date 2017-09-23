@@ -34,7 +34,8 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 				//console.log(team)
 
 				// if the drafted players' team is correct
-				if (team_list.includes(team)) {
+				if (team_list.indexOf(team) != -1) {
+				//if (team_list.includes(team)) {
 
 					player = draft_pick["player"]
 					draft_position = draft_pick["draft_position"]

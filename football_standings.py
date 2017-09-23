@@ -7,7 +7,7 @@ import sys
 ##### DEFINE FUNCTIONS #####
 
 # function to sort and give trifecta points based on h2h win percentage
-# takes in argument of which MongoDB collection to use: 'football_2015_h2h'
+# takes in argument of which MongoDB collection to use: 'football_h2h_2015'
 def combine_databases(db, collection_h2h, collection_roto):
 
 	# pull team list

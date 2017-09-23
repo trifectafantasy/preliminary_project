@@ -58,16 +58,16 @@ var basketball_completed_matchups = 18;
 // baseball status variables
 var this_baseball_season_started = true;
 //set to false if want to stop scraping roto standings after regular season has ended
-var this_baseball_in_season = true;
+var this_baseball_in_season = false;
 var this_baseball_completed_season = false;
 // full regular season = 22 matchups
-var baseball_completed_matchups = 19;
+var baseball_completed_matchups = 22;
 
 
 // exception built in for when Football in new Trifecta season starts during Baseball in previous Trifecta season
 var football_ahead = true;
 var football_ahead_current_year = 2017;
-var football_ahead_completed_matchups = 0;
+var football_ahead_completed_matchups = 2;
 
 
 // Route to Home/Root page
@@ -616,6 +616,10 @@ router.get('/basketball_standings/:year', function(req, res) {
 		} // end of complete function
 	}
 
+	else if (year > completed_basketball_season && in_season == false) {
+		res.send("I'm sorry. Basketball " + year + " is not in season yet.")
+	}
+
 	else {
 		var stand = require('./basketball_standings_router_template.js')(req, res, db, year, in_season, playoffs);
 	}	
@@ -725,6 +729,10 @@ router.get('/baseball_standings/:year', function(req, res) {
 			}
 		} // end of complete function
 	} 
+
+	else if (year > completed_baseball_season && in_season == false) {
+		res.send("I'm sorry. Baseball " + year + " is not in season yet.")
+	}	
 
 	// if this is the current season, scrape
 	else {
@@ -895,7 +903,8 @@ router.get('/owner/:owner_number/matchups/all', function(req, res) {
 
 	var options = {
 		args: [owner_number, completed_football_season, football_in_season, completed_basketball_season, basketball_in_season, completed_baseball_season, baseball_in_season]
-	}	
+	}
+	console.log(options);
 
 	db.collection("owner" + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs) {
 		owner_name = docs[0]["owner"]
@@ -907,14 +916,14 @@ router.get('/owner/:owner_number/matchups/all', function(req, res) {
 
 
 			db.collection('owner' + owner_number + '_football_matchups_all').find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
-				//console.log(docs);
+				console.log(docs);
 				console.log('pulling football data...');
 				disp_football_matchups = docs;
 				complete();
 			})
 
 			db.collection('owner' + owner_number + '_basketball_matchups_all').find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
-				//console.log(docs);
+				console.log(docs);
 				console.log('pulling basketball data...');
 				disp_basketball_matchups = docs;
 				complete();
@@ -922,14 +931,14 @@ router.get('/owner/:owner_number/matchups/all', function(req, res) {
 			})
 
 			db.collection('owner' + owner_number + '_baseball_matchups_all').find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
-				//console.log(docs);
+				console.log(docs);
 				console.log('pulling baseball data...');
 				disp_baseball_matchups = docs;
 				complete();
 			})
 
 			db.collection('owner' + owner_number + '_trifecta_matchups_all').find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
-				//console.log(docs);
+				console.log(docs);
 				console.log('pulling trifecta data...');
 				disp_trifecta_matchups = docs;
 				complete();
@@ -2133,7 +2142,13 @@ router.get('/football/coach/:year', function(req, res) {
 	if (year > completed_football_season) {
 	
 		// how many weeks have been completed, able to scrape
-		var completed_weeks = 1;
+		if (football_ahead == true) {
+			var completed_weeks = football_ahead_completed_matchups;
+
+		}
+		else {
+			var completed_weeks = football_completed_matchups
+		}
 
 		// list of owner numbers to loop through
 		owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
@@ -2141,7 +2156,6 @@ router.get('/football/coach/:year', function(req, res) {
 	// function that executes synchronous scrapes and python script analyses
 	var all_football_coach = function(x, owner_list) {
 		if (x < owner_list.length) {
-
 			// set owner number
 			owner_number = owner_list[x];
 			console.log("owner number", owner_number);
@@ -2150,32 +2164,32 @@ router.get('/football/coach/:year', function(req, res) {
 			var coach_scrape = require('./coach_scrape.js')(req, res, db, year, owner_number, completed_weeks, function(err, call) {
 				console.log("coach scrape done");
 
-				var options = {
-					args: [year, owner_number, completed_weeks]
-				}
-
-				// run python script that calculates difference between optimal and starting lineups
-				pyshell.run('football_coach.py', options, function(err) {
-					if (err) throw err;
-					console.log("coach python script done");
-
-					// send back to loop again
-					all_football_coach(x + 1, owner_list);
-				}) // end of python script
+				// send back to loop again
+				all_football_coach(x + 1, owner_list);
 			}) // end of coach scrape script
 		}
 		// once done with all in loop, done
 		else {
-			// pull from collection for display
-			db.collection("all_coach_" + year).find({}, {"_id": 0}).sort({"season": -1}).toArray(function(e, docs) {
-				disp_coach = docs;
-				console.log("displaying coach standings...");
+			var options = {
+				args: [year, completed_weeks]
+			}
+			pyshell.run('football_coach.py', options, function(err) {
+				if (err) throw err;
+				console.log("coach python script done");
+				
+				// pull from collection for display
+				db.collection("all_coach_" + year).find({}, {"_id": 0}).sort({"season": -1}).toArray(function(e, docs) {
+					disp_coach = docs;
+					console.log("displaying coach standings...");
 
-				res.render('football_coach', {
-					year: year,
-					coach_standings: disp_coach
-				})
-			}) // end of display pull
+					res.render('football_coach', {
+						year: year,
+						completed_weeks: completed_weeks,
+						coach_standings: disp_coach
+					})
+				}) // end of display pull				
+			}) // end of python script
+	
 		}
 	} // end of all_football_coach function
 
@@ -2185,6 +2199,7 @@ router.get('/football/coach/:year', function(req, res) {
 
 	// if year is in past, just pull
 	else {
+		completed_weeks = 13
 		// pull from collection for display
 		db.collection("all_coach_" + year).find({}, {"_id": 0}).sort({"season": -1}).toArray(function(e, docs) {
 			disp_coach = docs;
@@ -2192,6 +2207,7 @@ router.get('/football/coach/:year', function(req, res) {
 
 			res.render('football_coach', {
 				year: year,
+				completed_weeks: completed_weeks,
 				coach_standings: disp_coach
 			})
 		}) // end of display pull	

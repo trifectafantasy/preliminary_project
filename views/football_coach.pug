@@ -13,25 +13,15 @@ html
 					
 		h2= year + " Football Coach Rankings"
 		h4 Points lost from played starting lineup relative to optimal starting lineup
-		
+
 		table
 			thead
 				tr
 					th RANK
 					th OWNER
-					th WEEK 1
-					th WEEK 2
-					th WEEK 3
-					th WEEK 4
-					th WEEK 5
-					th WEEK 6
-					th WEEK 7
-					Th WEEK 8
-					th WEEK 9
-					th WEEK 10
-					th WEEK 11
-					th WEEK 12
-					th WEEK 13
+					- for (n = 1; n <= completed_weeks; n++) {
+						th= "WEEK " + n
+					- }
 					th SEASON TOTAL
 
 			tbody
