@@ -39,4 +39,4 @@ Add new sport:
   - lines 39-64, change this_(sport)_season_started and this_(sport)_in_season to true
   - Add menu options for new year to view pug files
   - Run add_team_name.py to add team names
-  - For team names with a "." in the title, substitute the "." with \\uff0E
+  - For team names with a "." in the title, substitute the "." with \\\uff0E
