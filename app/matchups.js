@@ -656,12 +656,12 @@ var basketball_complete = function() {
 									// set team names
 									baseball_my_team = baseball_team1.text();
 									baseball_opposing_team = baseball_team2.text();
-									console.log(baseball_my_team);
-									console.log(baseball_opposing_team);
+									//console.log(baseball_my_team);
+									//console.log(baseball_opposing_team);
 									if (baseball_opposing_team.indexOf(".") != -1) {
 										baseball_opposing_team.replace(".", "\\uff0E");
 									}
-									console.log(baseball_opposing_team);
+									//console.log(baseball_opposing_team);
 
 									// set and save record
 									baseball_save_record = baseball_record1.text();
@@ -678,12 +678,12 @@ var basketball_complete = function() {
 									// set team names
 									baseball_my_team = baseball_team2.text();
 									baseball_opposing_team = baseball_team1.text();
-									console.log(baseball_my_team);
-									console.log(baseball_opposing_team);
+									//console.log(baseball_my_team);
+									//console.log(baseball_opposing_team);
 									if (baseball_opposing_team.indexOf(".") != -1) {
 										baseball_opposing_team.replace(".", "\\uff0E");
 									}											
-									console.log(baseball_opposing_team);
+									//console.log(baseball_opposing_team);
 
 									// set and save record
 									baseball_save_record = baseball_record2.text();

@@ -31,15 +31,28 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 		ending_football_season = int(completed_football_season) + 1
 
 	football_seasons = range(starting_football_season, ending_football_season)
-	#print football_seasons
+	print "football_seasons", football_seasons
 
+	opposing_owners_list = []
+	# create list of opposing owners
+	for each_football_season in football_seasons:
+		collection_owner_list = "owner" + owner_number + "_football_matchups_" + str(each_football_season)
+		owner_pull = list(db[collection_owner_list].find({}, {"opposing_owner": 1, "_id": 0}))
+		#print "owner_pull", len(owner_pull)
 
-	# pull most recent football matchup collection
-	collection_owner_list = "owner" + owner_number + "_football_matchups_" + str(ending_football_season - 1)
-	owner_pull = list(db[collection_owner_list].find({}, {"opposing_owner": 1, "_id": 0}))
+		for each_owner in owner_pull:
+			#print "each_owner", each_owner
+			each_owner_name = each_owner["opposing_owner"]
+			if each_owner_name not in opposing_owners_list:
+				opposing_owners_list.append(each_owner_name)
+
+		#print "opposing owner list:", opposing_owners_list
+
+	print "final owner list", len(opposing_owners_list), opposing_owners_list
 
 	# cycle through opposing owners
-	for opposing_owner_list in owner_pull:
+	for opposing_owner in opposing_owners_list:
+		print "opposing owner: ", opposing_owner
 
 		football_json = OrderedDict();
 
@@ -51,25 +64,23 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 		PA_upload = 0.0
 		pt_diff_upload = 0.0
 
-		# opposing owner
-		opposing_owner = opposing_owner_list["opposing_owner"]
-		#print "opposing owner: ", opposing_owner
 
 		# for each opposing owner iterate through every football season per opposing owner
 		for football_year in football_seasons:
 
 			collection_football = "owner" + owner_number + "_football_matchups_" + str(football_year)
 			football_pull = list(db[collection_football].find({"opposing_owner": opposing_owner}, {"_id": 0}))
-			#print football_pull
+			print football_pull
+			if football_pull != []:
 
-			wins_upload += football_pull[0]["wins"]
-			losses_upload += football_pull[0]["losses"]
-			ties_upload += football_pull[0]["ties"]
-			win_per_upload = (wins_upload + (ties_upload / 2)) / (wins_upload + losses_upload + ties_upload)
+				wins_upload += football_pull[0]["wins"]
+				losses_upload += football_pull[0]["losses"]
+				ties_upload += football_pull[0]["ties"]
+				win_per_upload = (wins_upload + (ties_upload / 2)) / (wins_upload + losses_upload + ties_upload)
 
-			PF_upload += football_pull[0]["PF"]
-			PA_upload += football_pull[0]["PA"]
-			pt_diff_upload = PF_upload - PA_upload
+				PF_upload += football_pull[0]["PF"]
+				PA_upload += football_pull[0]["PA"]
+				pt_diff_upload = PF_upload - PA_upload
 
 		"""
 		print wins_upload
@@ -107,10 +118,28 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 		ending_basketball_season = int(completed_basketball_season) + 1
 
 	basketball_seasons = range(starting_basketball_season, ending_basketball_season)
-	#print basketball_seasons
+	#print "basketball_seasons", basketball_seasons
+
+	# add to list of opposing owners if not already
+	for each_basketball_season in basketball_seasons:
+		collection_owner_list = "owner" + owner_number + "_basketball_matchups_" + str(each_basketball_season)
+		owner_pull = list(db[collection_owner_list].find({}, {"opposing_owner": 1, "_id": 0}))
+		#print "owner_pull", len(owner_pull)
+
+		for each_owner in owner_pull:
+			each_owner_name = each_owner["opposing_owner"]
+			print "each_owner_name", each_owner_name, type(each_owner_name)
+			print "opposing owner list:", opposing_owners_list
+			if each_owner_name not in opposing_owners_list:
+				opposing_owners_list.append(each_owner_name)
+
+		#print "opposing owner list:", opposing_owners_list
+
+	print "final owner list", len(opposing_owners_list), opposing_owners_list
 
 	# using same owner pull list as above, cycle through each opposing owner
-	for opposing_owner_list in owner_pull:
+	for opposing_owner in opposing_owners_list:
+		#print "opposing owner: ", opposing_owner
 
 		basketball_json = OrderedDict()
 
@@ -119,21 +148,18 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 		ties_upload = 0.0
 		win_per_upload = 0.0
 
-		# set opposing owner
-		opposing_owner = opposing_owner_list["opposing_owner"]
-		#print "opposing owner: ", opposing_owner
-
 		# for each opposing owner iterate through every basketball season per opposing owner
 		for basketball_year in basketball_seasons:		
 
 			collection_basketball = "owner" + owner_number + "_basketball_matchups_" + str(basketball_year)
 			basketball_pull = list(db[collection_basketball].find({"opposing_owner": opposing_owner}, {"_id": 0}))
 			#print basketball_pull
+			if basketball_pull != []:
 
-			wins_upload += basketball_pull[0]["wins"]
-			losses_upload += basketball_pull[0]["losses"]
-			ties_upload += basketball_pull[0]["ties"]
-			win_per_upload = (wins_upload + (ties_upload / 2)) / (wins_upload + losses_upload + ties_upload)
+				wins_upload += basketball_pull[0]["wins"]
+				losses_upload += basketball_pull[0]["losses"]
+				ties_upload += basketball_pull[0]["ties"]
+				win_per_upload = (wins_upload + (ties_upload / 2)) / (wins_upload + losses_upload + ties_upload)
 
 		"""
 		print wins_upload
@@ -165,9 +191,26 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 		ending_baseball_season = int(completed_baseball_season) + 1
 
 	baseball_seasons = range(starting_baseball_season, ending_baseball_season)
-	print baseball_seasons
+	#print "baseball_seasons", baseball_seasons
 
-	for opposing_owner_list in owner_pull:
+	# add to list of opposing owners if not already
+	for each_baseball_season in baseball_seasons:
+		collection_owner_list = "owner" + owner_number + "_baseball_matchups_" + str(each_baseball_season)
+		owner_pull = list(db[collection_owner_list].find({}, {"opposing_owner": 1, "_id": 0}))
+		#print "owner_pull", len(owner_pull)
+
+		for each_owner in owner_pull:
+			print "each_owner", each_owner
+			each_owner_name = each_owner["opposing_owner"]
+			if each_owner_name not in opposing_owners_list:
+				opposing_owners_list.append(each_owner_name)
+
+		#print "opposing owner list:", opposing_owners_list
+
+	print "final owner list", len(opposing_owners_list), opposing_owners_list
+
+	for opposing_owner in opposing_owners_list:
+		#print "opposing owner: ", opposing_owner
 
 		baseball_json = OrderedDict()
 
@@ -176,21 +219,18 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 		ties_upload = 0.0
 		win_per_upload = 0.0
 
-		# set opposing owner
-		opposing_owner = opposing_owner_list["opposing_owner"]
-		#print "opposing owner: ", opposing_owner
-
 		# for each opposing owner iterate through every baseball season per opposing owner
 		for baseball_year in baseball_seasons:
 
 			collection_baseball = "owner" + owner_number + "_baseball_matchups_" + str(baseball_year)
 			baseball_pull = list(db[collection_baseball].find({"opposing_owner": opposing_owner}, {"_id": 0}))
 			#print baseball_pull
+			if baseball_pull != []:
 
-			wins_upload += baseball_pull[0]["wins"]
-			losses_upload += baseball_pull[0]["losses"]
-			ties_upload += baseball_pull[0]["ties"]
-			win_per_upload = (wins_upload + (ties_upload / 2)) / (wins_upload + losses_upload + ties_upload)
+				wins_upload += baseball_pull[0]["wins"]
+				losses_upload += baseball_pull[0]["losses"]
+				ties_upload += baseball_pull[0]["ties"]
+				win_per_upload = (wins_upload + (ties_upload / 2)) / (wins_upload + losses_upload + ties_upload)
 
 		"""
 		print wins_upload
@@ -214,7 +254,7 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 	db[collection_owner_matchups_all].remove({})
 
 	# using same owner pull list as above, cycle through each opposing owner
-	for opposing_owner_list in owner_pull:
+	for opposing_owners_list in owner_pull:
 
 		insert_json = OrderedDict()
 
@@ -224,7 +264,7 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 		total_win_per = 0.0
 
 		# set opposing owner
-		opposing_owner = opposing_owner_list["opposing_owner"]
+		opposing_owner = opposing_owners_list["opposing_owner"]
 		#print "opposing owner: ", opposing_owner
 
 		# pull individual football matchup win_per
