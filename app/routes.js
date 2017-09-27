@@ -616,7 +616,7 @@ router.get('/basketball_standings/:year', function(req, res) {
 		} // end of complete function
 	}
 
-	else if (year > completed_basketball_season && in_season == false) {
+	else if (year > completed_basketball_season && this_basketball_season_started == false) {
 		res.send("I'm sorry. Basketball " + year + " is not in season yet.")
 	}
 
@@ -730,7 +730,7 @@ router.get('/baseball_standings/:year', function(req, res) {
 		} // end of complete function
 	} 
 
-	else if (year > completed_baseball_season && in_season == false) {
+	else if (year > completed_baseball_season && this_baseball_season_started == false) {
 		res.send("I'm sorry. Baseball " + year + " is not in season yet.")
 	}	
 
@@ -864,16 +864,7 @@ router.get('/owner/:owner_number/matchups/all', function(req, res) {
 		}
 	}
 	else {
-		if (football_ahead == false) {
-			var football_in_season = false;
-		}
-		// if future football season
-		else {
-			var football_in_season = true;
-			if (football_completed_matchups == 0) {
-				var football_in_season = false;
-			}
-		}
+		var football_in_season = false;
 	}
 
 	if (this_basketball_season_started == true && this_basketball_completed_season == false) {
@@ -895,6 +886,13 @@ router.get('/owner/:owner_number/matchups/all', function(req, res) {
 	else {
 		var baseball_in_season = false;
 	}
+
+	if (football_ahead == true) {
+		football_in_season = true;
+		if (football_ahead_completed_matchups == 0) {
+			football_in_season = false;
+		}
+	}	
 
 	var disp_football_matchups = null;
 	var disp_basketball_matchups = null;
