@@ -40,3 +40,9 @@ Add new sport:
   - Add menu options for new year to view pug files
   - Run add_team_name.py to add team names
   - For team names with a "." in the title, substitute the "." with \\\uff0E
+
+To form draft boards:
++ When just creating list of future round draft picks to trade, no order yet, use: draft_pick_distribution.py
+  - When making future round draft pick trades, use: trade_future_draft_picks.py
++ When creating the full draft board with draft order, use: draft_board_creation.py
+  - When making set, specific draft pick trades, use: trade_draft_picks.py
