@@ -67,7 +67,10 @@ var baseball_completed_matchups = 22;
 // exception built in for when Football in new Trifecta season starts during Baseball in previous Trifecta season
 var football_ahead = true;
 var football_ahead_current_year = 2017;
-var football_ahead_completed_matchups = 2;
+var football_ahead_completed_matchups = 3;
+
+// sport that has full draft order and picks ready
+var set_board_sport = "basketball";
 
 
 // Route to Home/Root page
@@ -91,12 +94,11 @@ router.get('/future_draft_board/:sport/:year', function(req, res) {
 		res.send("Too far in advance, enter an earlier season. Can only go one year ahead of current sport.");
 	}
 
-	else if (year > current_year1 + 1 && sport == "football") {
+	else if ((year > current_year1 + 1 && sport == "football") && football_ahead == false) {
 		res.send("Too far in advance, enter an earlier season. Can only go one year ahead of current sport.");
 	}
 
 	else {
-		set_board_sport = "football";
 		if (sport == set_board_sport) {
 			set_board = true;
 		}
