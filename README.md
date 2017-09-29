@@ -52,26 +52,26 @@ Start new Trifecta Season (after baseball ends, football in season):
 
 Start new sport:
 + In routes.js...
-  - lines 35-71, change this_<sport>_season_started, this_<sport>_in_season (basketball, baseball) to true and reset <sport>_completed_matchups to 0
+  - lines 35-71, change this_\<sport\>_season_started, this_\<sport\>_in_season (basketball, baseball) to true and reset \<sport\>_completed_matchups to 0
   - Run add_team_name.py to add team names
   - For team names with a "." in the title, substitute the "." with \\\uff0E
 
 Stop sports:
 Stop scraping roto regular season standings (basketball and baseball):
 + In routes.js...
-  - this_<sport>_in_season = false
+  - this_\<sport\>_in_season = false
 
 Start scraping playoff results:
 + In routes.js...
-  - this_<sport>_completed_season = true
+  - this_\<sport\>_completed_season = true
 
 Once all stats have been scraped (roster stats, acquisition stats, origin stats, trade analysis, owner matchups, popular players, football coach)
 + In routes.js...
-  - increase completed_<sport>_season to just finished season number (ie NO MORE SCRAPING)
+  - increase completed_\<sport\>_season to just finished season number (ie NO MORE SCRAPING)
 
 To form draft boards:
 + When just creating list of future round draft picks to trade, no order yet, use: draft_pick_distribution.py
   - When making future round draft pick trades, use: trade_future_draft_picks.py
 + When creating the full draft board with draft order, use: draft_board_creation.py
   - When making set, specific draft pick trades, use: trade_draft_picks.py
-  - To display set, specific draft board with order, in routes.js, line 73, set_board_sport = <sport>
+  - To display set, specific draft board with order, in routes.js, line 73, set_board_sport = \<sport\>
