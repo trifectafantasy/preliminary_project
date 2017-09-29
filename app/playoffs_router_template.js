@@ -17,7 +17,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 	db.collection(sport + '_h2h_' + year).find({}, {"team": 1, "_id": 0}).toArray(function(e, docs) {
 
 		var team_list = docs;
-		console.log(team_list);
+		//console.log(team_list);
 
 		// clear playoffs database
 		db.collection(sport + '_playoffs_' + year).remove({});
@@ -104,11 +104,23 @@ module.exports = function(req, res, db, sport, year, callback) {
 							}
 							// remove seed from team name for winner and add to list of playoff winners
 							winner = winner.slice(3);
+						}
+
+						// if the first round (1st iteration, j=0), winner gets 1 point
+						if (j === 0) {
 							playoff_winners.push(winner);
 						}
 
-						// if the last round (3rd iteration of first row (j=2), winner gets two wins)
+						// if the semifinal (2nd iteration, j=1), winner gets 2 points
+						if (j == 1) {
+							playoff_winners.push(winner);
+							playoff_winners.push(winner);
+						}
+
+						// if the last round (3rd iteration, j=2), winner gets 3 points
 						if (j === 2) {
+							playoff_winners.push(winner);
+							playoff_winners.push(winner);
 							playoff_winners.push(winner);
 						}
 
@@ -156,11 +168,23 @@ module.exports = function(req, res, db, sport, year, callback) {
 							}
 							// slice seed off of winner and add to winner list
 							winner = winner.slice(3);
-							playoff_winners.push(winner);							
 						}
 
-						// if last round, add championship winner twice
+						// if the first round (1st iteration, j=0), winner gets 1 point
+						if (j === 0) {
+							playoff_winners.push(winner);
+						}
+
+						// if the semifinal (2nd iteration, j=1), winner gets 2 points
+						if (j == 1) {
+							playoff_winners.push(winner);
+							playoff_winners.push(winner);
+						}
+
+						// if the last round (3rd iteration, j=2), winner gets 3 points
 						if (j === 2) {
+							playoff_winners.push(winner);
+							playoff_winners.push(winner);
 							playoff_winners.push(winner);
 						}
 
@@ -208,15 +232,28 @@ module.exports = function(req, res, db, sport, year, callback) {
 							}
 							// slice seed off of team name and push to playoff winner's list
 							winner = winner.slice(3);
-							playoff_winners.push(winner);							
 						}
 
-						// if 3rd iteration, last round, add again to playoff winner's list
+						// if the first round (1st iteration, j=0), winner gets 1 point
+						if (j === 0) {
+							playoff_winners.push(winner);
+						}
+
+						// if the semifinal (2nd iteration, j=1), winner gets 2 points
+						if (j == 1) {
+							playoff_winners.push(winner);
+							playoff_winners.push(winner);
+						}
+
+						// if the last round (3rd iteration, j=2), winner gets 3 points
 						if (j === 2) {
+							playoff_winners.push(winner);
+							playoff_winners.push(winner);
 							playoff_winners.push(winner);
 						}
 
 					}) // end of row3 iteration
+					
 					// can skip row 4 because just a bye
 
 				} // END OF WINNER'S BRACKET
@@ -303,7 +340,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 							}
 						}
 					}
-					// add consolation bracket winner to playoff winner's list
+					// Winner of consolation bracket gets 1 win
 					playoff_winners.push(winner);
 
 				} // end of CONSOLATION LADDER
@@ -327,11 +364,12 @@ module.exports = function(req, res, db, sport, year, callback) {
 						playoff_wins += 1
 					}
 				}
+				//console.log("Team", winning_team, "playoff wins:", playoff_wins)
 				var disp_playoff_standings = null;
 
 				// add to playoffs database and regex takes care of half names that playoff bracket sometimes gives
 				db.collection(sport + '_playoffs_' + year).update({"team": { "$regex": winning_team}}, {"$set": {"playoff_trifecta_points": playoff_wins}}, function(err, result) {
-					console.log("updated playoffs database");
+					//console.log("updated playoffs database");
 					complete();
 				}) // end of update of playoff points
 			} // end of for loop
@@ -340,6 +378,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 var complete = function() {
 	counter += 1;
 	if (counter == playoff_winners.length) {
+		console.log("playoffs database fully updated");
 		callback();
 	}
 } // end of complete function
