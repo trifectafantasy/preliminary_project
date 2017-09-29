@@ -27,12 +27,15 @@ To dump and restore mongodb espn database following: https://docs.mongodb.com/ma
   
 To run:
 In different terminal windows in preliminary_project directory:
-+ mongod
-+ nodemon server.js
++ nohup mongod &
++ nohup nodemon server.js &
++ nohup ngrok http -bind-tls=true -auth="chips:markers" 8081
 
 To open tunnel:
 + sign up for free ngrok account
 + follow instructions at: https://dashboard.ngrok.com/get-started
++ change remote_addr in configuration file to 0.0.0.0:8091
++ access dashboard at AWS hostname port 8091
 
 Start football ahead sport:
 + In routes.js...
