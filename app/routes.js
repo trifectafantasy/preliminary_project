@@ -593,7 +593,7 @@ router.get('/basketball_standings/:year', function(req, res) {
 			if (playoffs === true) {
 				if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_trifecta_standings !== null) {
 
-					// render to baseball_standings
+					// render to basketball_standings
 					res.render('basketball_standings', {
 						h2h_standings: disp_h2h_standings,
 						roto_standings: disp_roto_standings,
@@ -606,7 +606,7 @@ router.get('/basketball_standings/:year', function(req, res) {
 			else {
 				if (disp_h2h_standings !== null && disp_roto_standings !== null) {
 
-					// render to baseball_standings
+					// render to basketball_standings
 					res.render('basketball_standings', {
 						h2h_standings: disp_h2h_standings,
 						roto_standings: disp_roto_standings,
