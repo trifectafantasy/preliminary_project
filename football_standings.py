@@ -33,11 +33,11 @@ def combine_databases(db, collection_h2h, collection_roto):
 def trifecta_points(db, collection): 
 
 	# pull new combiend h2h collection sorted by win percentage
-	sorted_record = list(db[collection].find({}, {"team": 1, "win_per": 1, "PF": 1, "_id": 0}).sort("win_per", -1))
+	sorted_record = list(db[collection].find({}, {"team": 1, "win_per": 1, "PF": 1, "_id": 0}).sort([("win_per", -1), ("PF", -1)]))
 	#print sorted_record
 
 	# initialize starting trifecta points
-	trifecta_points = 10
+	trifecta_points = 20
 	deserves_more = False
 
 	# loop through each team's win per and PF
@@ -56,12 +56,12 @@ def trifecta_points(db, collection):
 			if deserves_more == False:
 				individual_trifecta_points = trifecta_points
 			else:
-				individual_trifecta_points = trifecta_points + 1
+				individual_trifecta_points = trifecta_points + 2
 		# if not last
 		else:
 			# if deserves more, when in tie in win percentage, add point back
 			if deserves_more == True:
-				individual_trifecta_points = trifecta_points + 1
+				individual_trifecta_points = trifecta_points + 2
 				deserves_more = False
 
 			# loop through all teams behind in win percentage
@@ -88,14 +88,14 @@ def trifecta_points(db, collection):
 					# if next team has more PF
 					else:
 						# distribute one less point and next player gets one more point
-						individual_trifecta_points = trifecta_points - 1
+						individual_trifecta_points = trifecta_points - 2
 						deserves_more = True
 				else:
 					if individual_trifecta_points == 0:
 							individual_trifecta_points = trifecta_points
 
 		# at the end of each loop, subtract one available trifecta point
-		trifecta_points -= 1
+		trifecta_points -= 2
 
 		print "Team:", current_team
 		print "Trifecta points", individual_trifecta_points
