@@ -62,7 +62,7 @@ def	profileMatchups(db, owner_number, sport, year1, year2):
 		worst_against = sport_pull[-1]
 		#print "worst against", worst_against
 
-		insert_json["season"] = sport.capitalize() + " " + year
+		insert_json["season"] = sport.capitalize() + "-" + year
 		insert_json["best_owner"] = best_against["opposing_owner"]
 		insert_json["best_win_per"] = best_against["win_per"]
 		insert_json["best_pt_diff"] = best_against["pt_diff"]
@@ -84,7 +84,7 @@ def	profileMatchups(db, owner_number, sport, year1, year2):
 		worst_against = sport_pull[-1]
 		#print "worst against", worst_against
 
-		insert_json["season"] = sport.capitalize() + " " + year
+		insert_json["season"] = sport.capitalize() + "-" + year
 		insert_json["best_owner"] = best_against["opposing_owner"]
 		insert_json["best_win_per"] = best_against["win_per"]
 		insert_json["best_pt_diff"] = "N/A"
@@ -106,7 +106,7 @@ def	profileMatchups(db, owner_number, sport, year1, year2):
 		worst_against = sport_pull[-1]
 		#print "worst against", worst_against
 
-		insert_json["season"] = sport.capitalize() + " " + year
+		insert_json["season"] = sport.capitalize() + "-" + year
 		insert_json["best_owner"] = best_against["opposing_owner"]
 		insert_json["best_win_per"] = best_against["win_per"]
 		insert_json["best_pt_diff"] = "N/A"
