@@ -189,34 +189,18 @@ module.exports = function(req, res, db, year, playoffs) {
 
 						var playoff_scrape = require('./playoffs_router_template.js')(req, res, db, sport, year, function(err, call) {
 							
-							// see if trifecta database is complete (10 documents)
-							db.collection('football_trifecta_' + year).count({}, function(err, num) {
+							// run python script to initialize trifecta database
+							pyshell.run('football_playoffs.py', options, function(err) {
+								if (err) throw err;
+								console.log('Playoff python script complete');
 
-								// if complete, pull trifeta database and sort by total trifecta points
-								if (num === 10) {
-										db.collection('football_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-											//console.log(docs);
-											console.log("Displaying playoff data...");
-											disp_trifecta_standings = docs;
-											complete();
-										});	// end of trifecta standings pull		
-								}
-								// if need to scrape
-								else {
-									// if database not complete, run python script to initialize trifecta database
-									pyshell.run('football_playoffs.py', options, function(err) {
-										if (err) throw err;
-										console.log('Playoff python script complete');
-
-										db.collection('football_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-											//console.log(docs);
-											console.log("Displaying playoff data...");
-											disp_trifecta_standings = docs;
-											complete();
-										});	// end of trifecta standings pull
-									}) // end of pyshell
-								}
-							}) // end of count number of documents in trifecta standings
+								db.collection('football_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
+									//console.log(docs);
+									console.log("Displaying playoff data...");
+									disp_trifecta_standings = docs;
+									complete();
+								});	// end of trifecta standings pull
+							}) // end of pyshell
 						}); // end of playoff scrape
 					}; // end of if playoffs 
 

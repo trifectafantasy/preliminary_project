@@ -273,37 +273,22 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 			};
 
 			var playoff_scrape = require('./playoffs_router_template.js')(req, res, db, sport, year, function(err, call) {
-				
-				// see if trifecta database is complete (10 documents)
-				db.collection('basketball_trifecta_' + year).count({}, function(err, num) {
 
-					// if complete, pull trifeta database and sort by total trifecta points
-					if (num === 10) {
-							db.collection('basketball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-								//console.log(docs);
-								console.log("Displaying playoff data...");
-								disp_trifecta_standings = docs;
-								complete();
-							});				
-					}
-					else {
-						// if database not complete, fun python script to initialize trifecta database
-						pyshell.run('basketball_playoffs.py', options, function(err) {
-							if (err) throw err;
-							console.log('Playoff python script complete');
+				// run python script to initialize trifecta database
+				pyshell.run('basketball_playoffs.py', options, function(err) {
+					if (err) throw err;
+					console.log('Playoff python script complete');
 
-							db.collection('basketball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-								//console.log(docs);
-								console.log("Displaying playoff data...");
-								disp_trifecta_standings = docs;
-								complete();
-							});				
-						})
-					}
-				})							
+					db.collection('basketball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
+						//console.log(docs);
+						console.log("Displaying playoff data...");
+						disp_trifecta_standings = docs;
+						complete();
+					});				
+				})
 			})
 
-		}
+		} // end of if playoffs are true 
 
 		// function that checks if both finds from mongodb are complete (ie display variables are not empty)
 		var complete = function() {
