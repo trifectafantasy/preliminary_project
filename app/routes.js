@@ -33,39 +33,39 @@ MongoClient.connect("mongodb://localhost:27017/espn", function(err, database) {
 
 
 // set years of current trifecta season to test against
-var current_year1 = 2016;
-var current_year2 = 2017;
+var current_year1 = 2017;
+var current_year2 = 2018;
 
 // year of most recent totally completed (in the past) season
 var completed_football_season = 2016;
 var completed_basketball_season = 2017;
-var completed_baseball_season = 2016;
+var completed_baseball_season = 2017;
 
 // football status variables
 var this_football_season_started = true;
-var this_football_completed_season = true;
+var this_football_completed_season = false;
 // full regular season = 13 matchups
-var football_completed_matchups = 13;
+var football_completed_matchups = 3;
 
 // basktball status variables
-var this_basketball_season_started = true;
+var this_basketball_season_started = false;
 //set to false if want to stop scraping roto standings after regular season has ended
 var this_basketball_in_season = false;
-var this_basketball_completed_season = true;
+var this_basketball_completed_season = false;
 // full regular season = 18 matchups
-var basketball_completed_matchups = 18;	
+var basketball_completed_matchups = 0;	
 
 // baseball status variables
-var this_baseball_season_started = true;
+var this_baseball_season_started = false;
 //set to false if want to stop scraping roto standings after regular season has ended
 var this_baseball_in_season = false;
 var this_baseball_completed_season = false;
 // full regular season = 22 matchups
-var baseball_completed_matchups = 22;
+var baseball_completed_matchups = 0;
 
 
 // exception built in for when Football in new Trifecta season starts during Baseball in previous Trifecta season
-var football_ahead = true;
+var football_ahead = false;
 var football_ahead_current_year = 2017;
 var football_ahead_completed_matchups = 3;
 

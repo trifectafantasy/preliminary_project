@@ -4,6 +4,7 @@ import subprocess
 import time
 import sys
 from collections import OrderedDict
+import math
 
 ##### DEFINE FUNCTIONS #####
 
@@ -55,7 +56,12 @@ def originCalculation(db, sport, year, owner_number):
 			PTS = 0.0
 			continue
 
-		PTS = each_player["PTS"]
+		if math.isnan(each_player["PTS"]):
+			PTS = 0.0
+		else:
+			PTS = each_player["PTS"]
+	
+		print player, PTS
 
 		# depending on method of acquisition, add to that method total
 		if acquired == "Draft":
@@ -67,6 +73,7 @@ def originCalculation(db, sport, year, owner_number):
 
 		# add to total total
 		total_points += PTS
+		print total_points
 
 	# calculate percentages for eaech method of acquisition
 	draft_pct = draft_points / total_points * 100
