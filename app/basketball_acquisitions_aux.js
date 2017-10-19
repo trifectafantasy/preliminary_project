@@ -19,7 +19,7 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 	db.collection('owner' + owner_number).find({}, {"teams": 1, "_id": 0}).toArray(function(e, docs) {
 
 		team_list = docs[0]["teams"]
-		console.log(team_list);
+		//console.log(team_list);
 
 		// pull draft collection
 		db.collection(sport + "_draft_" + year).find({}).toArray(function(e, docs2) {
@@ -57,7 +57,7 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 		if (x < team_pull.length) {
 			//console.log(team_pull);
 			player = team_pull[x]["player"]
-			console.log(player);
+			//console.log(player);
 
 			db.collection(sport + "_pr_" + year).find({"player": player}, {"PR": 1, "_id": 0}).toArray(function(e, docs1) {
 
