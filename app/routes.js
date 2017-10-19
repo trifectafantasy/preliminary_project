@@ -45,15 +45,15 @@ var completed_baseball_season = 2017;
 var this_football_season_started = true;
 var this_football_completed_season = false;
 // full regular season = 13 matchups
-var football_completed_matchups = 3;
+var football_completed_matchups = 6;
 
 // basktball status variables
-var this_basketball_season_started = false;
+var this_basketball_season_started = true;
 //set to false if want to stop scraping roto standings after regular season has ended
-var this_basketball_in_season = false;
+var this_basketball_in_season = true;
 var this_basketball_completed_season = false;
 // full regular season = 18 matchups
-var basketball_completed_matchups = 0;	
+var basketball_completed_matchups = 0;
 
 // baseball status variables
 var this_baseball_season_started = false;
