@@ -88,12 +88,12 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 		// count number of documents to know when to stop 
 		db.collection(sport + "_draft_" + year).count({}, function(err, num1){
 			
-			basketball_draft_picks = num1;
+			baseball_draft_picks = num1;
 			number_of_owners = 10;
 			finish_one += 1
 
 			// if number of draft picks per team
-			if (finish_one == (basketball_draft_picks / number_of_owners)) {
+			if (finish_one == Math.ceil(baseball_draft_picks / number_of_owners)) {
 
 				// pull all players per team to add PR to them
 			 	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).find({}, {"player": 1, "_id": 0}).toArray(function(e, docs) {

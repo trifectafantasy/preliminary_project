@@ -13,14 +13,13 @@ var assert = require('assert');
 module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
 	var finish_one = 0;
-
 	var basketball_pr_picks, basketball_draft_picks, number_of_owners
 
 	// pull team names from specific owner
 	db.collection('owner' + owner_number).find({}, {"teams": 1, "_id": 0}).toArray(function(e, docs) {
 
 		team_list = docs[0]["teams"]
-		//console.log(team_list);
+		console.log(team_list);
 
 		// pull draft collection
 		db.collection(sport + "_draft_" + year).find({}).toArray(function(e, docs2) {
@@ -32,10 +31,11 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 			draft_pull.forEach(function(draft_pick, index) {
 
 				team = draft_pick["team"]
-				//console.log(team)
+				//console.log(team);
 
 				// if the drafted players' team is correct
-				if (team_list.includes(team)) {
+				if (team_list.indexOf(team) != -1) {
+				//if (team_list.includes(team)) {
 
 					player = draft_pick["player"]
 					draft_position = draft_pick["draft_position"]
@@ -57,7 +57,7 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 		if (x < team_pull.length) {
 			//console.log(team_pull);
 			player = team_pull[x]["player"]
-			//console.log(player);
+			console.log(player);
 
 			db.collection(sport + "_pr_" + year).find({"player": player}, {"PR": 1, "_id": 0}).toArray(function(e, docs1) {
 
@@ -91,9 +91,11 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 			basketball_draft_picks = num1;
 			number_of_owners = 10;
 			finish_one += 1
+			//console.log(finish_one);
+			//console.log(basketball_draft_picks);
 
 			// if number of draft picks per team
-			if (finish_one == (basketball_draft_picks / number_of_owners)) {
+			if (finish_one == Math.ceil(basketball_draft_picks / number_of_owners)) {
 
 				// pull all players per team to add PR to them
 			 	db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).find({}, {"player": 1, "_id": 0}).toArray(function(e, docs) {
