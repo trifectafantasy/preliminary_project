@@ -44,7 +44,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 
 				# pull total trifecta points per team
 				football_list = list(db[collection_football_trifecta].find({}, {"team": 1, "total_trifecta_points": 1, "_id": 0}))
-				
+
 				# loop through each team pull
 				for football_info in football_list:
 					football_team = football_info["team"]

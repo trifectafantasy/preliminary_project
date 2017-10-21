@@ -13,7 +13,7 @@ var assert = require('assert');
 module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
 	var finish_one = 0;
-	var basketball_draft_picks, number_of_owners
+	var individual_draft_picks = 0;
 
 	// pull team names from specific owner
 	db.collection('owner' + owner_number).find({}, {"teams": 1, "_id": 0}).toArray(function(e, docs) {
@@ -27,6 +27,13 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 			draft_pull = docs2;
 			//console.log(draft_pull)
 
+			for (i = 0; i < draft_pull.length; i++) {
+				if (team_list.indexOf(draft_pull[i]["team"]) != -1) {
+					individual_draft_picks += 1
+				}
+			}
+			//console.log("individual_draft_picks", individual_draft_picks);
+
 			// loop through each draft pick
 			draft_pull.forEach(function(draft_pick, index) {
 
@@ -35,7 +42,6 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
 				// if the drafted players' team is correct
 				if (team_list.indexOf(team) != -1) {
-				//if (team_list.includes(team)) {
 
 					player = draft_pick["player"]
 					draft_position = draft_pick["draft_position"]
@@ -44,7 +50,7 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 
 					// if drafted update with draft and draft position
 		 			db.collection("owner" + owner_number + "_" + sport + "_acquisitions_" + year).update({"player": player}, {"$set": {"acquired": "Draft", "draft_position": draft_position}}, {upsert: true})
-		 			one_done();
+		 			one_done(individual_draft_picks);
 				}
 			}) // end of iteration through all draft selection
 		}) // end of draft add
@@ -57,12 +63,11 @@ module.exports = function(req, res, db, sport, year, owner_number, callback) {
 		// count number of documents to know when to stop 
 		db.collection(sport + "_draft_" + year).count({}, function(err, num1){
 			
-			basketball_draft_picks = num1;
-			number_of_owners = 10;
 			finish_one += 1
+			//console.log(finish_one);
 
 			// if number of draft picks per team
-			if (finish_one == (basketball_draft_picks / number_of_owners)) {
+			if (finish_one == individual_draft_picks) {
 
 				callback();
 			} // end of if
