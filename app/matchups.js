@@ -30,68 +30,73 @@ var complete = function() {
 	complete_count += 1;
 
 	// once all in season sports have been pulled
-	console.log("sports in season: ", sports_in_season_number)
+	console.log("sports in season: ", sports_in_season_number);
 	if (complete_count == sports_in_season_number) {
 		console.log("ready to display");
 
 		// if baseball (and therefore all sports) is in season
 		if (baseball_in_season == true) {
+			setTimeout(function () {
+				// pull from mongodb and display new data after python script finishes, but wait 2 seconds to let mongodb finish
+				db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
+					//console.log(docs);
+					//console.log("Displaying football matchup data...")
+					disp_football_matchups = docs;
+					// call display to see if all finds are done
+					display();
+				});
 
-			// pull from mongodb and display new data after python script finishes
-			db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
-				//console.log(docs);
-				//console.log("Displaying football matchup data...")
-				disp_football_matchups = docs;
-				// call display to see if all finds are done
-				display();
-			});
+				db.collection("owner" + owner_number + "_basketball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
+					//console.log(docs);
+					//console.log("Displaying basketball matchup data...")
+					disp_basketball_matchups = docs;
+					// call display to see if all finds are done
+					display();
+				});
 
-			db.collection("owner" + owner_number + "_basketball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
-				//console.log(docs);
-				//console.log("Displaying basketball matchup data...")
-				disp_basketball_matchups = docs;
-				// call display to see if all finds are done
-				display();
-			});
-
-			db.collection("owner" + owner_number + "_baseball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
-				//console.log(docs);
-				//console.log("Displaying baseball matchup data...")
-				disp_baseball_matchups = docs;
-				// call display to see if all finds are done
-				display();
-			});			
+				db.collection("owner" + owner_number + "_baseball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
+					//console.log(docs);
+					//console.log("Displaying baseball matchup data...")
+					disp_baseball_matchups = docs;
+					// call display to see if all finds are done
+					display();
+				});	
+			})
 		}
 
 		// if basketball (and therefore football) is in season
 		else if (basketball_in_season == true) {
-			// pull from mongodb and display new data after python script finishes
-			db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
-				//console.log(docs);
-				//console.log("Displaying football matchup data...")
-				disp_football_matchups = docs;
-				// call display to see if all finds are done
-				display();
-			});
+			setTimeout(function() {
+				// pull from mongodb and display new data after python script finishes, but wait 2 seconds to let mongodb finish
+				db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
+					//console.log(docs);
+					//console.log("Displaying football matchup data...")
+					disp_football_matchups = docs;
+					// call display to see if all finds are done
+					display();
+				});
 
-			db.collection("owner" + owner_number + "_basketball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
-				//console.log(docs);
-				//console.log("Displaying basketball matchup data...")
-				disp_basketball_matchups = docs;
-				// call display to see if all finds are done
-				display();
-			});
+				db.collection("owner" + owner_number + "_basketball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
+					//console.log(docs);
+					//console.log("Displaying basketball matchup data...")
+					disp_basketball_matchups = docs;
+					// call display to see if all finds are done
+					display();
+				});
+			}, 2000);
 		}
 
 		else {
-			// pull from mongodb and display new data after python script finishes
-			db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
-				//console.log(docs);
-				//console.log("Displaying football matchup data...")
-				disp_football_matchups = docs;
-				// call display to see if all finds are done
-				display();
-			});
+			setTimeout(function() {
+				// pull from mongodb and display new data after python script finishes, but wait 2 seconds to let mongodb finish
+				db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
+					//console.log(docs);
+					//console.log("Displaying football matchup data...")
+					disp_football_matchups = docs;
+					// call display to see if all finds are done
+					display();
+				});				
+			}, 2000);
 		}
 
 	} // end of if all in season sports are ready
@@ -295,6 +300,7 @@ var display = function() {
 				var football_team1, football_score1, football_team2, football_score2, football_opposing_owner, football_my_team, football_opposing_team
 				var football_wins, football_losses, football_ties, PF, PA, pt_diff
 				//var football_matchup_number = 1
+				//console.log(football_completed_matchups);
 
 				// loop through however many completed football matchups there are (weeks/matchups in regular season)
 				for (football_matchup_number = 1; football_matchup_number < football_completed_matchups + 1; football_matchup_number++) {
@@ -337,13 +343,17 @@ var display = function() {
 								//console.log(football_score2.text());
 
 								// if team1 is in list of teams of the owner
-								if (owner_team_list.includes(football_team1) == true) {
+								if (owner_team_list.indexOf(football_team1) != -1) {
 
 									// set team names
 									football_my_team = football_team1;
 									football_opposing_team = football_team2;
+
+									while (football_opposing_team.indexOf(".") != -1) {
+										football_opposing_team = football_opposing_team.replace(".", "\\uff0E");
+									}
 									//console.log(football_my_team);
-									//console.log(football_pposing_team);
+									//console.log(football_opposing_team);
 
 									// set points for and against
 									PF = parseFloat(football_score1.text()).toFixed(1);
@@ -355,13 +365,17 @@ var display = function() {
 								}
 
 								// if team2 is in list of teams of the owner
-								else if (owner_team_list.includes(football_team2) == true) {
-									football_my_team = football_team2;
-
+								else if (owner_team_list.indexOf(football_team2) != -1) {
+									
 									//set team names
+									football_my_team = football_team2;
 									football_opposing_team = football_team1;
+
+									while (football_opposing_team.indexOf(".") != -1) {
+										football_opposing_team = football_opposing_team.replace(".", "\\uff0E");
+									}
 									//console.log(football_my_team);
-									//console.log(football_opposing_team);		
+									//console.log(football_opposing_team);	
 
 									// set points for and against
 									PF = parseFloat(football_score2.text()).toFixed(1);
@@ -403,7 +417,8 @@ var display = function() {
 
 	// if football is not in season (not started yet), so just skip, do nothing
 	else {
-		console.log("football not in season")
+		console.log("football not in season");
+		complete();
 	}
 
 // define football complete function which after scraping calls python script to add matchup data
@@ -494,11 +509,15 @@ var football_complete = function() {
 								//console.log(basketball_record2.text());
 
 								// if team1 is in list of owner's teams
-								if (owner_team_list.includes(basketball_team1.text()) == true) {
+								if (owner_team_list.indexOf(basketball_team1.text()) != -1) {
 
 									// set team names
 									basketball_my_team = basketball_team1.text();
 									basketball_opposing_team = basketball_team2.text();
+
+									while (basketball_opposing_team.indexOf(".") != -1) {
+										basketball_opposing_team = football_opposing_team.replace(".", "\\uff0E");
+									}									
 									//console.log(basketball_my_team);
 									//console.log(basketball_opposing_team);
 
@@ -513,11 +532,15 @@ var football_complete = function() {
 								}
 
 								// if team2 is in list of owner's teams
-								else if (owner_team_list.includes(basketball_team2.text()) == true) {
+								else if (owner_team_list.indexOf(basketball_team1.text()) != -1) {
 
 									// set team names
 									basketball_my_team = basketball_team2.text();
 									basketball_opposing_team = basketball_team1.text();
+
+									while (basketball_opposing_team.indexOf(".") != -1) {
+										basketball_opposing_team = football_opposing_team.replace(".", "\\uff0E");
+									}									
 									//console.log(basketball_my_team);
 									//console.log(opposing_team);		
 
@@ -561,7 +584,8 @@ var football_complete = function() {
 
 	// if not in season, skip
 	else {
-		console.log("basketball not in season")
+		console.log("basketball not in season");
+		complete();
 	}
 
 // define function that once all matchups are complete, uses python script for processing
@@ -653,14 +677,15 @@ var basketball_complete = function() {
 
 								// if team1 is in owner team names list
 								if (owner_team_list.indexOf(baseball_team1.text()) != -1) {
+
 									// set team names
 									baseball_my_team = baseball_team1.text();
 									baseball_opposing_team = baseball_team2.text();
+
+									while (baseball_opposing_team.indexOf(".") != -1) {
+										baseball_opposing_team = football_opposing_team.replace(".", "\\uff0E");
+									}									
 									//console.log(baseball_my_team);
-									//console.log(baseball_opposing_team);
-									if (baseball_opposing_team.indexOf(".") != -1) {
-										baseball_opposing_team.replace(".", "\\uff0E");
-									}
 									//console.log(baseball_opposing_team);
 
 									// set and save record
@@ -675,14 +700,15 @@ var basketball_complete = function() {
 
 								// if team2 is in owner team names list
 								else if (owner_team_list.indexOf(baseball_team2.text()) != -1) {
+
 									// set team names
 									baseball_my_team = baseball_team2.text();
 									baseball_opposing_team = baseball_team1.text();
+
+									while (baseball_opposing_team.indexOf(".") != -1) {
+										baseball_opposing_team = football_opposing_team.replace(".", "\\uff0E");
+									}									
 									//console.log(baseball_my_team);
-									//console.log(baseball_opposing_team);
-									if (baseball_opposing_team.indexOf(".") != -1) {
-										baseball_opposing_team.replace(".", "\\uff0E");
-									}											
 									//console.log(baseball_opposing_team);
 
 									// set and save record
@@ -726,6 +752,7 @@ var basketball_complete = function() {
 	// if not in season, skip
 	else {
 		console.log("baseball not in season");
+		complete();
 	}
 
 // define baseball_complete function
