@@ -92,7 +92,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 						#print period_index
 						path = path[:period_index] + "\uff0E" + path[period_index + 1:]
 						football_team = football_team[:period_index - 6] + "\uff0E" + football_team[period_index + 1 - 6:]
-						#print football_team						
+						#print football_team	
 
 					owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
 					#print owner_check
@@ -134,7 +134,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 
 					path = "teams." + basketball_team
 					# print path
-					if path.find(".", 6) != -1:
+					while path.find(".", 6) != -1:
 						period_index = path.find(".", 6)
 						#print period_index
 						path = path[:period_index] + "\uff0E" + path[period_index + 1:]
@@ -166,6 +166,13 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 
 					path = "teams." + basketball_team
 					#print path
+					while path.find(".", 6) != -1:
+					#if path.find(".", 6) != -1:
+						period_index = path.find(".", 6)
+						#print period_index
+						path = path[:period_index] + "\uff0E" + path[period_index + 1:]
+						basketball_team = basketball_team[:period_index - 6] + "\uff0E" + football_team[period_index + 1 - 6:]
+						#print football_team					
 
 					owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
 					#print owner_check
