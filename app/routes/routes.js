@@ -43,6 +43,7 @@ var completed_baseball_season = 2017;
 
 // football status variables
 var this_football_season_started = true;
+var this_football_playoffs = false;
 var this_football_completed_season = false;
 // full regular season = 13 matchups
 var football_completed_matchups = 6;
@@ -51,6 +52,7 @@ var football_completed_matchups = 6;
 var this_basketball_season_started = true;
 //set to false if want to stop scraping roto standings after regular season has ended
 var this_basketball_in_season = true;
+var this_basketball_playoffs = false;
 var this_basketball_completed_season = false;
 // full regular season = 18 matchups
 var basketball_completed_matchups = 0;
@@ -59,6 +61,7 @@ var basketball_completed_matchups = 0;
 var this_baseball_season_started = false;
 //set to false if want to stop scraping roto standings after regular season has ended
 var this_baseball_in_season = false;
+var this_baseball_playoffs = false;
 var this_baseball_completed_season = false;
 // full regular season = 22 matchups
 var baseball_completed_matchups = 0;
@@ -144,603 +147,94 @@ router.get('/profile_home_page', function(req, res) {
 
 // route to individual owner profiles
 router.get('/owner/:owner_number/profile/recap', function(req, res) {
-	var owner_number = req.params.owner_number;
 
-	// define years in scope
-	var start_year = 2015;
-	var end_year = current_year2;
+	var input = {
+		owner_number: req.params.owner_number,
+		start_year: 2015,
+		end_year: current_year2,
+		this_football_completed_season: this_football_completed_season,
+		this_basketball_completed_season: this_basketball_completed_season,
+		this_baseball_completed_season: this_baseball_completed_season
+	};
 
-	// per this trifecta season, if true, season complete and can pull finished season stats, if false, skip
-
-	var disp_profile_standings = null;
-	var disp_profile_matchups = null;
-	var disp_profile_players = null;
-
-	// pull owner name
-	db.collection('owner' + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs) {
-		owner_name = docs[0]["owner"]
-		//console.log(owner_name);
-
-		var options = {
-			args: [owner_number, start_year, end_year, this_football_completed_season, this_basketball_completed_season, this_baseball_completed_season]
-		}
-
-		// python script that calculates each owner's record that season
-		pyshell.run('profile_standings.py', options, function(err) {
-			console.log("profile standings python script done");
-
-			// pull for display
-			db.collection("owner" + owner_number + "_profile_standings").find({}, {"_id": 0}).toArray(function(e, docs2) {
-				//console.log(docs2);
-				disp_profile_standings = docs2;
-				complete();
-			}) // end of pull for display
-		}) // end of pyshell
-
-		// python script that pulls each owner's best and worst matchups records 
-		pyshell.run('profile_matchups.py', options, function(err) {
-			console.log('profile matchups python script done');
-
-			// pull for display
-			db.collection("owner" + owner_number + "_profile_matchups").find({}, {"_id": 0}).toArray(function(e, docs3) {
-				disp_profile_matchups = docs3;
-				complete();
-			}) // end of pull for display
-		}) // end of pyshell
-
-		// python script that pulls each owner's best and worst players from season
-		pyshell.run('profile_players.py', options, function(err) {
-			console.log('profile players python script done');
-
-			// pull for display
-			db.collection('owner' + owner_number + "_profile_players").find({}, {"_id": 0}).toArray(function(e, docs4) {
-				disp_profile_players = docs4;
-				complete();
-			}) // end of pull for display
-		}) // ned of pyshell
-	}) // end of pull owner name
-
-// complete function that displays tables
-var complete = function() {
-
-	// wait for all 3 sets of data to be pulled
-	if ((disp_profile_matchups != null && disp_profile_standings != null) && disp_profile_players != null) {
-		console.log("displaying profile stats...");
-		res.render('profile_recap', {
-			owner: owner_name,
-			profile_standings: disp_profile_standings,
-			matchup_standings: disp_profile_matchups,
-			players_standings: disp_profile_players
-		})
-	} // end of if
-} // end of complete function
+	let profile_route = require('./profile.js').profile_recap;
+	const send = profile_route(req, res, db, input);
 
 }); // end of profile season reacap
 
 // route to each owner's trophy case
 router.get('/owner/:owner_number/profile/trophy', function(req, res) {
-	var owner_number = req.params.owner_number;
 
-	// pull owner name
-	db.collection("owner" + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs) {
-		owner_name = docs[0]["owner"];
+	var input = {
+		owner_number: req.params.owner_number
+	};
 
-		// pull owner's trophy case
-		db.collection("owner" + owner_number + "_trophies").find({}, {"date": 0, "_id": 0}).sort({"date": 1}).toArray(function(e, docs2) {
-			disp_trophies = docs2;
-			console.log("displaying trophy case...")
+	let profile_trophy = require('./profile.js').trophy_case;
+	const send = profile_trophy(req, res, db, input);
 
-			res.render('trophy_case', {
-				owner: owner_name,
-				trophies: disp_trophies
-			}) // end of render
-		}) // end of trophy case pull
-	}) // end of owner name pull
 }) // end of route to trophy case
 
 
-// route to home page for each trifecta season's standings (individual sports and trifefcta)
-router.get('/standings_home_page/:year1/:year2', function(req, res) {
-
-	var year1 = req.params.year1;
-	var year2 = req.params.year2;
-	var year_diff = year2 - year1;
-
-	// handle error case of non consecutive years
-	if (year_diff != 1) {
-		res.send("Please enter two consecutive years")
-	}
-	else {
-		if (year1 < current_year1 && year2 < current_year2) {
-			this_football_season_started = true;
-			this_basketball_season_started = true;
-			this_baseball_season_started = true;
-			res.render('full_season_standings_home_page', {
-				year1: year1,
-				year2: year2,
-				football_season_started: this_football_season_started,
-				basketball_season_started: this_basketball_season_started,
-				baseball_season_started: this_baseball_season_started
-			})	// end of res render			
-		}
-
-		else if (year1 > current_year1 || year2 > current_year2) {
-			if (football_ahead == false) {
-				res.send("Enter years " + current_year1 + " & " + current_year2 + " or less")
-			}
-			else {
-				this_football_season_started = true;
-				this_basketball_season_started = false;
-				this_baseball_season_started = false;
-				res.render('full_season_standings_home_page', {
-					year1: year1,
-					year2: year2,
-					football_season_started: this_football_season_started,
-					basketball_season_started: this_basketball_season_started,
-					baseball_season_started: this_baseball_season_started
-				}) // end of res render
-			}
-		}
-
-		else {
-			res.render('full_season_standings_home_page', {
-				year1: year1,
-				year2: year2,
-				football_season_started: this_football_season_started,
-				basketball_season_started: this_basketball_season_started,
-				baseball_season_started: this_baseball_season_started
-			})	// end of res render
-		}
-	}
-
-}) // end of route to home page for each season's individual sports and trifecta standings
-
 // route to trifecta standings
 router.get('/trifecta_standings/:year1/:year2', function(req, res) {
-	
-	// set variables from request URL
-	var year1 = req.params.year1;
-	var year2 = req.params.year2;
-	var year_diff = year2 - year1;
 
-	// initialize display variable
-	var disp_trifecta_standings = null;
+	var input = {
+		year1: req.params.year1,
+		year2: req.params.year2,
+		current_year1: current_year1,
+		current_year2: current_year2,
+		football_season_started: this_football_season_started,
+		basketball_season_started: this_basketball_season_started,
+		baseball_season_started: this_baseball_season_started
+	};
 
-	// handle error case of non consecutive years
-	if (year_diff != 1) {
-		res.send("Please enter two consecutive years")
-	}
-
-	// if pass first error handle
-	else {
-		// if the given years are the current ones, set appropriate parameters
-		if (year1 == current_year1 && year2 == current_year2) {
-
-			// set input arguments for python script
-			var options = {
-				args: [year1, year2, this_football_season_started, this_basketball_season_started, this_baseball_season_started]
-			}
-
-			var disp_trifecta_standings = null;
-
-			// always run trifecta standings python script
-			pyshell.run('trifecta_standings.py', options, function(err) {
-				if (err) throw err;
-				console.log("Trifecta standings python script complete");
-				
-				// pull from this seasons trifecta collection
-				db.collection('trifecta_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs){
-					//console.log(docs);
-					console.log("Displaying trifecta season standings...");
-					disp_trifecta_standings = docs;
-
-					// render to standings_playoffs
-					res.render('trifecta_season', {
-						year1: year1,
-						year2: year2,
-						trifecta_standings: disp_trifecta_standings,
-					});
-				});
-			});			
-		}
-
-		// if the years given are in the past, set everything as finished (true, max, true)
-		else if (year1 < current_year1 && year2 < current_year2) {
-			
-			// pull from  trifecta season collection and sort by total trifecta points
-			db.collection('trifecta_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-				//console.log(docs);
-				console.log("Displaying trifecta season data...")
-				disp_trifecta_standings = docs;
-				// render to trifecta_season.pug
-				res.render('trifecta_season', {
-					year1: year1,
-					year2: year2,
-					trifecta_standings: disp_trifecta_standings
-				})
-			})
-		}
-
-		else {
-			// handle error case if years are greater than current
-			if (football_ahead == false) {
-				var disp_err = "Please enter years " + current_year1 + " & " + current_year2 + " or less";
-				res.send(disp_err);
-			}
-			// handle case when football starts in next trifecta season during baseball in previous trifecta season
-			else {
-				this_football_season_started = true;
-				this_basketball_season_started = false;
-				this_baseball_season_started = false;
-
-				// set input arguments for python script
-				var options = {
-					args: [year1, year2, this_football_season_started, this_basketball_season_started, this_baseball_season_started]
-				}
-
-				var disp_trifecta_standings = null;
-
-				// always run trifecta standings python script
-				pyshell.run('trifecta_standings.py', options, function(err) {
-					if (err) throw err;
-					console.log("Trifecta standings python script complete");
-					
-					// pull from this seasons trifecta collection
-					db.collection('trifecta_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs){
-						//console.log(docs);
-						console.log("Displaying trifecta season standings...");
-						disp_trifecta_standings = docs;
-
-						// render to standings_playoffs
-						res.render('trifecta_season', {
-							year1: year1,
-							year2: year2,
-							trifecta_standings: disp_trifecta_standings,
-						});
-					});
-				});
-			}
-	
-		}
-	} // end of first error handling	
+	let trifecta_standings = require('./standings.js').trifecta_standings;
+	const send = trifecta_standings(req, res, db, input);
 
 }); // end of trifecta_standings route
 
 // route to /football_standings
 router.get('/football_standings/:year', function(req, res) {
 
-	// set parameters for requested season
-	var year = req.params.year;
+	var input = {
+		year: req.params.year,
+		playoffs: this_football_playoffs,
+		completed_football_season: completed_football_season
+	};
 
-	// set playoffs parameter if football season is ahead
-	if (football_ahead == true) {
-		var playoffs = false;
-	}
-	else {
-		var playoffs = this_football_completed_season;
-	}
-
-	// initialize display database queries
-	var disp_h2h_standings = null;
-	var disp_trifecta_standings = null;	
-
-	// if requested season is already completed
-	if (year <= completed_football_season) {
-
-		// if season is in past, playoffs are always true
-		playoffs = true;
-
-		// pull from mongodb and display new data after python script finishes
-		db.collection('football_h2h_' + year).find({}, {"_id": 0}).sort({"trifecta_points": -1}).toArray(function(e, docs) {
-			//console.log(docs);
-			console.log("Displaying h2h data...")
-			disp_h2h_standings = docs;
-			// call complete to see if both finds are done
-			complete();
-		});
-
-		// if playoffs are finished, 
-		if (playoffs === true) {
-			// set year as input argument for python script
-			var options = {
-				args: [year]
-			};
-
-			// async function to count number of documents in football trifecta database
-			db.collection('football_trifecta_' + year).count({}, function(err, num){
-
-				// if trifecta database is filled (already 10 documents)
-				if (num === 10) {
-
-					// pull down trifecta standings in order of total trifecta points
-					db.collection('football_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-						//console.log(docs);
-						console.log("Displaying playoff data...");
-						disp_trifecta_standings = docs;
-						complete();
-					});				
-				}
-				else {
-					// if trifecta database is not filled, run python script that adds playoff points to regular season points and creates trifecta database
-					pyshell.run('football_playoffs.py', options, function(err) {
-
-						if (err) throw err;
-						console.log('Playoff python script complete');
-
-						db.collection('football_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-							//console.log(docs);
-							console.log("Displaying playoff data...");
-							disp_trifecta_standings = docs;
-							complete();
-						});				
-					})
-				}
-			})
-		}
-
-		// function that checks if both finds from mongodb are complete (ie display variables are not empty)
-		var complete = function() {
-
-			if (playoffs === true) {
-				if (disp_h2h_standings !== null && disp_trifecta_standings !== null) {
-
-					// render to standings_playoffs
-					res.render('football_standings', {
-						h2h_standings: disp_h2h_standings,
-						trifecta_standings: disp_trifecta_standings,
-						year: year,
-						playoffs: playoffs
-					});
-				}			
-			}
-			else {
-				if (disp_h2h_standings !== null) {
-
-					// render to standings
-					res.render('football_standings', {
-						h2h_standings: disp_h2h_standings,
-						year: year,
-						playoffs: playoffs
-					});
-				}			
-			}
-		}		
-	} // end of if <= 2016 (aka, don't need to srape anymore)
-
-	// if this current and in season, scrape
-	else {
-		var stand = require('./football_standings_router_template.js')(req, res, db, year, playoffs);
-	}
+	let football_standings = require('./standings.js').football_standings;
+	const send = football_standings(req, res, db, input);
 
 }); // end of .get('/football_standings')
 
 
 // route to /basketball_standings
 router.get('/basketball_standings/:year', function(req, res) {
+
+	var input = {
+		year: req.params.year,
+		playoffs: this_basketball_playoffs,
+		completed_basketball_season: completed_basketball_season
+	};
+
+	let basketball_standings = require('./standings.js').basketball_standings;
+	const send = basketball_standings(req, res, db, input);
 	
-	// set parameters for requested basketball season
-	var year = req.params.year;
-	var in_season = this_basketball_in_season;
-	var playoffs = this_basketball_completed_season;
-
-	// initialize display database queries
-	var disp_h2h_standings = null;
-	var disp_roto_standings = null;
-	var disp_trifecta_standings = null;
-
-	// if season is in the past, just display
-	if (year <= completed_basketball_season) {
-
-		// if season is in past, playoffs are always true
-		playoffs = true;
-
-		// pull from mongodb and display new data after python script finishes
-		db.collection('basketball_h2h_' + year).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
-			//console.log(docs);
-			console.log("Displaying h2h data...")
-			disp_h2h_standings = docs;
-			// call complete to see if both finds are done
-			complete();
-		});
-
-		db.collection('basketball_roto_' + year).find({}, {"_id": 0}).sort({"roto_trifecta_points": -1}).toArray(function(e, docs) {
-			//console.log(docs);
-			console.log("Displaying roto data...")
-			disp_roto_standings = docs;
-			// call complete to see if both finds are done
-			complete();
-		});
-
-		// if playoffs are completed
-		if (playoffs === true) {
-			// initialize year as argument for python script
-			var options = {
-				args: [year]
-			};
-
-			// see if trifecta database is complete (10 documents)
-			db.collection('basketball_trifecta_' + year).count({}, function(err, num) {
-
-				// if complete, pull trifeta database and sort by total trifecta points
-				if (num === 10) {
-						db.collection('basketball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-							//console.log(docs);
-							console.log("Displaying playoff data...");
-							disp_trifecta_standings = docs;
-							complete();
-						});				
-				}
-				else {
-					// if database not complete, fun python script to initialize trifecta database
-					pyshell.run('basketball_playoffs.py', options, function(err) {
-						if (err) throw err;
-						console.log('Playoff python script complete');
-
-						db.collection('basketball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-							//console.log(docs);
-							console.log("Displaying playoff data...");
-							disp_trifecta_standings = docs;
-							complete();
-						});				
-					})
-				}
-			})
-		};
-
-		// function that checks if both finds from mongodb are complete (ie display variables are not empty)
-		var complete = function() {
-
-			if (playoffs === true) {
-				if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_trifecta_standings !== null) {
-
-					// render to basketball_standings
-					res.render('basketball_standings', {
-						h2h_standings: disp_h2h_standings,
-						roto_standings: disp_roto_standings,
-						trifecta_standings: disp_trifecta_standings,
-						year: year,
-						playoffs: playoffs
-					});
-				}
-			}
-			else {
-				if (disp_h2h_standings !== null && disp_roto_standings !== null) {
-
-					// render to basketball_standings
-					res.render('basketball_standings', {
-						h2h_standings: disp_h2h_standings,
-						roto_standings: disp_roto_standings,
-						year: year,
-						playoffs: playoffs
-					});
-				}
-			}
-		} // end of complete function
-	}
-
-	else if (year > completed_basketball_season && this_basketball_season_started == false) {
-		res.send("I'm sorry. Basketball " + year + " is not in season yet.")
-	}
-
-	else {
-		var stand = require('./basketball_standings_router_template.js')(req, res, db, year, in_season, playoffs);
-	}	
-
 }); // end of .get('/basketball_standings')
 
 
 // route to /baseball_standings
 router.get('/baseball_standings/:year', function(req, res) {
+
+	var input = {
+		year: req.params.year,
+		playoffs: this_baseball_playoffs,
+		completed_baseball_season: completed_baseball_season
+	};
+
+	let baseball_standings = require('./standings.js').baseball_standings;
+	const send = baseball_standings(req, res, db, input);
 	
-	// set parameters for requested year
-	var year = req.params.year;
-	var in_season = this_baseball_in_season;
-	var playoffs = this_baseball_completed_season;
-
-	// initialize display database queries
-	var disp_h2h_standings = null;
-	var disp_roto_standings = null;
-	var disp_trifecta_standings = null;
-
-	// if this season is in the past, just display
-	if (year <= completed_baseball_season) {
-
-		// if season is in past, playoffs are always true
-		playoffs = true;		
-
-		// pull from mongodb and display new data after python script finishes
-		db.collection('baseball_h2h_' + year).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
-			//console.log(docs);
-			console.log("Displaying h2h data...")
-			disp_h2h_standings = docs;
-			// call complete to see if both finds are done
-			complete();
-		});
-
-		db.collection('baseball_roto_' + year).find({}, {"_id": 0}).sort({"roto_trifecta_points": -1}).toArray(function(e, docs) {
-			//console.log(docs);
-			console.log("Displaying roto data...")
-			disp_roto_standings = docs;
-			// call complete to see if both finds are done
-			complete();
-		});				
-
-		// if playoffs have been completed
-		if (playoffs === true) {
-			// set year as arguments for python script
-			var options = {
-				args: [year]
-			};
-
-			// count number in trifecta database
-			db.collection('baseball_trifecta_' + year).count({}, function(err, num) {
-
-				// if there are 10 documents in trifecta database, just read trifecta database and sort by total trifecta points
-				if (num === 10) {
-						db.collection('baseball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-							//console.log(docs);
-							console.log("Displaying playoff data...");
-							disp_trifecta_standings = docs;
-							complete();
-						});				
-				}
-				else {
-					// if no trifecta database, run python shell to set it
-					pyshell.run('baseball_playoffs.py', options, function(err) {
-						if (err) throw err;
-						console.log('Playoff python script complete');
-
-						db.collection('baseball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-							//console.log(docs);
-							console.log("Displaying playoff data...");
-							disp_trifecta_standings = docs;
-							complete();
-						});				
-					})
-				}
-			})
-		};
-
-		// function that checks if both finds from mongodb are complete (ie display variables are not empty)
-		var complete = function() {
-
-			if (playoffs === true) {
-				if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_trifecta_standings !== null) {
-
-					// render to baseball_standings
-					res.render('baseball_standings', {
-						h2h_standings: disp_h2h_standings,
-						roto_standings: disp_roto_standings,
-						trifecta_standings: disp_trifecta_standings,
-						year: year,
-						playoffs: playoffs
-					});
-				}			
-			}
-			else {
-				if (disp_h2h_standings !== null && disp_roto_standings !== null) {
-
-					// render to baseball_standings
-					res.render('baseball_standings', {
-						h2h_standings: disp_h2h_standings,
-						roto_standings: disp_roto_standings,
-						year: year,
-						playoffs: playoffs
-					});
-				}			
-			}
-		} // end of complete function
-	} 
-
-	else if (year > completed_baseball_season && this_baseball_season_started == false) {
-		res.send("I'm sorry. Baseball " + year + " is not in season yet.")
-	}	
-
-	// if this is the current season, scrape
-	else {
-		var stand = require('./baseball_standings_router_template.js')(req, res, db, year, in_season, playoffs);
-	}		
-		
 }) // end of .get('/baseball_standings')
 
 // route to home page for all individual owner matchup data

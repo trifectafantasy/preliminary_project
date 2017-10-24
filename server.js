@@ -8,7 +8,7 @@ app.set('view engine', 'pug');
 app.set('views', './views');
 
 // routes for our app
-var router = require('./app/routes.js');
+var router = require('./app/routes/routes.js');
 app.use('/', router);
 
 // set static files (css, images, etc)
