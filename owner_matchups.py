@@ -16,9 +16,21 @@ def matchupRecords(db, owner_number, year1, year2, football_in_season, basketbal
 
 	#  set football collection
 	collection_football = "owner" + owner_number + "_football_matchups_" + year1
+	collection_basketball = "owner" + owner_number + "_basketball_matchups_" + year2
+	collection_baseball = "owner" + owner_number + "_baseball_matchups_" + year2
 
 	# get list of all opposing owners
-	opposing_owners_list = list(db[collection_football].find({}, {"opposing_owner": 1, "_id": 0}))
+	football_opposing_owners_list = list(db[collection_football].find({}, {"opposing_owner": 1, "_id": 0}))
+	print football_opposing_owners_list
+	opposing_owners_list = football_opposing_owners_list
+
+	basketball_opposing_owners_list = list(db[collection_basketball].find({}, {"opposing_owner": 1, "_id": 0}))
+	print basketball_opposing_owners_list
+
+	for basketball_owners in basketball_opposing_owners_list:
+		if basketball_owners not in opposing_owners_list:
+			opposing_owners_list.append(basketball_owners)
+
 	print opposing_owners_list
 
 	# iterate through each opposing owner
@@ -41,14 +53,12 @@ def matchupRecords(db, owner_number, year1, year2, football_in_season, basketbal
 			print "football:", football_win_per
 
 			# pull individual baasketball matchup win_per
-			collection_basketball = "owner" + owner_number + "_basketball_matchups_" + year2
 			basketball_pull = list(db[collection_basketball].find({"opposing_owner": opposing_owner}, {"win_per": 1, "_id": 0}))
 			#print basketball_pull
 			basketball_win_per = basketball_pull[0]["win_per"]
 			print "basketball: ", basketball_win_per
 
 			# pull individual baseball matchup win_per
-			collection_baseball = "owner" + owner_number + "_baseball_matchups_" + year2
 			baseball_pull = list(db[collection_baseball].find({"opposing_owner": opposing_owner}, {"win_per": 1, "_id": 0}))
 			#print baseball_pull
 			try:
@@ -82,11 +92,13 @@ def matchupRecords(db, owner_number, year1, year2, football_in_season, basketbal
 			# pull individual football matchup win_per
 			football_pull = list(db[collection_football].find({"opposing_owner": opposing_owner}, {"win_per": 1, "_id": 0}))
 			#print football_pull
-			football_win_per = football_pull[0]["win_per"]
+			try:
+				football_win_per = football_pull[0]["win_per"]
+			except IndexError:
+				football_win_per = "N/A"
 			print "football:", football_win_per
 
 			# pull individual basketball matchup win_per
-			collection_basketball = "owner" + owner_number + "_basketball_matchups_" + year2
 			basketball_pull = list(db[collection_basketball].find({"opposing_owner": opposing_owner}, {"win_per": 1, "_id": 0}))
 			#print basketball_pull
 			try:
@@ -96,7 +108,10 @@ def matchupRecords(db, owner_number, year1, year2, football_in_season, basketbal
 			print "basketball: ", basketball_win_per
 
 			# calculate averaged total win_per
-			if basketball_win_per == "N/A":
+			if football_win_per == "N/A":
+				total_win_per = basketball_win_per
+				total_win_per = round(total_win_per, 3)
+			elif basketball_win_per == "N/A":
 				total_win_per = football_win_per
 				total_win_per = round(total_win_per, 3)
 			else:				

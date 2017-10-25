@@ -46,7 +46,7 @@ var this_football_season_started = true;
 var this_football_playoffs = false;
 var this_football_completed_season = false;
 // full regular season = 13 matchups
-var football_completed_matchups = 6;
+var football_completed_matchups = 7;
 
 // basktball status variables
 var this_basketball_season_started = true;
@@ -55,7 +55,7 @@ var this_basketball_in_season = true;
 var this_basketball_playoffs = false;
 var this_basketball_completed_season = false;
 // full regular season = 18 matchups
-var basketball_completed_matchups = 0;
+var basketball_completed_matchups = 1;
 
 // baseball status variables
 var this_baseball_season_started = false;
@@ -65,7 +65,6 @@ var this_baseball_playoffs = false;
 var this_baseball_completed_season = false;
 // full regular season = 22 matchups
 var baseball_completed_matchups = 0;
-
 
 // exception built in for when Football in new Trifecta season starts during Baseball in previous Trifecta season
 var football_ahead = false;
@@ -207,7 +206,6 @@ router.get('/football_standings/:year', function(req, res) {
 
 }); // end of .get('/football_standings')
 
-
 // route to /basketball_standings
 router.get('/basketball_standings/:year', function(req, res) {
 
@@ -221,7 +219,6 @@ router.get('/basketball_standings/:year', function(req, res) {
 	const send = basketball_standings(req, res, db, input);
 	
 }); // end of .get('/basketball_standings')
-
 
 // route to /baseball_standings
 router.get('/baseball_standings/:year', function(req, res) {
@@ -237,6 +234,7 @@ router.get('/baseball_standings/:year', function(req, res) {
 	
 }) // end of .get('/baseball_standings')
 
+
 // route to home page for all individual owner matchup data
 router.get('/owner_matchup_home_page', function(req, res) {
 	res.render('owner_matchup_home_page');
@@ -244,216 +242,74 @@ router.get('/owner_matchup_home_page', function(req, res) {
 
 // route to individual owner's matchups for a given trifecta season
 router.get('/owner/:owner_number/matchups/:year1/:year2', function(req, res) {
-	
-	// pull parameters from request URL
-	var owner_number = req.params.owner_number;
-	var year1 = req.params.year1;
-	var year2 = req.params.year2;
-	var year_diff = year2 - year1;
 
-	// handle error case of non consecutive years
-	if (year_diff != 1) {
-		res.send("Please enter two consecutive years")
-	}
+	var input = {
+		owner_number: req.params.owner_number,
+		year1: req.params.year1,
+		year2: req.params.year2,
+		current_year1: current_year1,
+		current_year2: current_year2
+	};
 
-	// if pass first error handle
-	else {
-		// if the given years are the current ones, set appropriate parameters
-		if (year1 == current_year1 && year2 == current_year2) {
+	var football_input = {
+		this_football_season_started: this_football_season_started,
+		football_completed_matchups: football_completed_matchups,
+		this_football_completed_season: this_football_completed_season,
+		football_ahead: football_ahead,
+		football_ahead_completed_matchups: football_ahead_completed_matchups
+	};
 
-			// if no matchups have been completed yet, it's like the sport isn't in season yet
-			if (football_completed_matchups == 0) {
-				this_football_season_started = false;
-			}
+	var basketball_input = {
+		this_basketball_season_started: this_basketball_season_started,
+		basketball_completed_matchups: basketball_completed_matchups,
+		this_basketball_completed_season: this_basketball_completed_season
+	};
 
-			if (basketball_completed_matchups == 0) {
-				this_basketball_season_started = false;
-			}
+	var baseball_input = {
+		this_baseball_season_started: this_baseball_season_started,
+		baseball_completed_matchups: baseball_completed_matchups,
+		this_baseball_completed_season: this_baseball_completed_season
+	};
 
-			if (baseball_completed_matchups == 0) {
-				this_baseball_season_started = false;
-			}
-			
-			// current year's sports status variables set at ~Line 40
+	let owner_matchups = require('./matchups.js').owner_matchups;
+	const send = owner_matchups(req, res, db, input, football_input, basketball_input, baseball_input);
 
-			// if season_started == false or completed_season == true, skip scrape, just display
-			// call matchups.js with all the necessary arguments
-			var match = require('./matchups.js')(req, res, db, owner_number, year1, year2, this_football_season_started, football_completed_matchups, this_football_completed_season, this_basketball_season_started, basketball_completed_matchups, this_basketball_completed_season, this_baseball_season_started, baseball_completed_matchups, this_baseball_completed_season);
-		}
-		// if the years given are in the past, set everything as finished (true, max, true)
-		else if (year1 < current_year1 && year2 < current_year2) {
-			
-			// set status variables for past sports //
-
-			// football variables
-			this_football_season_started = true;
-			this_football_completed_season = true;
-			// full regular season = 13 matchups
-			football_completed_matchups = 13;
-
-			// basketball variables
-			this_basketball_season_started = true;
-			this_basketball_completed_season = true;
-			// full regular season = 18 matchups
-			basketball_completed_matchups = 18;	
-
-			// baseball variables
-			this_baseball_season_started = true;
-			this_baseball_completed_season = true;
-			// full regular season = 22 matchups
-			baseball_completed_matchups = 22;
-
-			// if season_started == false or completed_season == true, skip scrape, just display
-			// call matchups.js with all the necessary arguments
-			var match = require('./matchups.js')(req, res, db, owner_number, year1, year2, this_football_season_started, football_completed_matchups, this_football_completed_season, this_basketball_season_started, basketball_completed_matchups, this_basketball_completed_season, this_baseball_season_started, baseball_completed_matchups, this_baseball_completed_season);
-		}
-		// handle error case if years are greater than current
-		else {
-			if (football_ahead == false) {
-				var disp_err = "Please enter years " + current_year1 + " & " + current_year2 + " or less";
-				res.send(disp_err);				
-			}
-
-			// setting for future football season
-			else {
-
-				// set status variables for past sports //
-
-				// football variables
-				this_football_season_started = true;
-				this_football_completed_season = false;
-				// full regular season = 13 matchups
-				football_completed_matchups = football_ahead_completed_matchups;
-
-				// basketball variables
-				this_basketball_season_started = false;
-				this_basketball_completed_season = false;
-				// full regular season = 18 matchups
-				basketball_completed_matchups = 0;	
-
-				// baseball variables
-				this_baseball_season_started = false;
-				this_baseball_completed_season = false;
-				// full regular season = 22 matchups
-				baseball_completed_matchups = 0;
-
-				// if season_started == false or completed_season == true, skip scrape, just display
-				// call matchups.js with all the necessary arguments
-				var match = require('./matchups.js')(req, res, db, owner_number, year1, year2, this_football_season_started, football_completed_matchups, this_football_completed_season, this_basketball_season_started, basketball_completed_matchups, this_basketball_completed_season, this_baseball_season_started, baseball_completed_matchups, this_baseball_completed_season);				
-
-			} // end of else for future football
-		} // end of else for error case and future football season
-	}
 }); // end of owner to owner matchups 
 
 
 // route to individual owner's matchups for all trifecta seasons
 router.get('/owner/:owner_number/matchups/all', function(req, res) {
+
+	var input = {
+		owner_number: req.params.owner_number,
+	};
+
+	var football_input = {
+		completed_football_season: completed_football_season,
+		this_football_season_started: this_football_season_started,
+		football_completed_matchups: football_completed_matchups,
+		this_football_completed_season: this_football_completed_season,
+		football_ahead: football_ahead,
+		football_ahead_completed_matchups: football_ahead_completed_matchups
+	};
+
+	var basketball_input = {
+		completed_basketball_season: completed_basketball_season,
+		this_basketball_season_started: this_basketball_season_started,
+		basketball_completed_matchups: basketball_completed_matchups,
+		this_basketball_completed_season: this_basketball_completed_season
+	};
+
+	var baseball_input = {
+		completed_baseball_season: completed_baseball_season,
+		this_baseball_season_started: this_baseball_season_started,
+		baseball_completed_matchups: baseball_completed_matchups,
+		this_baseball_completed_season: this_baseball_completed_season
+	};
+
+	let all_owner_matchups = require('./matchups.js').all_owner_matchups;
+	const send = all_owner_matchups(req, res, db, input, football_input, basketball_input, baseball_input);	
 	
-	// pull parameters from request URL
-	var owner_number = req.params.owner_number;
-
-	if (this_football_season_started == true && this_football_completed_season == false) {
-		var football_in_season = true;
-		if (football_completed_matchups == 0) {
-			var football_in_season = false;
-		}
-	}
-	else {
-		var football_in_season = false;
-	}
-
-	if (this_basketball_season_started == true && this_basketball_completed_season == false) {
-		var basketball_in_season = true;
-		if (basketball_completed_matchups == 0) {
-			var basketball_in_season = false;
-		}		
-	}
-	else {
-		var basketball_in_season = false;
-	}
-
-	if (this_baseball_season_started == true && this_baseball_completed_season == false) {
-		var baseball_in_season = true;
-		if (baseball_completed_matchups == 0) {
-			var baseball_in_season = false;
-		}		
-	}
-	else {
-		var baseball_in_season = false;
-	}
-
-	if (football_ahead == true) {
-		football_in_season = true;
-		if (football_ahead_completed_matchups == 0) {
-			football_in_season = false;
-		}
-	}	
-
-	var disp_football_matchups = null;
-	var disp_basketball_matchups = null;
-	var disp_baseball_matchups = null;
-	var disp_trifecta_matchups = null;
-
-	var options = {
-		args: [owner_number, completed_football_season, football_in_season, completed_basketball_season, basketball_in_season, completed_baseball_season, baseball_in_season]
-	}
-	console.log(options);
-
-	db.collection("owner" + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs) {
-		owner_name = docs[0]["owner"]
-		//console.log(owner_name);
-
-		pyshell.run('total_owner_matchups.py', options, function(err) {
-			if (err) throw err;
-			console.log("total matchups python script complete");
-
-
-			db.collection('owner' + owner_number + '_football_matchups_all').find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
-				console.log(docs);
-				console.log('pulling football data...');
-				disp_football_matchups = docs;
-				complete();
-			})
-
-			db.collection('owner' + owner_number + '_basketball_matchups_all').find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
-				console.log(docs);
-				console.log('pulling basketball data...');
-				disp_basketball_matchups = docs;
-				complete();
-
-			})
-
-			db.collection('owner' + owner_number + '_baseball_matchups_all').find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
-				console.log(docs);
-				console.log('pulling baseball data...');
-				disp_baseball_matchups = docs;
-				complete();
-			})
-
-			db.collection('owner' + owner_number + '_trifecta_matchups_all').find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
-				console.log(docs);
-				console.log('pulling trifecta data...');
-				disp_trifecta_matchups = docs;
-				complete();
-			})		
-
-		}) // end of total owner python script
-	});
-
-	var complete = function() {
-
-		if ((disp_football_matchups !== null && disp_basketball_matchups !== null) && (disp_baseball_matchups !== null && disp_trifecta_matchups !== null)) {
-
-			res.render('total_owner_matchups', {
-				owner: owner_name,
-				football_matchups: disp_football_matchups,
-				basketball_matchups: disp_basketball_matchups,
-				baseball_matchups: disp_baseball_matchups,
-				trifecta_matchups: disp_trifecta_matchups
-			})
-		}
-	} // end of complete function
 }); // end of owner to owner matchups 
 
 // route to home page for all individual owner matchup data

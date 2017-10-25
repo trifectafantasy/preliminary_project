@@ -8,7 +8,7 @@ var pyshell = require('python-shell');
 var mongo = require('mongodb');
 var assert = require('assert');
 
-module.exports = function(req, res, db, owner_number, year1, year2, football_in_season, football_completed_matchups, football_playoffs, basketball_in_season, basketball_completed_matchups, basketball_playoffs, baseball_in_season, baseball_completed_matchups, baseball_playoffs) {
+module.exports = function(req, res, db, owner_number, year1, year2, football_in_season, football_completed_matchups, football_completed_season, basketball_in_season, basketball_completed_matchups, basketball_completed_season, baseball_in_season, baseball_completed_matchups, baseball_completed_season) {
 
 ///// SET VARIABLES //////
 	// Set constant variables for all sports use
@@ -61,7 +61,7 @@ var complete = function() {
 					// call display to see if all finds are done
 					display();
 				});	
-			})
+			}, 2000)
 		}
 
 		// if basketball (and therefore football) is in season
@@ -116,8 +116,8 @@ var display = function() {
 				args: [owner_number, year1, year2, football_in_season, basketball_in_season, baseball_in_season]
 			}
 
-			// if playoffs are true (season over), don't need to recalculate matchups, just pull
-			if (baseball_playoffs == true) {
+			// season over, don't need to recalculate matchups, just pull
+			if (baseball_completed_season === true) {
 				// read total trifecta season matchup collection
 				db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
 					console.log("Displaying Trifecta owner matchups...");
@@ -185,11 +185,8 @@ var display = function() {
 				args: [owner_number, year1, year2, football_in_season, basketball_in_season, baseball_in_season]
 			}
 
-			// run owner mathups python script to calculate owner matchup stats
-			pyshell.run('owner_matchups.py', options, function(err) {
-				if (err) throw err;
-				console.log("owner matchup python script complete");
-
+			// season over, just pull
+			if (basketball_completed_season === true) {
 				// read total trifecta season matchup collection
 				db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
 					console.log("Displaying trifecta owner matchups...");
@@ -207,9 +204,34 @@ var display = function() {
 						baseball_in_season, baseball_in_season,
 						trifecta_matchups: disp_trifecta_matchups
 					})
-				}) // end of trifecta matchups read
-			}) // end of pyshell
+				}) // end of trifecta matchups read				
+			}
+			else {
+				// run owner mathups python script to calculate owner matchup stats
+				pyshell.run('owner_matchups.py', options, function(err) {
+					if (err) throw err;
+					console.log("owner matchup python script complete");
 
+					// read total trifecta season matchup collection
+					db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
+						console.log("Displaying trifecta owner matchups...");
+						var disp_trifecta_matchups = docs;
+
+						// render owner_matchups
+						res.render('owner_matchups', {
+							year1: year1, 
+							year2: year2,
+							owner: owner_name,
+							football_matchups: disp_football_matchups,
+							basketball_matchups: disp_basketball_matchups,
+							football_in_season: football_in_season,
+							basketball_in_season: basketball_in_season,
+							baseball_in_season, baseball_in_season,
+							trifecta_matchups: disp_trifecta_matchups
+						})
+					}) // end of trifecta matchups read
+				}) // end of pyshell
+			}
 		}
 	} // end of if basketball in season
 
@@ -222,14 +244,11 @@ var display = function() {
 			// set python arguments
 			var options = {
 				args: [owner_number, year1, year2, football_in_season, basketball_in_season, baseball_in_season]
-			}			
-			
-			// run owner matchup python script to calculate owner matchup data
-			pyshell.run('owner_matchups.py', options, function(err) {
-				if (err) throw err;
-				console.log("owner matchup python script complete");
+			}
 
-					// read total trifecta season matchup collection
+			// season over, just pull
+			if (baseball_completed_season === true)	{
+				// read total trifecta season matchup collection
 				db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
 					console.log("Displaying Trifecta owner matchups...");
 					var disp_trifecta_matchups = docs;
@@ -245,9 +264,33 @@ var display = function() {
 						baseball_in_season: baseball_in_season,
 						trifecta_matchups: disp_trifecta_matchups
 					})
-				}) // end of trifecta matchups read
-			})	// end of pyshell
+				}) // end of trifecta matchups read				
+			}
+			else {
+				// run owner matchup python script to calculate owner matchup data
+				pyshell.run('owner_matchups.py', options, function(err) {
+					if (err) throw err;
+					console.log("owner matchup python script complete");
 
+						// read total trifecta season matchup collection
+					db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
+						console.log("Displaying Trifecta owner matchups...");
+						var disp_trifecta_matchups = docs;
+
+						// render owner_matchups
+						res.render('owner_matchups', {
+							year1: year1, 
+							year2: year2,
+							owner: owner_name,
+							football_matchups: disp_football_matchups,
+							football_in_season: football_in_season,
+							basketball_in_season: basketball_in_season,
+							baseball_in_season: baseball_in_season,
+							trifecta_matchups: disp_trifecta_matchups
+						})
+					}) // end of trifecta matchups read
+				})	// end of pyshell
+			}
 		}
 	} // end of if just football in season
 
@@ -283,8 +326,8 @@ var display = function() {
 	// if football is in season, don't skip
 	if (football_in_season == true) {
 
-		// if football is not in playoffs (aka in regular season), SCRAPE
-		if (football_playoffs == false) {
+		// if football is in season (aka in regular season), SCRAPE
+		if (football_completed_season == false) {
 
 			// clear football_matchups_scrape collection
 			db.collection("owner" + owner_number + "_football_matchups_scrape_" + year1).remove({})
@@ -405,7 +448,7 @@ var display = function() {
 
 		}  // end of if playoffs
 
-		// if playoffs are over (true), then srape already done, skip straight to displaying
+		// if season is over, skip straight to displaying
 		else {
 			console.log("football already done");
 
@@ -458,8 +501,8 @@ var football_complete = function() {
 	// if basketball is in season, else skip
 	if (basketball_in_season == true) {
 
-		// if playoffs are false (aka regular season), need to SCRAPE
-		if (basketball_playoffs == false) {
+		// if completed season is false, need to SCRAPE
+		if (basketball_completed_season == false) {
 
 			// clear basketball scrape collection
 			db.collection("owner" + owner_number + "_basketball_matchups_scrape_" + year2).remove({})
@@ -532,7 +575,7 @@ var football_complete = function() {
 								}
 
 								// if team2 is in list of owner's teams
-								else if (owner_team_list.indexOf(basketball_team1.text()) != -1) {
+								else if (owner_team_list.indexOf(basketball_team2.text()) != -1) {
 
 									// set team names
 									basketball_my_team = basketball_team2.text();
@@ -573,7 +616,7 @@ var football_complete = function() {
 
 		} // end of if playoffs
 
-		// if playoffs are complete, so scrape is already 
+		// if season is complete
 		else {
 			console.log("basketball already done");
 
@@ -623,10 +666,8 @@ var basketball_complete = function() {
 	// if baseball is in season, else skip
 	if (baseball_in_season == true) {
 
-		// if baseball playoffs are not done yet, so still in regular season
-		if (baseball_playoffs == false) {
-			console.log('need to scrape')
-
+		// if season is completed, no need to scrape
+		if (baseball_completed_season == false) {
 
 			// remove baseball scrape collection
 			db.collection("owner" + owner_number + "_baseball_matchups_scrape_" + year2).remove({})
@@ -740,7 +781,7 @@ var basketball_complete = function() {
 
 		} // end of if playoffs
 
-		// if playoffs are done, don't need to scrape or process
+		// if season is complete, don't need to scrape or process
 		else {
 			console.log("baseball already done");
 
