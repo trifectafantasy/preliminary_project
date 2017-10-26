@@ -69,9 +69,12 @@ var all_football_coach = function(x, owner_list) {
 			completed_weeks = football_ahead_completed_matchups;
 		}
 
-		// list of owner numbers to loop through
-		owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-
+		// set array of owner numbers
+		var number_of_owners = 10;
+		var owner_list = [];
+		for (var i=1; i<=number_of_owners; i++) {
+			owner_list.push(i.toString());
+		}
 
 		// run synchronous for loop function
 		all_football_coach(0, owner_list);

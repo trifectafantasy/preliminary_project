@@ -24,9 +24,13 @@ var acquire_process = function() {
 		var draft = require('../modules/draft.js')(req, res, db, sport, year, function(err, call4) {
 			console.log("drafted players done");
 
-			// set array of numbers
-			var owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-
+			// set array of owner numbers
+			var number_of_owners = 10;
+			var owner_list = [];
+			for (var i=1; i<=number_of_owners; i++) {
+				owner_list.push(i.toString());
+			}
+			
 			// call function that synchronously loops through acquistions for each team
 			all_acquisitions(0, owner_list);
 			
