@@ -212,14 +212,14 @@ var complete = function() {
 
 
 			db.collection('owner' + owner_number + '_football_matchups_all').find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
-				console.log(docs);
+				//console.log(docs);
 				console.log('pulling football data...');
 				disp_football_matchups = docs;
 				complete();
 			})
 
 			db.collection('owner' + owner_number + '_basketball_matchups_all').find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
-				console.log(docs);
+				//console.log(docs);
 				console.log('pulling basketball data...');
 				disp_basketball_matchups = docs;
 				complete();
@@ -227,14 +227,14 @@ var complete = function() {
 			})
 
 			db.collection('owner' + owner_number + '_baseball_matchups_all').find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
-				console.log(docs);
+				//console.log(docs);
 				console.log('pulling baseball data...');
 				disp_baseball_matchups = docs;
 				complete();
 			})
 
 			db.collection('owner' + owner_number + '_trifecta_matchups_all').find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
-				console.log(docs);
+				//console.log(docs);
 				console.log('pulling trifecta data...');
 				disp_trifecta_matchups = docs;
 				complete();
