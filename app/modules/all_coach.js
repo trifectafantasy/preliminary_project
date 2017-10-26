@@ -10,9 +10,13 @@ var assert = require('assert');
 
 module.exports = function(req, res, db, sport, year, callback) {
 
-	// list of owner numbers
-	var owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-
+	// set array of owner numbers
+	var number_of_owners = 10;
+	var owner_list = [];
+	for (var i=1; i<=number_of_owners; i++) {
+		owner_list.push(i.toString());
+	}
+		
 	var complete_count = 0;
 	var total_count = 0;
 

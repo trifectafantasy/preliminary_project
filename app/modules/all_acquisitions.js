@@ -11,14 +11,18 @@ var assert = require('assert');
 module.exports = function(req, res, db, sport, year, callback) {
 
 	// list of owner numbers
-	var owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+	var number_of_owners = 10;
+	var owner_list = [];
+	for (var i=1; i<=number_of_owners; i++) {
+		owner_list.push(i.toString());
+	}	
 
 	var complete_count = 0;
 	var total_count = 0;
 
 	// clear sport acquisition all collection
 	db.collection(sport + "_acquisitions_display_" + year + "_all").remove({}, function(err, results) {
-	
+
 		// for each owner
 		owner_list.forEach(function(owner_number, index) {
 
@@ -43,9 +47,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 						//console.log(team_pull[i]);
 
 						var player_pull = team_pull[i];
-
 						player_pull["owner"] = owner;
-
 						//console.log(player_pull);
 
 						// add into all acquisition collection

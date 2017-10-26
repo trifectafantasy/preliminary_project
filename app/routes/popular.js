@@ -75,8 +75,13 @@ var all_popular = function(x, owner_list) {
 } // end of function
 
 // start of executed script //
-	var owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-
+	// set array of owner numbers
+	var number_of_owners = 10;
+	var owner_list = [];
+	for (var i=1; i<=number_of_owners; i++) {
+		owner_list.push(i.toString());
+	}
+	
 	// if season not completed, scrape
 	if (year > completed_sport_season) {
 
