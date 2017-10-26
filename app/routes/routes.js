@@ -72,7 +72,7 @@ var football_ahead_current_year = 2017;
 var football_ahead_completed_matchups = 3;
 
 // sport that has full draft order and picks ready
-var set_board_sport = "basketball";
+var set_board_sport = null;
 
 
 // Route to Home/Root page
@@ -89,54 +89,19 @@ router.get('/future_draft_boards_home_page', function(req, res) {
 
 // route to future draft boards
 router.get('/future_draft_board/:sport/:year', function(req, res) {
-	var sport = req.params.sport;
-	var year = req.params.year;
 
-	if (year > current_year2 + 1) {
-		res.send("Too far in advance, enter an earlier season. Can only go one year ahead of current sport.");
+	var input = {
+		sport: req.params.sport,
+		year: req.params.year,
+		current_year1: current_year1,
+		current_year2: current_year2,
+		football_ahead: football_ahead,
+		set_board_sport: set_board_sport
 	}
 
-	else if ((year > current_year1 + 1 && sport == "football") && football_ahead == false) {
-		res.send("Too far in advance, enter an earlier season. Can only go one year ahead of current sport.");
-	}
+	let draft_board = require('./draft_board.js').draft_board;
+	const send = draft_board(req, res, db, input);
 
-	else {
-		if (sport == set_board_sport) {
-			set_board = true;
-		}
-		else {
-			set_board = false;
-		}
-
-		var disp_draft_board = null;
-		var disp_by_team_draft_board = null;
-
-		db.collection(sport + "_draft_board_" + year).find({"draft_board": "overall"}, {"draft_board": 0, "_id": 0}).sort({"round_number": 1}).toArray(function(e, docs){
-			disp_draft_board = docs;
-			//console.log(disp_draft_board);
-			complete();
-		})
-
-		db.collection(sport + "_draft_board_" + year).find({"draft_board": "team"}, {"draft_board": 0, "_id": 0}).toArray(function(e, docs){
-			disp_by_team_draft_board = docs;
-			//console.log(disp_by_team_draft_board);
-			complete();
-		})
-	}
-
-var complete = function() {
-
-	if (disp_draft_board != null && disp_by_team_draft_board != null) {
-		console.log("displaying draft board...");
-		res.render('future_draft_boards', {
-			sport: sport,
-			year: year,
-			draft_board: disp_draft_board,
-			by_team_draft_board: disp_by_team_draft_board,
-			set_board: set_board
-		})
-	}
-}
 }) // end of route to future draft boards home page
 
 // route to profile home page
