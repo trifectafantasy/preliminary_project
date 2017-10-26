@@ -453,84 +453,17 @@ router.get('/football_coach_home_page', function(req, res) {
 // route to analyze fantasy football "coaching" aka starting lineup optimization
 router.get('/football/coach/:year', function(req, res) {
 
-	// set variables from request url
-	var year = req.params.year;
+	var input = {
+		year: req.params.year,
+		completed_football_season: completed_football_season,
+		completed_weeks: football_completed_matchups,
+		football_ahead: football_ahead,
+		football_ahead_completed_matchups: football_ahead_completed_matchups
+	};
 
-	// if year is greater than completed season, SCRAPE
-	if (year > completed_football_season) {
-	
-		// how many weeks have been completed, able to scrape
-		if (football_ahead == true) {
-			var completed_weeks = football_ahead_completed_matchups;
+	let coach = require('./coach.js').coach;
+	const send = coach(req, res, db, input);
 
-		}
-		else {
-			var completed_weeks = football_completed_matchups
-		}
-
-		// list of owner numbers to loop through
-		owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-
-	// function that executes synchronous scrapes and python script analyses
-	var all_football_coach = function(x, owner_list) {
-		if (x < owner_list.length) {
-			// set owner number
-			owner_number = owner_list[x];
-			console.log("owner number", owner_number);
-
-			// scrape starting lineups and benches from each week
-			var coach_scrape = require('./coach_scrape.js')(req, res, db, year, owner_number, completed_weeks, function(err, call) {
-				console.log("coach scrape done");
-
-				// send back to loop again
-				all_football_coach(x + 1, owner_list);
-			}) // end of coach scrape script
-		}
-		// once done with all in loop, done
-		else {
-			var options = {
-				args: [year, completed_weeks]
-			}
-			pyshell.run('football_coach.py', options, function(err) {
-				if (err) throw err;
-				console.log("coach python script done");
-				
-				// pull from collection for display
-				db.collection("all_coach_" + year).find({}, {"_id": 0}).sort({"season": -1}).toArray(function(e, docs) {
-					disp_coach = docs;
-					console.log("displaying coach standings...");
-
-					res.render('football_coach', {
-						year: year,
-						completed_weeks: completed_weeks,
-						coach_standings: disp_coach
-					})
-				}) // end of display pull				
-			}) // end of python script
-	
-		}
-	} // end of all_football_coach function
-
-		// run synchronous for loop function
-		all_football_coach(0, owner_list);
-	} // end of if need to be scraped
-
-	// if year is in past, just pull
-	else {
-		completed_weeks = 13
-		// pull from collection for display
-		db.collection("all_coach_" + year).find({}, {"_id": 0}).sort({"season": -1}).toArray(function(e, docs) {
-			disp_coach = docs;
-			console.log("displaying coach standings...");
-
-			res.render('football_coach', {
-				year: year,
-				completed_weeks: completed_weeks,
-				coach_standings: disp_coach
-			})
-		}) // end of display pull	
-	} // end of just pull
-						
 }) // end of route to coach analysis
 
 // route to popular home page
@@ -541,65 +474,6 @@ router.get('/popular_home_page', function(req, res) {
 // route to get most popular players
 router.get('/:sport/popular/:year', function(req, res) {
 	var sport = req.params.sport;
-	var year = req.params.year;
-
-// function that scrapes and calculates most popular players per owner per sport
-var all_popular = function(x, owner_list) {
-
-	if (x < owner_list.length) {
-		owner_number = owner_list[x];
-		console.log("owner number", owner_number);
-
-		var popular = require('./popular.js')(req, res, db, sport, year, owner_number, function(err, call) {
-			console.log("popular scrape done");
-
-			var options = {
-				args: [sport, year, owner_number]
-			}
-
-			// python script that calculates players with most transactions per team
-			pyshell.run('popular_individual.py', options, function(err) {
-				console.log("popular python script done");
-
-				// send back through loop
-				all_popular(x + 1, owner_list)
-			}) // end of pyshell
-		}) // end of popular.js scrape
-	} // end of if still in loop
-	
-	// if finished with loop
-	else {
-		var options = {
-			args: [sport, year]
-		}
-
-		// python script that calculates player that was on most teams and owners who had player on roster
-		pyshell.run('popular_all.py', options, function(err) {
-			console.log("all popular python script done");
-
-			// pull all owner names NOT "all", ie all individual owners
-			db.collection(sport + "_popular_" + year).find({"owner": {"$not": /all/}}, {"_id": 0}, {"sort": [["transactions", "desc"], ["owner", "desc"], [score_cat, "desc"]]}).toArray(function(e, docs) {
-				disp_individual = docs;
-
-				// pull owner that is all (has player on most teams data)
-				db.collection(sport + "_popular_" + year).find({"owner": "all"}, {"_id": 0}).toArray(function(e, docs2) {
-					disp_all = docs2;
-
-					console.log("displaying most popular players...")
-					res.render('popular', {
-						sport: sport,
-						year: year,
-						popular_individual: disp_individual,
-						popular_all: disp_all
-					}) // end of render
-				}) // end of all popular pull
-			}) // end of individual popular pull
-		}) // end of pyshell
-	} // end of else
-} // end of function
-
-// start of executed script //
-	var owner_list = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 
 	// set completed season and scoring category depending on sport
 	if (sport == "football") {
@@ -615,26 +489,14 @@ var all_popular = function(x, owner_list) {
 		score_cat = "weighted_PR"
 	}
 
-	// if season not completed, scrape
-	if (year > completed_sport_season) {
-		all_popular(0, owner_list);
-	}
-	// else just pull and display
-	else {
-		db.collection(sport + "_popular_" + year).find({"owner": {"$not": /all/}}, {"_id": 0}, {"sort": [["transactions", "desc"], ["owner", "desc"], [score_cat, "desc"]]}).toArray(function(e, docs) {
-			disp_individual = docs;
+	var input = {
+		sport: req.params.sport,
+		year: req.params.year,
+		completed_sport_season: completed_sport_season,
+		score_cat: score_cat
+	};
 
-			db.collection(sport + "_popular_" + year).find({"owner": "all"}, {"_id": 0}).toArray(function(e, docs2) {
-				disp_all = docs2;
+	let popular = require('./popular.js').popular;
+	const send = popular(req, res, db, input);
 
-				console.log("displaying most popular players...")
-				res.render('popular', {
-					sport: sport,
-					year: year,
-					popular_individual: disp_individual,
-					popular_all: disp_all
-				}) // end od render
-			}) // end of all pull
-		}) // end of individual pull
-	} // end of else
 }) // end of route to sport popular

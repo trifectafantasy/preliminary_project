@@ -10,6 +10,11 @@ let assert = require('assert');
 
 function stats(req, res, db, args) {
 
+	let sport = args.sport;
+	let year = args.year;
+	let owner_number = args.owner_number;
+	let completed_sport_season = args.completed_sport_season;
+
 // define functions for module
 var acquire_process = function() {
 
@@ -101,11 +106,6 @@ var all_acquisitions = function(x, owner_list) {
 } // end of all_football_acquisitions function
 
 // execute script //
-	let sport = args.sport;
-	let year = args.year;
-	let owner_number = args.owner_number;
-	let completed_sport_season = args.completed_sport_season;
-
 	if (year > completed_sport_season) {
 		
 		if (sport === 'football') {

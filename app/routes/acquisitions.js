@@ -10,6 +10,11 @@ let assert = require('assert');
 
 function acquisitions(req, res, db, args) {
 
+	let sport = args.sport;
+	let year = args.year;
+	let owner_number = args.owner_number;
+	var completed_sport_season = args.completed_sport_season;
+
 // define functions for module
 var acquire_process = function() {
 
@@ -101,11 +106,6 @@ var all_acquisitions = function(x, owner_list) {
 } // end of all_football_acquisitions function
 
 // execute script //
-	let sport = args.sport;
-	let year = args.year;
-	let owner_number = args.owner_number;
-	var completed_sport_season = args.completed_sport_season;
-
 	if (year > completed_sport_season) {
 
 		if (sport === 'football') {
@@ -120,11 +120,9 @@ var all_acquisitions = function(x, owner_list) {
 			})
 		}
 	}
-
 	else {
 		var acquisitions_display = require('../modules/acquisitions_display.js')(req, res, db, sport, year, owner_number);
 	}
-
 } // end of acquisitions module
 
 module.exports = {

@@ -10,6 +10,10 @@ let assert = require('assert');
 
 function origin(req, res, db, args) {
 	
+	let sport = args.sport;
+	let year = args.year;
+	let completed_sport_season = args.completed_sport_season;
+
 // define functions to use inside module //
 var origin_process = function() {
 
@@ -97,12 +101,11 @@ var display = function() {
 } // end of if just display
 
 // start of script //
-	let sport =  args.sport;
-	let year = args.year;
-	let completed_sport_season = args.completed_sport_season;
 
 	// if present season, scrape and go through process
 	if (year > completed_sport_season) {
+
+		db.collection(sport  + '_origin_' + year).remove({});
 
 		if (sport === 'football') {
 			origin_process();
@@ -121,7 +124,7 @@ var display = function() {
 		display();
 	}
 
-} // end of acquisitions module
+} // end of origin module
 
 module.exports = {
 	origin

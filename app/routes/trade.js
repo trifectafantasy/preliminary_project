@@ -10,30 +10,29 @@ let assert = require('assert');
 
 function trade(req, res, db, args) {
 
-	function display() {
-
-		// set final category to sort by dependent on sport
-		if (sport === 'football') {
-			category_sort = "PTS";
-		}
-		else {
-			category_sort = "GP";
-		}
-
-		db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["player", "asc"], ["owner", "asc"], [category_sort, "asc"]]}).toArray(function(e, docs) {
-			console.log('displaying trade analysis...');
-			//console.log(docs);
-			disp_trade = docs;
-			res.render(sport + '_trade', {
-				year: year,
-				trader: disp_trade,
-			})
-		}) // end of pull for trade display
-	} // end of display function
-
 	let year = args.year;
 	let sport = args.sport;
 	let completed_sport_season = args.completed_sport_season;
+
+function display() {
+	// set final category to sort by dependent on sport
+	if (sport === 'football') {
+		category_sort = "PTS";
+	}
+	else {
+		category_sort = "GP";
+	}
+
+	db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["player", "asc"], ["owner", "asc"], [category_sort, "asc"]]}).toArray(function(e, docs) {
+		console.log('displaying trade analysis...');
+		//console.log(docs);
+		disp_trade = docs;
+		res.render(sport + '_trade', {
+			year: year,
+			trader: disp_trade,
+		})
+	}) // end of pull for trade display
+} // end of display function
 
 	// if year is greater than the last completed one (aka, in season)
 	if (year > completed_sport_season) {

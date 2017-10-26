@@ -23,6 +23,21 @@ function profile_recap(req, res, db, args) {
 	let disp_profile_standings = null;
 	let disp_profile_matchups = null;
 	let disp_profile_players = null;
+// complete function that displays tables
+
+let profile_complete = function() {
+
+	// wait for all 3 sets of data to be pulled
+	if ((disp_profile_matchups != null && disp_profile_standings != null) && disp_profile_players != null) {
+		console.log("displaying profile stats...");
+		res.render('profile_recap', {
+			owner: owner_name,
+			profile_standings: disp_profile_standings,
+			matchup_standings: disp_profile_matchups,
+			players_standings: disp_profile_players
+		})
+	} // end of if
+} // end of complete function
 
 	// pull owner name
 	db.collection('owner' + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs) {
@@ -68,23 +83,7 @@ function profile_recap(req, res, db, args) {
 		}) // ned of pyshell
 	}) // end of pull owner name
 
-// complete function that displays tables
-let profile_complete = function() {
-
-	// wait for all 3 sets of data to be pulled
-	if ((disp_profile_matchups != null && disp_profile_standings != null) && disp_profile_players != null) {
-		console.log("displaying profile stats...");
-		res.render('profile_recap', {
-			owner: owner_name,
-			profile_standings: disp_profile_standings,
-			matchup_standings: disp_profile_matchups,
-			players_standings: disp_profile_players
-		})
-	} // end of if
-} // end of complete function
-
 } // end of profile_recap module
-
 
 
 function trophy_case(req, res, db, args) {
@@ -108,7 +107,6 @@ function trophy_case(req, res, db, args) {
 	}) // end of owner name pull	
 
 } // end of trophy_case module
-
 
 
 module.exports = {

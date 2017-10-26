@@ -125,18 +125,18 @@ function all_owner_matchups(req, res, db, args, football_args, basketball_args, 
 	var disp_baseball_matchups = null;
 	var disp_trifecta_matchups = null;
 
-	var complete = function() {
-		if ((disp_football_matchups !== null && disp_basketball_matchups !== null) && (disp_baseball_matchups !== null && disp_trifecta_matchups !== null)) {
+var complete = function() {
+	if ((disp_football_matchups !== null && disp_basketball_matchups !== null) && (disp_baseball_matchups !== null && disp_trifecta_matchups !== null)) {
 
-			res.render('total_owner_matchups', {
-				owner: owner_name,
-				football_matchups: disp_football_matchups,
-				basketball_matchups: disp_basketball_matchups,
-				baseball_matchups: disp_baseball_matchups,
-				trifecta_matchups: disp_trifecta_matchups
-			})
-		}
-	} // end of complete function
+		res.render('total_owner_matchups', {
+			owner: owner_name,
+			football_matchups: disp_football_matchups,
+			basketball_matchups: disp_basketball_matchups,
+			baseball_matchups: disp_baseball_matchups,
+			trifecta_matchups: disp_trifecta_matchups
+		})
+	}
+} // end of complete function
 
 	let owner_number = args.owner_number;
 
