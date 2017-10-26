@@ -211,7 +211,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 									db.collection(sport + "_trades_" + year).insert({"trade_number": trades_processed, "player": player, "owner": owner, "owner_number": owner2_number})
 								}
 								else {
-									console.log("no cigar");
+									//console.log("no cigar");
 								}
 							}
 
