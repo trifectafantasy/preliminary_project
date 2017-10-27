@@ -12,7 +12,7 @@ var assert = require('assert');
 module.exports = function(req, res, db, sport, year, callback) {
 
 	// set and remove collection asynchronously 
-	db.collection(sport + "_trades_" + year).remove({}, function(err, result) {
+	db.collection(sport + "_trade_history_" + year).remove({}, function(err, result) {
 
 		// initialize number of processed trades
 		var trades_processed = 0;
@@ -25,6 +25,8 @@ module.exports = function(req, res, db, sport, year, callback) {
 		var end_month = d.getMonth() + 1;
 		var end_day = d.getDate();
 
+		var month_list = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
 		// to account for day needing to be 2 digits
 		if (end_day < 10) {
 			end_day = "0" + String(end_day)
@@ -33,7 +35,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 		// to account for month needing to be 2 digits
 		if (end_month < 10) {
 			end_month = "0" + String(end_month)
-		}				
+		}	
 
 		// url for scrape
 		if (sport === "football") {
@@ -68,6 +70,38 @@ module.exports = function(req, res, db, sport, year, callback) {
 					date = $(this).children().first();
 					//console.log(date.text());
 
+					date_html = date.html();
+					comma_index = date_html.indexOf(",");
+					bracket_index = date_html.indexOf("<");
+					date_html = date_html.slice(comma_index + 2, bracket_index);
+					//console.log(date_html);
+					
+					month_save = date_html.slice(0, date_html.indexOf(" "));
+					//console.log("month", month_save);
+
+					month_index = month_list.indexOf(month_save) + 1;
+					month_index_save = ('0' + month_index).slice(-2);
+					//console.log(month_index_save);
+
+					day_save = date_html.slice(date_html.indexOf(" ") + 1);
+					day_save = ('0' + day_save).slice(-2);
+					//console.log("day", day_save);
+
+					if (sport === 'basketball') {
+
+						// if trade made in Oct - Dec, minus 1 of basketball year
+						if (month_index >= 10) {
+							date_save = String(parseInt(year) - 1) + "/" + month_index_save + "/" + day_save;
+						}
+						else {
+							date_save = year + "/" + month_index_save + "/" + day_save;
+						}
+					}
+					else {
+						date_save = year + "/" + month_index_save + "/" + day_save;
+					}
+					//console.log(date_save);
+
 					type = date.next();
 					//console.log(type.text());
 
@@ -77,7 +111,8 @@ module.exports = function(req, res, db, sport, year, callback) {
 					if (type_slice == "Trade Processed") {
 
 						trades_processed += 1;
-						//console.log("trade number", trades_processed)
+						//console.log('');
+						//console.log("trade number", trades_processed);
 						
 						players = type.next();
 						//console.log(players.text());
@@ -102,7 +137,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 						abbrev1_index = owners_involved.text().indexOf(" ");
 
 						owner1_abbrev = owner1_abbrev_slice.slice(0, abbrev1_index);
-						//console.log("owner1 abbreviation: ", owner1_abbrev);
+						//console.log("owner1 abbreviation:", owner1_abbrev);
 						owner1_abbrev_length = owner1_abbrev.length;
 						//console.log(owner1_abbrev.length);
 
@@ -115,11 +150,11 @@ module.exports = function(req, res, db, sport, year, callback) {
 
 						if (owner1_slice.indexOf("\"") != -1) {
 							owner1_number = owner1_slice.slice(7,8);
-							//console.log("owner1 number: ", owner1_number);
+							//console.log("owner1 number:", owner1_number);
 						}
 						else {
 							owner1_number = owner1_slice.slice(7,9);
-							//console.log("owner1 number: ", owner1_number);
+							//console.log("owner1 number:", owner1_number);
 						}
 
 
@@ -131,7 +166,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 						abbrev2_index = owners_involved.text().indexOf(" ");
 
 						owner2_abbrev = owner2_abbrev_slice.slice(0, abbrev2_index);
-						//console.log("owner2 abbreviation: ", owner2_abbrev);
+						//console.log("owner2 abbreviation:", owner2_abbrev);
 						owner2_abbrev_length = owner2_abbrev.length;
 
 						owner2_html = owners_html.slice(html_length / 2, html_length);
@@ -165,13 +200,13 @@ module.exports = function(req, res, db, sport, year, callback) {
 
 							player_index = portion.indexOf("traded");
 							player = portion.slice(player_index + 7, portion.indexOf(","));
-							//console.log("player: ", player);
+							//console.log("player:" , player);
 
 							owner_index = portion.indexOf("to ");
 							owner = portion.slice(owner_index + 3, owner_index + 7);
-							//console.log("owner: ", owner);
+							//console.log("owner:", owner);
 
-							if (owner.includes(owner1_abbrev)) {
+							if (owner.indexOf(owner1_abbrev) != -1) {
 								//console.log("owner1 match");
 
 								while (owner1_abbrev !== owner) {
@@ -181,10 +216,10 @@ module.exports = function(req, res, db, sport, year, callback) {
 
 								owner_number_list.push(owner1_number);
 								players_processed += 1
-								db.collection(sport + "_trades_" + year).insert({"trade_number": trades_processed, "player": player, "owner": owner, "owner_number": owner1_number})
+								db.collection(sport + "_trade_history_" + year).insert({"date": date_save, "sport": sport, "trade_number": trades_processed, "player": player, "owner_number": owner1_number})
 							}
 
-							else if (owner.includes(owner2_abbrev)) {
+							else if (owner.indexOf(owner2_abbrev) != -1) {
 								//console.log('owner2 match');
 
 								while(owner2_abbrev !== owner) {
@@ -194,21 +229,22 @@ module.exports = function(req, res, db, sport, year, callback) {
 
 								owner_number_list.push(owner2_number);
 								players_processed += 1
-								db.collection(sport + "_trades_" + year).insert({"trade_number": trades_processed, "player": player, "owner": owner, "owner_number": owner2_number})
+								db.collection(sport + "_trade_history_" + year).insert({"date": date_save, "sport": sport, "trade_number": trades_processed, "player": player, "owner_number": owner2_number})
 							}
 
 							else {
 								//console.log("no includes")
 								owner = owner.slice(0, owner.length - 1);
-								if (owner.includes(owner1_abbrev.slice(0, 3))) {
+
+								if (owner.indexOf(owner1_abbrev.slice(0, owner1_abbrev.length - 1)) != -1) {
 									owner_number_list.push(owner1_number);
 									players_processed += 1
-									db.collection(sport + "_trades_" + year).insert({"trade_number": trades_processed, "player": player, "owner": owner, "owner_number": owner1_number})
+									db.collection(sport + "_trade_history_" + year).insert({"date": date_save, "sport": sport, "trade_number": trades_processed, "player": player, "owner_number": owner1_number})
 								}
-								else if (owner.includes(owner2_abbrev.slice(0, 3))) {
+								else if (owner.indexOf(owner2_abbrev.slice(0, owner2_abbrev.length - 1)) != -1) {
 									owner_number_list.push(owner2_number);
 									players_processed += 1
-									db.collection(sport + "_trades_" + year).insert({"trade_number": trades_processed, "player": player, "owner": owner, "owner_number": owner2_number})
+									db.collection(sport + "_trade_history_" + year).insert({"date": date_save, "sport": sport, "trade_number": trades_processed, "player": player, "owner_number": owner2_number})
 								}
 								else {
 									//console.log("no cigar");

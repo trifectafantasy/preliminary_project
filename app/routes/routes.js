@@ -285,9 +285,19 @@ router.get('/:sport/trades/:year', function(req, res) {
 		completed_sport_season: completed_sport_season
 	};
 
-	const send = trade_router.trade(req, res, db, input);
+	const send = trade_router.trade_analysis(req, res, db, input);
 
 }) // end of route to trades
+
+router.get('/trade_history/:sport/:year', function(req, res) {
+
+	let input = {
+		year: req.params.year,
+		sport: req.params.sport
+	};
+
+	const send = trade_router.trade_history_scrape(req, res, db, input);
+})
 
 
 // route to acquisition home page

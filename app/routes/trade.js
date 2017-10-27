@@ -8,7 +8,7 @@ let pyshell = require('python-shell');
 let mongo = require('mongodb');
 let assert = require('assert');
 
-function trade(req, res, db, args) {
+function trade_analysis(req, res, db, args) {
 
 	let year = args.year;
 	let sport = args.sport;
@@ -38,7 +38,7 @@ function display() {
 	if (year > completed_sport_season) {
 
 		// send to trade.js for transactional trades scrape
-		var trade = require('../modules/trade_analysis.js')(req, res, db, sport, year, function(err, owner_number_list, trades_processed, players_processed) {
+		var trade = require('../modules/trade_analysis_scrape.js')(req, res, db, sport, year, function(err, owner_number_list, trades_processed, players_processed) {
 		// return callback variables owner_number_list, trades_processed, and players_processed
 
 			// remove duplicate owner numbers so only scrape each owner who made a trade once
@@ -47,8 +47,8 @@ function display() {
 			})
 			//console.log("new owner numbers: ", owner_number_list);
 
-			console.log("trades processed: ", trades_processed);
-			console.log("players processed: ", players_processed);
+			console.log("trades processed:", trades_processed);
+			console.log("players processed:", players_processed);
 
 			if (trades_processed == 0) {
 				res.send("Oh no! No trades have been made!")
@@ -89,6 +89,41 @@ function display() {
 	} // end of no scrape, just display
 } // end of trade module
 
+
+function trade_history_scrape(req, res, db, args) {
+
+	let year = args.year;
+	let sport = args.sport;
+
+
+	var trade = require('../modules/trade_history_scrape.js')(req, res, db, sport, year, function(err, owner_number_list, trades_processed, players_processed) {
+
+		setTimeout(function() {
+
+			var options = {
+				args: [sport, year]
+			}
+
+			pyshell.run("trade_history.py", options, function(err) {
+				console.log("python sript complete");
+
+				//db.collection(sport + "_trade_history_" + year + "_all").find({}, {"_id":0}, {"sort": [["date", "desc"]]}).toArray(function(e, docs1) {
+				db.collection("trade_history").find({}, {"_id":0}, {"sort": [["date", "desc"]]}).toArray(function(e, docs1) {
+					//console.log(docs1);
+					disp_trade_history = docs1;
+					console.log("displaying trade history...");
+
+					res.render('trade_history', {
+						trade_history: disp_trade_history
+					}) // end of res render
+				}) // end of display pull
+			}) // end of pyshell
+		}, 1000)
+	})
+
+}
+
 module.exports = {
-	trade
+	trade_analysis,
+	trade_history_scrape
 }
