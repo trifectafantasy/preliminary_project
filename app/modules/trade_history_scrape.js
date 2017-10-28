@@ -8,6 +8,8 @@ var pyshell = require('python-shell');
 var mongo = require('mongodb');
 var assert = require('assert');
 
+const display_trade_history = require('../routes/trade.js').trade_history_display;
+
 // create callback function
 module.exports = function(req, res, db, sport, year, callback) {
 
@@ -74,9 +76,16 @@ module.exports = function(req, res, db, sport, year, callback) {
 				}
 				//console.log(url);
 
-				db.collection("trade_history").update({"name": "last_scrape_document", "sport": sport}, {"name": "last_scrape_document", "sport": sport, "year": end_year, "month": end_month, "day": end_day});
+				if (scrape_year === end_year && scrape_month === end_month && scrape_day === end_day) {
+					console.log("Don't need to scrape. Same day.");
 
-				scrape_function(url);
+					callback();
+				}
+				else {
+					db.collection("trade_history").update({"name": "last_scrape_document", "sport": sport}, {"name": "last_scrape_document", "sport": sport, "year": end_year, "month": end_month, "day": end_day});
+					scrape_function(url);
+				}
+
 			})
 		} 
 	}) // end of remove database

@@ -289,7 +289,12 @@ router.get('/:sport/trades/:year', function(req, res) {
 
 }) // end of route to trades
 
-router.get('/trade_history/:sport/:year', function(req, res) {
+router.get('/trade_history', function(req, res) {
+	const send = trade_router.trade_history_display(req, res, db);
+})
+
+// route to trade_history_scrape
+router.get('/trade_history_scrape/:sport/:year', function(req, res) {
 
 	let sport = req.params.sport;
 	let year = req.params.year;
