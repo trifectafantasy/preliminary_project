@@ -291,9 +291,24 @@ router.get('/:sport/trades/:year', function(req, res) {
 
 router.get('/trade_history/:sport/:year', function(req, res) {
 
+	let sport = req.params.sport;
+	let year = req.params.year;
+
+	// set completed season for check if in season or not depending on sport
+	if (sport === 'football') {
+		completed_sport_season = completed_football_season;
+	}
+	else if (sport === 'basketball') {
+		completed_sport_season = completed_basketball_season;
+	}
+	else if (sport === 'baseball') {
+		completed_sport_season = completed_baseball_season;
+	}
+
 	let input = {
 		year: req.params.year,
-		sport: req.params.sport
+		sport: req.params.sport,
+		completed_sport_season: completed_sport_season
 	};
 
 	const send = trade_router.trade_history_scrape(req, res, db, input);

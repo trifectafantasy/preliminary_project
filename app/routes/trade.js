@@ -94,32 +94,46 @@ function trade_history_scrape(req, res, db, args) {
 
 	let year = args.year;
 	let sport = args.sport;
+	let completed_sport_season = args.completed_sport_season;
+
+function display() {
+
+	//db.collection(sport + "_trade_history_" + year + "_all").find({}, {"_id":0}, {"sort": [["date", "desc"]]}).toArray(function(e, docs1) {
+	db.collection("trade_history").find({}, {"_id":0}, {"sort": [["date", "desc"]]}).toArray(function(e, docs1) {
+		//console.log(docs1);
+		disp_trade_history = docs1;
+		console.log("displaying trade history...");
+
+		res.render('trade_history', {
+			trade_history: disp_trade_history
+		}) // end of res render
+	}) // end of display pull
+}
+
+	if (year > completed_sport_season) {
+
+		var trade = require('../modules/trade_history_scrape.js')(req, res, db, sport, year, function(err, call) {
+			console.log("scrape complete");
+
+			setTimeout(function() {
+
+				var options = {
+					args: [sport, year]
+				}
+
+				pyshell.run("trade_history.py", options, function(err) {
+					console.log("python sript complete");
+
+					display();
+				}) // end of pyshell
+			}, 1000)
+		})
+	}
+	else {
+		display();
+	}
 
 
-	var trade = require('../modules/trade_history_scrape.js')(req, res, db, sport, year, function(err, owner_number_list, trades_processed, players_processed) {
-
-		setTimeout(function() {
-
-			var options = {
-				args: [sport, year]
-			}
-
-			pyshell.run("trade_history.py", options, function(err) {
-				console.log("python sript complete");
-
-				//db.collection(sport + "_trade_history_" + year + "_all").find({}, {"_id":0}, {"sort": [["date", "desc"]]}).toArray(function(e, docs1) {
-				db.collection("trade_history").find({}, {"_id":0}, {"sort": [["date", "desc"]]}).toArray(function(e, docs1) {
-					//console.log(docs1);
-					disp_trade_history = docs1;
-					console.log("displaying trade history...");
-
-					res.render('trade_history', {
-						trade_history: disp_trade_history
-					}) // end of res render
-				}) // end of display pull
-			}) // end of pyshell
-		}, 1000)
-	})
 
 }
 

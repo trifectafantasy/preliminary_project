@@ -10,9 +10,6 @@ from collections import OrderedDict
 def tradeHistory(db, sport, year):
 
 	collection_trade_history = sport + "_trade_history_" + year
-	collection_trade_history_all = sport + "_trade_history_" + year + "_all"
-
-	db[collection_trade_history_all].remove({})
 
 	sport_trade_history_numbers = list(db[collection_trade_history].find({}, {"trade_number": 1, "_id": 0}).sort([("date", -1), ("trade_number", 1)]))
 	number_of_sports_trades = sport_trade_history_numbers[-1]["trade_number"]
@@ -88,8 +85,6 @@ def tradeHistory(db, sport, year):
 
 		print insert_json
 		print ""
-
-		db[collection_trade_history_all].insert(insert_json)
 
 		collection_all = "trade_history"
 		db[collection_all].insert(insert_json)
