@@ -1,14 +1,18 @@
 ///// IMPORT JAVASCRIPT PACKAGES /////
-var express = require('express');
-var request = require('request');
-var cheerio = require('cheerio');
-var app = express();
+const express = require('express');
+const request = require('request');
+const cheerio = require('cheerio');
+const bodyParser = require('body-parser');
+
+const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.set('view engine', 'pug');
 app.set('views', './views');
 
 // routes for our app
-var router = require('./app/routes/routes.js');
+const router = require('./app/routes/routes.js');
 app.use('/', router);
 
 // set static files (css, images, etc)
