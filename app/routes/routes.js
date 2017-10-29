@@ -294,29 +294,18 @@ router.get('/trade_history', function(req, res) {
 })
 
 // route to trade_history_scrape
-router.get('/trade_history_scrape/:sport/:year', function(req, res) {
-
-	let sport = req.params.sport;
-	let year = req.params.year;
-
-	// set completed season for check if in season or not depending on sport
-	if (sport === 'football') {
-		completed_sport_season = completed_football_season;
-	}
-	else if (sport === 'basketball') {
-		completed_sport_season = completed_basketball_season;
-	}
-	else if (sport === 'baseball') {
-		completed_sport_season = completed_baseball_season;
-	}
+//router.get('/trade_history_scrape/:sport/:year', function(req, res) {
+router.post('/trade_history_upload', function(req, res) {
 
 	let input = {
-		year: req.params.year,
-		sport: req.params.sport,
-		completed_sport_season: completed_sport_season
+		date: req.body.date,
+		owner1: req.body.owner1,
+		owner1_players: req.body.owner1_players,
+		owner2: req.body.owner2,
+		owner2_players: req.body.owner2_players
 	};
 
-	const send = trade_router.trade_history_scrape(req, res, db, input);
+	const send = trade_router.trade_history_upload(req, res, db, input);
 })
 
 

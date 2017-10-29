@@ -89,36 +89,16 @@ function display() {
 	} // end of no scrape, just display
 } // end of trade module
 
+function trade_history_upload(req, res, db, args) {
 
-function trade_history_scrape(req, res, db, args) {
+	// insert trade into trade history db and when finished send 200, OK
+	db.collection("trade_history").insert(args, function() {
+		console.log("Trade uploaded");
 
-	let year = args.year;
-	let sport = args.sport;
-	let completed_sport_season = args.completed_sport_season;
+		res.sendStatus(200);
+	});
 
-	if (year > completed_sport_season) {
-
-		var trade = require('../modules/trade_history_scrape.js')(req, res, db, sport, year, function(err, call) {
-			console.log("scrape complete");
-
-			setTimeout(function() {
-
-				var options = {
-					args: [sport, year]
-				}
-
-				pyshell.run("trade_history.py", options, function(err) {
-					console.log("python script complete");
-
-					res.send("Scrape and database update complete!")
-				}) // end of pyshell
-			}, 1000)
-		})
-	}
-	else {
-		res.send("Don't need to scrape!");
-	}
-} // end of trade_history_scrape
+} // end of trade_history_upload module
 
 function trade_history_display(req, res, db) {
 
@@ -137,6 +117,6 @@ function trade_history_display(req, res, db) {
 
 module.exports = {
 	trade_analysis,
-	trade_history_scrape,
+	trade_history_upload,
 	trade_history_display
 }
