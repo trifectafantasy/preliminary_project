@@ -285,9 +285,28 @@ router.get('/:sport/trades/:year', function(req, res) {
 		completed_sport_season: completed_sport_season
 	};
 
-	const send = trade_router.trade(req, res, db, input);
+	const send = trade_router.trade_analysis(req, res, db, input);
 
 }) // end of route to trades
+
+router.get('/trade_history', function(req, res) {
+	const send = trade_router.trade_history_display(req, res, db);
+})
+
+// route to trade_history_scrape
+//router.get('/trade_history_scrape/:sport/:year', function(req, res) {
+router.post('/trade_history_upload', function(req, res) {
+
+	let input = {
+		date: req.body.date,
+		owner1: req.body.owner1,
+		owner1_players: req.body.owner1_players,
+		owner2: req.body.owner2,
+		owner2_players: req.body.owner2_players
+	};
+
+	const send = trade_router.trade_history_upload(req, res, db, input);
+})
 
 
 // route to acquisition home page

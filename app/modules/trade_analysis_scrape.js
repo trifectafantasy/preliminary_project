@@ -171,7 +171,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 							owner = portion.slice(owner_index + 3, owner_index + 7);
 							//console.log("owner: ", owner);
 
-							if (owner.includes(owner1_abbrev)) {
+							if (owner.indexOf(owner1_abbrev) != -1) {
 								//console.log("owner1 match");
 
 								while (owner1_abbrev !== owner) {
@@ -184,7 +184,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 								db.collection(sport + "_trades_" + year).insert({"trade_number": trades_processed, "player": player, "owner": owner, "owner_number": owner1_number})
 							}
 
-							else if (owner.includes(owner2_abbrev)) {
+							else if (owner.indexOf(owner2_abbrev) != -1) {
 								//console.log('owner2 match');
 
 								while(owner2_abbrev !== owner) {
@@ -200,12 +200,13 @@ module.exports = function(req, res, db, sport, year, callback) {
 							else {
 								//console.log("no includes")
 								owner = owner.slice(0, owner.length - 1);
-								if (owner.includes(owner1_abbrev.slice(0, 3))) {
+
+								if (owner.indexOf(owner1_abbrev.slice(0, owner1_abbrev.length - 1)) != -1) {
 									owner_number_list.push(owner1_number);
 									players_processed += 1
 									db.collection(sport + "_trades_" + year).insert({"trade_number": trades_processed, "player": player, "owner": owner, "owner_number": owner1_number})
 								}
-								else if (owner.includes(owner2_abbrev.slice(0, 3))) {
+								else if (owner.indexOf(owner2_abbrev.slice(0, owner2_abbrev.length - 1)) != -1) {
 									owner_number_list.push(owner2_number);
 									players_processed += 1
 									db.collection(sport + "_trades_" + year).insert({"trade_number": trades_processed, "player": player, "owner": owner, "owner_number": owner2_number})

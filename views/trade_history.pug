@@ -1,0 +1,38 @@
+html
+	head
+		title= "Trade History"
+		include ./JADE-Bootstrap/_bootstrap
+		include mixins.pug
+		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', type="text/css", href='/css/styles.css')
+
+	body
+		header
+			+headliner
+
+					
+		h2= "Trifecta Trade History"
+
+		table
+			thead
+				tr
+					th DATE
+					th OWNER 1
+					th PLAYERS RECEIVED
+					th OWNER 2
+					th PLAYERS RECEIVED
+
+			tbody
+				each readin in trade_history
+					tr
+						each val, cat in readin
+							if cat === "date"
+								td= val						
+							if cat === "owner1"
+								td= val
+							if cat === "owner1_players"
+								td= val
+							if cat === "owner2"
+								td= val
+							if cat === "owner2_players"
+								td= val
