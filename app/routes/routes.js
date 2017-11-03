@@ -308,6 +308,32 @@ router.post('/trade_history_upload', function(req, res) {
 	const send = trade_router.trade_history_upload(req, res, db, input);
 })
 
+router.post('/add_team_name', function(req, res) {
+
+	let owner_number = req.body.owner_number;
+	let team_name = req.body.team_name;
+
+	// if owner_number of team_name request header is empty or undefined
+	if ((owner_number === undefined || team_name === undefined) || (owner_number === "" || team_name === "")) {
+		console.log("Missing owner_number or team_name request header.");
+		res.status(400).send({"message": "Missing owner_number or team_name request header"});
+	}
+
+	else {
+
+		let options = {
+			args: [owner_number, team_name]
+		};
+
+		pyshell.run('add_team_name.py', options, function(err) {
+			if (err) throw err;
+			console.log("python script complete. Name Added");
+
+			res.status(200).send({"message": team_name + " successfully added!"});
+		}); // end of pyshell script
+	} // end of else successful request
+})
+
 
 // route to acquisition home page
 router.get('/stats_home_page', function(req, res) {

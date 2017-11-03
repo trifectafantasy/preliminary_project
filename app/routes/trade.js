@@ -95,7 +95,7 @@ function trade_history_upload(req, res, db, args) {
 	db.collection("trade_history").insert(args, function() {
 		console.log("Trade uploaded");
 
-		res.sendStatus(200);
+		res.status(200).send({"message": "Trade between " + args.owner1 + " and " + args.owner2 + " successfully addeed!"});
 	});
 
 } // end of trade_history_upload module
