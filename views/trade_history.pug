@@ -31,8 +31,17 @@ html
 							if cat === "owner1"
 								td= val
 							if cat === "owner1_players"
-								td= val
+								if typeof val === "string"
+									td
+										each player in val.split(',')
+											br
+											|+ #{player}
+
 							if cat === "owner2"
 								td= val
 							if cat === "owner2_players"
-								td= val
+								if typeof val === "string"
+									td
+										each player in val.split(',')
+											br
+											|+ #{player}
