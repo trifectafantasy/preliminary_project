@@ -222,7 +222,7 @@ module.exports = function(req, res, db, year, playoffs) {
 							};
 							
 							// run python script to initialize trifecta database
-							pyshell.run('baseball_playoffs.py', options, function(err) {
+							pyshell.run('python/baseball_playoffs.py', options, function(err) {
 								if (err) throw err;
 								console.log('Playoff python script complete');
 

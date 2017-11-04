@@ -30,7 +30,7 @@ var all_popular = function(x, owner_list) {
 			}
 
 			// python script that calculates players with most transactions per team
-			pyshell.run('popular_individual.py', options, function(err) {
+			pyshell.run('python/popular_individual.py', options, function(err) {
 				console.log("popular python script done");
 
 				// send back through loop
@@ -46,7 +46,7 @@ var all_popular = function(x, owner_list) {
 		}
 
 		// python script that calculates player that was on most teams and owners who had player on roster
-		pyshell.run('popular_all.py', options, function(err) {
+		pyshell.run('python/popular_all.py', options, function(err) {
 			console.log("all popular python script done");
 
 			// delay 2 seconds to let database populate

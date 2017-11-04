@@ -206,7 +206,7 @@ var complete = function() {
 		owner_name = docs[0]["owner"]
 		//console.log(owner_name);
 
-		pyshell.run('total_owner_matchups.py', options, function(err) {
+		pyshell.run('python/total_owner_matchups.py', options, function(err) {
 			if (err) throw err;
 			console.log("total matchups python script complete");
 

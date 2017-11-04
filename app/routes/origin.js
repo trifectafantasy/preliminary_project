@@ -54,7 +54,7 @@ var all_origin = function(x, owner_list) {
 						args: [sport, year, owner_number]
 					}
 
-					pyshell.run(sport + '_origin.py', options, function(err) {
+					pyshell.run('python/' + sport + '_origin.py', options, function(err) {
 						console.log("origin python script complete");
 
 						all_origin(x + 1, owner_list);

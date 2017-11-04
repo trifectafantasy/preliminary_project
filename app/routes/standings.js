@@ -56,7 +56,7 @@ function display_trifecta_standings() {
 			}
 
 			// always run trifecta standings python script
-			pyshell.run('trifecta_standings.py', options, function(err) {
+			pyshell.run('python/trifecta_standings.py', options, function(err) {
 				if (err) throw err;
 				console.log("Trifecta standings python script complete");
 				
@@ -87,7 +87,7 @@ function display_trifecta_standings() {
 				}
 
 				// always run trifecta standings python script
-				pyshell.run('trifecta_standings.py', options, function(err) {
+				pyshell.run('python/trifecta_standings.py', options, function(err) {
 					if (err) throw err;
 					console.log("Trifecta standings python script complete");
 					
