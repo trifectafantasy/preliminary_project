@@ -49,7 +49,7 @@ let profile_complete = function() {
 		}
 
 		// python script that calculates each owner's record that season
-		pyshell.run('profile_standings.py', options, function(err) {
+		pyshell.run('python/profile_standings.py', options, function(err) {
 			console.log("profile standings python script done");
 
 			// pull for display
@@ -61,7 +61,7 @@ let profile_complete = function() {
 		}) // end of pyshell
 
 		// python script that pulls each owner's best and worst matchups records 
-		pyshell.run('profile_matchups.py', options, function(err) {
+		pyshell.run('python/profile_matchups.py', options, function(err) {
 			console.log('profile matchups python script done');
 
 			// pull for display
@@ -72,7 +72,7 @@ let profile_complete = function() {
 		}) // end of pyshell
 
 		// python script that pulls each owner's best and worst players from season
-		pyshell.run('profile_players.py', options, function(err) {
+		pyshell.run('python/profile_players.py', options, function(err) {
 			console.log('profile players python script done');
 
 			// pull for display

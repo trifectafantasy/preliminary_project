@@ -144,7 +144,7 @@ var display = function() {
 			// if the baseball regular season (the last regular season), is not finished, need to recalculate matchups
 			else {
 				// run owner_matchups python script to calculate owner matchup stats
-				pyshell.run('owner_matchups.py', options, function(err) {
+				pyshell.run('python/owner_matchups.py', options, function(err) {
 					if (err) throw err;
 					console.log("owner matchup python script complete");
 
@@ -208,7 +208,7 @@ var display = function() {
 			}
 			else {
 				// run owner mathups python script to calculate owner matchup stats
-				pyshell.run('owner_matchups.py', options, function(err) {
+				pyshell.run('python/owner_matchups.py', options, function(err) {
 					if (err) throw err;
 					console.log("owner matchup python script complete");
 
@@ -268,7 +268,7 @@ var display = function() {
 			}
 			else {
 				// run owner matchup python script to calculate owner matchup data
-				pyshell.run('owner_matchups.py', options, function(err) {
+				pyshell.run('python/owner_matchups.py', options, function(err) {
 					if (err) throw err;
 					console.log("owner matchup python script complete");
 
@@ -480,7 +480,7 @@ var football_complete = function() {
 		}		
 
 		// run python script to interpret scraped data and convert to 
-		pyshell.run('football_matchups.py', options, function(err) {
+		pyshell.run('python/football_matchups.py', options, function(err) {
 			if (err) throw err;
 			console.log('Matchups python script complete');
 
@@ -647,7 +647,7 @@ var basketball_complete = function() {
 		}
 
 		// call basketball matchups python script to processing
-		pyshell.run('basketball_matchups.py', options, function(err) {
+		pyshell.run('python/basketball_matchups.py', options, function(err) {
 			if (err) throw err;
 			console.log('Matchups python script complete');
 
@@ -812,7 +812,7 @@ var baseball_complete = function() {
 		}
 
 		// run python script that processes record
-		pyshell.run('baseball_matchups.py', options, function(err) {
+		pyshell.run('python/baseball_matchups.py', options, function(err) {
 			if (err) throw err;
 			console.log('Matchups python script complete');
 

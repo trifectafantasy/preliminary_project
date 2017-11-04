@@ -36,7 +36,7 @@ var all_football_coach = function(x, owner_list) {
 		var options = {
 			args: [year, completed_weeks]
 		}
-		pyshell.run('football_coach.py', options, function(err) {
+		pyshell.run('python/football_coach.py', options, function(err) {
 			if (err) throw err;
 			console.log("coach python script done");
 
@@ -58,7 +58,7 @@ var all_football_coach = function(x, owner_list) {
 	}
 } // end of all_football_coach function
 
-// execute script
+// execute scriptf	
 	// if year is greater than completed season, SCRAPE
 	if (year > completed_football_season) {
 		

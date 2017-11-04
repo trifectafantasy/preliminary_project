@@ -162,7 +162,7 @@ module.exports = function(req, res, db, year, playoffs) {
 				}
 
 				// run standings.py from python-shell to update collections with roto and trifecta points
-				pyshell.run("football_standings.py", options, function(err) {
+				pyshell.run('python/football_standings.py', options, function(err) {
 					
 					if (err) throw err;
 					console.log("Python script complete");
@@ -190,7 +190,7 @@ module.exports = function(req, res, db, year, playoffs) {
 							};
 							
 							// run python script to initialize trifecta database
-							pyshell.run('football_playoffs.py', options, function(err) {
+							pyshell.run('python/football_playoffs.py', options, function(err) {
 								if (err) throw err;
 								console.log('Playoff python script complete');
 

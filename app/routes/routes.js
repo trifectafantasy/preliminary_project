@@ -57,7 +57,7 @@ let this_football_season_started = true;
 let this_football_playoffs = false;
 let this_football_completed_season = false;
 // full regular season = 13 matchups
-let football_completed_matchups = 7;
+let football_completed_matchups = 8;
 
 // basktball status letiables
 let this_basketball_season_started = true;
@@ -66,7 +66,7 @@ let this_basketball_in_season = true;
 let this_basketball_playoffs = false;
 let this_basketball_completed_season = false;
 // full regular season = 18 matchups
-let basketball_completed_matchups = 1;
+let basketball_completed_matchups = 2;
 
 // baseball status letiables
 let this_baseball_season_started = false;
@@ -325,7 +325,7 @@ router.post('/add_team_name', function(req, res) {
 			args: [owner_number, team_name]
 		};
 
-		pyshell.run('add_team_name.py', options, function(err) {
+		pyshell.run('python/add_team_name.py', options, function(err) {
 			if (err) throw err;
 			console.log("python script complete. Name Added");
 

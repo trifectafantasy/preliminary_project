@@ -63,7 +63,7 @@ function display() {
 					};
 
 					// run python script to associate traded players with their active stats and sum to make total 
-					pyshell.run(sport + '_trade_analysis.py', options, function(err) {
+					pyshell.run('python/' + sport + '_trade_analysis.py', options, function(err) {
 						if (err) throw err;
 						console.log('trade python script complete');
 
