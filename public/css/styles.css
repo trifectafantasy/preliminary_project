@@ -6,6 +6,11 @@ header {
 	background-color: black;
 }
 
+iframe {
+	display: block;
+	margin: auto;
+}
+
 table {
   border-collapse: separate;
   border-spacing: 25px 0;
