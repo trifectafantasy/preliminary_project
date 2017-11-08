@@ -10,6 +10,7 @@ let assert = require('assert');
 
 let forEach = require('async-foreach').forEach;
 
+
 function get_season_variables(req, res, db) {
 	db.collection('season_variables').find({}, {"_id": 0}).toArray(function(e, season_variables) {
 		//console.log(season_variables[0]);
@@ -84,13 +85,40 @@ function modify_season_variables(req, res, db, args, callback) {
 		})  // end of integer_field_header_list loop
 	} // end of convert_and_update function
 
-
 verify_request_headers()
-
 
 } // end of modify_season_variables function
 
+
+function add_team_name(req, res, db, args) {
+
+	let owner_number = args.owner_number;
+	let team_name = args.team_name;
+
+	// if owner_number of team_name request header is empty or undefined
+	if ((owner_number === undefined || team_name === undefined) || (owner_number === "" || team_name === "")) {
+		console.log("Missing owner_number or team_name request header.");
+		res.status(400).send({"message": "Missing owner_number or team_name request header"});
+	}
+
+	else {
+
+		let options = {
+			args: [owner_number, team_name]
+		};
+
+		pyshell.run('python/add_team_name.py', options, function(err) {
+			if (err) throw err;
+			console.log("python script complete. Name Added");
+
+			res.status(200).send({"message": team_name + " successfully added!"});
+		}); // end of pyshell script
+	} // end of else successful request
+}
+
+
 module.exports = {
 	get_season_variables,
-	modify_season_variables
+	modify_season_variables,
+	add_team_name
 }
