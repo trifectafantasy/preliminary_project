@@ -20,17 +20,92 @@ const MongoClient = mongo.MongoClient;
 const mongo_url = 'mongodb://localhost:27017/espn';
 let db;
 
-// Initialize connection once
-MongoClient.connect("mongodb://localhost:27017/espn", function(err, database) {
-  
-  if(err) throw err;
-  // use database callback to set db
-  db = database;
-  console.log("Connected to MongoDB")
+let env_variables;
+let current_year1, current_year2;
+let completed_football_season, completed_basketball_season, completed_baseball_season;
+let this_football_season_started, this_football_playoffs, this_football_completed_season;
+let this_basketball_season_started, this_basketball_in_season, this_basketball_playoffs, this_basketball_completed_season;
+let this_baseball_season_started, this_baseball_in_season, this_baseball_playoffs, this_baseball_completed_season;
+let football_completed_matchups, basketball_completed_matchups, baseball_completed_matchups;
+let football_ahead, football_ahead_current_year, football_ahead_completed_matchups;
+let set_board_sport;
 
+
+// function to set up callback for season_variables
+function StartMongoDBInstance (mongo_url, callback) {
+
+	MongoClient.connect(mongo_url, function(err, database) {
+		if (err) throw err;
+
+		db = database;
+		console.log("Connected to MongoDB");
+
+		db.collection("season_variables").find({}, {"_id": 0}).toArray(function(e, docs) {
+
+			// send callback of season_variables json
+			callback(docs[0]);
+		})
+	}) // end of MongoClient connection
+}
+
+function set_season_variables(env_variables, res) {
+
+	//console.log(env_variables);
+
+	// set years of current trifecta season to use
+	current_year1 = env_variables.current_year1;
+	current_year2 = env_variables.current_year2;
+
+	// year of most recently totally completed (in past) season per sport
+	completed_football_season = env_variables.completed_football_season;
+	completed_basketball_season = env_variables.completed_basketball_season;
+	completed_baseball_season = env_variables.completed_baseball_season;
+
+	// football status variables
+	this_football_season_started = env_variables.this_football_season_started;
+	this_football_playoffs = env_variables.this_football_playoffs;
+	this_football_completed_season = env_variables.this_football_completed_season;
+	// full regular season = 13 matchups
+	football_completed_matchups = env_variables.football_completed_matchups;
+
+	// basketball status variables
+	this_basketball_season_started = env_variables.this_basketball_season_started;
+	// set to false if want to stop scraping roto standings after regular season has ended
+	this_basketball_in_season = env_variables.this_basketball_in_season;
+	this_basketball_playoffs = env_variables.this_basketball_playoffs;
+	this_basketball_completed_season = env_variables.this_basketball_completed_season;
+	// full regular season = 18 matchups
+	basketball_completed_matchups = env_variables.basketball_completed_matchups;
+
+	// baseball status variables
+	this_baseball_season_started = env_variables.this_baseball_season_started;
+	// set to false if want to stop scraping roto standings after regular season had ended8
+	this_baseball_in_season = env_variables.this_baseball_in_season;
+	this_baseball_playoffs = env_variables.this_baseball_playoffs;
+	this_baseball_completed_season = env_variables.this_baseball_completed_season;
+	// full regular season = 22 matchups
+	baseball_completed_matchups = env_variables.baseball_completed_matchups;
+
+	// exception built in for when Football is in new Trifecta season starts during Baseball in preivous Trifecta season
+	football_ahead = env_variables.football_ahead;
+	football_ahead_current_year = env_variables.football_ahead_current_year;
+	football_ahead_completed_matchups = env_variables.football_ahead_completed_matchups;
+
+	// sport that has full draft order and picks read
+	set_board_sport = env_variables.set_board_sport;
+
+	console.log("Season variables loaded");
+
+}
+
+// Initialize connection and load season variables
+StartMongoDBInstance(mongo_url, function(env_variables) {
+
+	set_season_variables(env_variables);
 });
 
 // Require routers for paths to different pages
+const utility_router = require('./utility.js');
 const profile_router = require('./profile.js');
 const standings_router = require('./standings.js');
 const matchups_router = require('./matchups.js');
@@ -43,49 +118,6 @@ const coach_router = require('./coach.js');
 const draft_board_router = require('./draft_board.js');
 
 
-// set years of current trifecta season to test against
-let current_year1 = 2017;
-let current_year2 = 2018;
-
-// year of most recent totally completed (in the past) season
-let completed_football_season = 2016;
-let completed_basketball_season = 2017;
-let completed_baseball_season = 2017;
-
-// football status letiables
-let this_football_season_started = true;
-let this_football_playoffs = false;
-let this_football_completed_season = false;
-// full regular season = 13 matchups
-let football_completed_matchups = 8;
-
-// basktball status letiables
-let this_basketball_season_started = true;
-//set to false if want to stop scraping roto standings after regular season has ended
-let this_basketball_in_season = true;
-let this_basketball_playoffs = false;
-let this_basketball_completed_season = false;
-// full regular season = 18 matchups
-let basketball_completed_matchups = 2;
-
-// baseball status letiables
-let this_baseball_season_started = false;
-//set to false if want to stop scraping roto standings after regular season has ended
-let this_baseball_in_season = false;
-let this_baseball_playoffs = false;
-let this_baseball_completed_season = false;
-// full regular season = 22 matchups
-let baseball_completed_matchups = 0;
-
-// exception built in for when Football in new Trifecta season starts during Baseball in previous Trifecta season
-let football_ahead = false;
-let football_ahead_current_year = 2017;
-let football_ahead_completed_matchups = 3;
-
-// sport that has full draft order and picks ready
-let set_board_sport = null;
-
-
 // Route to Home/Root page
 router.get('/', function(req, res) {
 	res.render('index', {
@@ -93,6 +125,53 @@ router.get('/', function(req, res) {
 	});
 });
 
+
+router.get('/utility/season_variables', function(req, res) {
+	const send = utility_router.get_season_variables(req, res, db);
+});
+
+router.put('/utility/season_variables', function(req, res) {
+	const send = utility_router.modify_season_variables(req, res, db, req.body, function(good_header_requests, bad_header_requests) {
+
+		// close previous mongodb connection
+		db.close();
+
+		// Initialize connection and load season variables
+		StartMongoDBInstance(mongo_url, function(env_variables) {
+			set_season_variables(env_variables, res);
+
+			res.status(200).send({"status": "Season variables re-loaded", "successful_header_requests": good_header_requests, "bad_header_requests": bad_header_requests});
+
+		})
+	});
+});
+
+
+router.post('/add_team_name', function(req, res) {
+
+	let owner_number = req.body.owner_number;
+	let team_name = req.body.team_name;
+
+	// if owner_number of team_name request header is empty or undefined
+	if ((owner_number === undefined || team_name === undefined) || (owner_number === "" || team_name === "")) {
+		console.log("Missing owner_number or team_name request header.");
+		res.status(400).send({"message": "Missing owner_number or team_name request header"});
+	}
+
+	else {
+
+		let options = {
+			args: [owner_number, team_name]
+		};
+
+		pyshell.run('python/add_team_name.py', options, function(err) {
+			if (err) throw err;
+			console.log("python script complete. Name Added");
+
+			res.status(200).send({"message": team_name + " successfully added!"});
+		}); // end of pyshell script
+	} // end of else successful request
+})
 
 // route to profile home page
 router.get('/profile_home_page', function(req, res) {
@@ -110,6 +189,8 @@ router.get('/owner/:owner_number/profile/recap', function(req, res) {
 		this_basketball_completed_season: this_basketball_completed_season,
 		this_baseball_completed_season: this_baseball_completed_season
 	};
+
+	console.log(input);
 
 	const send = profile_router.profile_recap(req, res, db, input);
 
@@ -308,31 +389,6 @@ router.post('/trade_history_upload', function(req, res) {
 	const send = trade_router.trade_history_upload(req, res, db, input);
 })
 
-router.post('/add_team_name', function(req, res) {
-
-	let owner_number = req.body.owner_number;
-	let team_name = req.body.team_name;
-
-	// if owner_number of team_name request header is empty or undefined
-	if ((owner_number === undefined || team_name === undefined) || (owner_number === "" || team_name === "")) {
-		console.log("Missing owner_number or team_name request header.");
-		res.status(400).send({"message": "Missing owner_number or team_name request header"});
-	}
-
-	else {
-
-		let options = {
-			args: [owner_number, team_name]
-		};
-
-		pyshell.run('python/add_team_name.py', options, function(err) {
-			if (err) throw err;
-			console.log("python script complete. Name Added");
-
-			res.status(200).send({"message": team_name + " successfully added!"});
-		}); // end of pyshell script
-	} // end of else successful request
-})
 
 
 // route to acquisition home page
