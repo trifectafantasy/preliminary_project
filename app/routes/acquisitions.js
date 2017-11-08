@@ -72,7 +72,6 @@ var acquire_process = function() {
 // function that synchronously updates acquisitions for each team
 var all_acquisitions = function(x, owner_list) {
 
-	console.log(owner_list);
 	if (x < owner_list.length) {
 
 		owner_number = owner_list[x];

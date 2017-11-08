@@ -40,7 +40,7 @@ function readCollection(db, callback) {
 		// Prints after readCollection is started
 		console.log("Function starts right away, but doesn't finish....")
 
-		var cursor1 = db.collection('baseball_2016_h2h').find({}, {"_id": 0}, {"sort": [['division', 'asc'], ['win_per', 'desc']]}).toArray(function(err, cursor1){
+		db.collection('baseball_2016_h2h').find({}, {"_id": 0}, {"sort": [['division', 'asc'], ['win_per', 'desc']]}).toArray(function(err, cursor1){
 			callback(cursor1);
 	})
 }
