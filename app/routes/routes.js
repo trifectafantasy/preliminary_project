@@ -117,6 +117,24 @@ const popular_router = require('./popular.js');
 const coach_router = require('./coach.js');
 const draft_board_router = require('./draft_board.js');
 
+router.get('/form', function(req, res) {
+	res.render('form')
+})
+
+router.post('/form', function(req, res) {
+	console.log(req.body);
+
+	if (req.body !== undefined) {
+		console.log("ok");
+		res.status(200).render('index', {
+			message: "Name submitted!"
+		})
+	}
+	else {
+		console.log("nope");
+	}
+})
+
 
 // Route to Home/Root page
 router.get('/', function(req, res) {

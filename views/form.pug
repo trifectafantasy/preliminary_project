@@ -1,0 +1,23 @@
+html
+	head
+		title Home Page
+		include ./JADE-Bootstrap/_bootstrap
+		include mixins.pug
+		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', type="text/css", href='/css/styles.css')
+
+	body
+		header
+			+headliner
+					
+		form(action="/form", method="POST")
+			p First Name:
+			input(type="text", name="First Name")
+			p Last Name:
+			input(type="text", name="Last Name")
+			p
+			select(name="Boolean")
+				option(value="true" selected="no") True
+				option(value="false" selected="bleh") False
+			p
+			input(type="submit" value="Submit")
