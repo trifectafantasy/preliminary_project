@@ -261,7 +261,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 						correct_trifecta_points = baseball_points
 
 				# divide h2h points by 2 to get proper weight for baseball trifecta points
-				h2h_baseball_trifecta_points = float(correct_trifecta_points) / 2
+				h2h_baseball_trifecta_points = float(correct_trifecta_points)
 				print "baseball team name: ", correct_team_name
 				print "h2h baseball trifecta points: ", h2h_baseball_trifecta_points
 
@@ -295,7 +295,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 						correct_trifecta_points = baseball_points			
 
 				# divide roto points by 2 to get proper weight for baseball trifecta points
-				roto_baseball_trifecta_points = float(correct_trifecta_points) / 2
+				roto_baseball_trifecta_points = float(correct_trifecta_points)
 				#print "baseball team name: ", correct_team_name
 				print "roto baseball trifecta points: ", roto_baseball_trifecta_points
 

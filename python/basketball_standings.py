@@ -14,7 +14,7 @@ def h2h_trifecta(db, collection):
 	###print(sorted_h2h)
 
 	# starting value for trifecta points to give out
-	trifecta_h2h_points = 10
+	trifecta_h2h_points = 20
 
 	# initialize factors to determine trifecta points if there is a tie
 	skipped_team = False
@@ -46,7 +46,7 @@ def h2h_trifecta(db, collection):
 			if len(points_hold) == 0:
 
 				# points to be averaged and split are [trifecta points - # of teams tied, trifecta points]
-				points_hold = range((trifecta_h2h_points + 1 - same_records), trifecta_h2h_points + 1) # need the +1 at the end since range is exclusive on the end
+				points_hold = range((trifecta_h2h_points - ((same_records - 1) * 2) -2), trifecta_h2h_points + 1, 2)
 				# range of points allocated is summed and averaged
 				dist_points = float(sum(points_hold)) / same_records
 			
@@ -64,7 +64,7 @@ def h2h_trifecta(db, collection):
 			individual_trifecta_h2h_points = trifecta_h2h_points
 
 		# at the end of each loop of each team, decrease number of trifecta points (10 -> 1)
-		trifecta_h2h_points -= 1
+		trifecta_h2h_points -= 2
 		print("team: ", current_team)
 		print("h2h trifecta points: ", float(individual_trifecta_h2h_points))
 
