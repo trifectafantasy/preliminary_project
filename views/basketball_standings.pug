@@ -48,7 +48,7 @@ html
 						th TIES
 						th WIN %
 						th DIVISION
-						th H2H TRIFECTA POINTS
+						th TRIFECTA POINTS
 				tbody
 					each readin in h2h_standings
 						tr
@@ -83,7 +83,6 @@ html
 						th TO
 						th PTS
 						th TOTAL ROTO POINTS
-						th ROTO TRIFECTA POINTS
 				tbody
 					each next in roto_standings
 						tr
@@ -110,8 +109,6 @@ html
 									td= val
 								if cat === "total_roto_points"
 									td= val
-								if cat === "roto_trifecta_points"
-									td= val			
 			
 
 		else
@@ -126,7 +123,7 @@ html
 						th TIES
 						th WIN %
 						th DIVISION
-						th H2H TRIFECTA POINTS
+						th TRIFECTA POINTS
 				tbody
 					each readin in h2h_standings
 						tr
@@ -162,7 +159,6 @@ html
 						th TO
 						th PTS
 						th TOTAL ROTO POINTS
-						th ROTO TRIFECTA POINTS
 				tbody
 					each next in roto_standings
 						tr
@@ -189,6 +185,3 @@ html
 									td= val
 								if cat === "total_roto_points"
 									td= val
-								if cat === "roto_trifecta_points"
-									td= val			
-

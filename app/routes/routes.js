@@ -207,8 +207,9 @@ router.get('/football_standings/:year', function(req, res) {
 
 	let input = {
 		year: req.params.year,
-		playoffs: this_football_playoffs,
-		completed_football_season: completed_football_season
+		completed_football_season: completed_football_season,
+		this_football_season_started: this_football_season_started,
+		playoffs: this_football_playoffs
 	};
 
 	const send = standings_router.football_standings(req, res, db, input);
@@ -220,8 +221,9 @@ router.get('/basketball_standings/:year', function(req, res) {
 
 	let input = {
 		year: req.params.year,
-		playoffs: this_basketball_playoffs,
-		completed_basketball_season: completed_basketball_season
+		completed_basketball_season: completed_basketball_season,
+		this_basketball_season_started: this_basketball_season_started,
+		playoffs: this_basketball_playoffs
 	};
 
 	const send = standings_router.basketball_standings(req, res, db, input);
@@ -233,8 +235,9 @@ router.get('/baseball_standings/:year', function(req, res) {
 
 	let input = {
 		year: req.params.year,
+		completed_baseball_season: completed_baseball_season,
+		this_baseball_season_started: this_baseball_season_started,
 		playoffs: this_baseball_playoffs,
-		completed_baseball_season: completed_baseball_season
 	};
 
 	const send = standings_router.baseball_standings(req, res, db, input);
