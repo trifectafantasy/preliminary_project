@@ -160,7 +160,7 @@ var complete = function() {
 	} // end of if <= 2016 (aka, don't need to srape anymore)
 
 	// if this current and in season, scrape
-	else if (football_season_started === true) {
+	else if (football_season_started === true && year - completed_football_season == 1) {
 		var stand = require('../modules/football_standings_router_template.js')(req, res, db, year, playoffs);
 	}
 	else {
@@ -242,7 +242,7 @@ var complete = function() {
 			complete();
 		});
 	}
-	else if (this_basketball_season_started === true) {
+	else if (this_basketball_season_started === true && year - completed_basketball_season == 1) {
 		var stand = require('../modules/basketball_standings_router_template.js')(req, res, db, year, playoffs);
 	}
 	else {
@@ -323,7 +323,7 @@ var complete = function() {
 			complete();
 		});
 	}
-	else if (this_baseball_season_started === true) {
+	else if (this_baseball_season_started === true && year - completed_baseball_season == 1) {
 		var stand = require('../modules/baseball_standings_router_template.js')(req, res, db, year, playoffs);
 	}
 	else {
