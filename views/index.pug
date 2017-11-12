@@ -1,17 +1,25 @@
 html
 	head
 		title Home Page
+		link(rel="icon", type="image/x-icon", href="/images/trifectalogo.ico")
 		include ./JADE-Bootstrap/_bootstrap
 		include mixins.pug
 		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
 		link(rel='stylesheet', type="text/css", href='/css/styles.css')
 
+
 	body
 		header
 			+headliner
 					
-		h2= message
-		h4 yay sports
+		img#banner(src="/images/trifecta_banner.JPG", alt="Trifecta League Banner")
 
+		h1= message
 
-		iframe(type="text/html" width="80%" height="80%" src="https://docs.google.com/document/d/e/2PACX-1vSeFK20JkrIc-uYTICX5rE9jywgCZ32LD03k8LbLP5tqagoIS1I4Br1iI3ObKk0Z9vbJ3hltu62F03M/pub?embedded=true")
+		h4 Welcome to the Chips and Markers Trifecta Fantasy League!!!!
+		h4 The goal of this league is to create a standard set of ownership year round for 3 fantasy sports: football, basketball, and baseball. The ultimate goal is that rivalries would continue year round and we would have an active league that can continue to play regardless of the sport or the season. Emphasis: active ownership only.
+		h4 Please contact your League Managers: Marcus Lam or Wesley Chipeco if you would like to participate or have any suggestions for improvements!
+
+		h3 yay sports
+
+		iframe#manual(type="text/html" src="https://docs.google.com/document/d/e/2PACX-1vSeFK20JkrIc-uYTICX5rE9jywgCZ32LD03k8LbLP5tqagoIS1I4Br1iI3ObKk0Z9vbJ3hltu62F03M/pub?embedded=true")
