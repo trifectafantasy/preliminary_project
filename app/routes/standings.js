@@ -20,7 +20,7 @@ function trifecta_standings(req, res, db, args) {
 	let this_baseball_season_started = args.baseball_season_started;
 
 	let year_diff = year2 - year1;
-	
+
 	// initialize display variable
 	var disp_trifecta_standings = null;
 
@@ -37,7 +37,7 @@ function display_trifecta_standings() {
 			year2: year2,
 			trifecta_standings: disp_trifecta_standings,
 		});
-	});		
+	});
 } // end of display_trifecta_standings function
 
 
@@ -59,14 +59,14 @@ function display_trifecta_standings() {
 			pyshell.run('python/trifecta_standings.py', options, function(err) {
 				if (err) throw err;
 				console.log("Trifecta standings python script complete");
-				
+
 				display_trifecta_standings();
-			});			
+			});
 		}
 
 		// if the years given are in the past, don't just need to pull trifecta standings
 		else if (year1 < current_year1 && year2 < current_year2) {
-			
+
 			display_trifecta_standings();
 		}
 
@@ -95,7 +95,7 @@ function display_trifecta_standings() {
 				});
 			}
 		}
-	} // end of first error handling	
+	} // end of first error handling
 } // end of trifeta_standings module
 
 function football_standings(req, res, db, args) {
@@ -120,7 +120,7 @@ var complete = function() {
 				year: year,
 				playoffs: playoffs
 			});
-		}			
+		}
 	}
 	else {
 		if (disp_h2h_standings !== null) {
@@ -130,9 +130,9 @@ var complete = function() {
 				year: year,
 				playoffs: playoffs
 			});
-		}			
+		}
 	}
-} // end of complete 
+} // end of complete
 
 	// if requested season is already completed, just pull from database
 	if (year <= completed_football_season) {
@@ -156,11 +156,11 @@ var complete = function() {
 			console.log("Displaying playoff data...");
 			disp_trifecta_standings = docs;
 			complete();
-		});			
+		});
 	} // end of if <= 2016 (aka, don't need to srape anymore)
 
 	// if this current and in season, scrape
-	else if (football_season_started === true && year - completed_football_season == 1) {
+	else if (this_football_season_started === true && year - completed_football_season == 1) {
 		var stand = require('../modules/football_standings_router_template.js')(req, res, db, year, playoffs);
 	}
 	else {
@@ -209,7 +209,7 @@ var complete = function() {
 		}
 	}
 } // end of complete function
-	
+
 	// if season is in the past, just display
 	if (year <= completed_basketball_season) {
 		playoffs = true;
@@ -275,7 +275,7 @@ var complete = function() {
 				year: year,
 				playoffs: playoffs
 			});
-		}			
+		}
 	}
 	else {
 		if (disp_h2h_standings !== null && disp_roto_standings !== null) {
@@ -287,13 +287,13 @@ var complete = function() {
 				year: year,
 				playoffs: playoffs
 			});
-		}			
+		}
 	}
 } // end of complete function
 
 	// if this season is in the past, just display
 	if (year <= completed_baseball_season) {
-		playoffs = true;		
+		playoffs = true;
 
 		// pull from mongodb and display new data after python script finishes
 		db.collection('baseball_h2h_' + year).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
@@ -310,7 +310,7 @@ var complete = function() {
 			disp_roto_standings = docs;
 			// call complete to see if both finds are done
 			complete();
-		});				
+		});
 
 		var options = {
 			args: [year]
