@@ -6,11 +6,6 @@ header {
 	background-color: black;
 }
 
-iframe {
-	display: block;
-	margin: auto;
-}
-
 table {
   border-collapse: separate;
   border-spacing: 25px 0;
@@ -23,6 +18,25 @@ td {
 
 a {
 	color: blue;
+}
+
+#banner {
+	display: block;
+	margin: auto;
+	width: 75%;
+	max-width: 1250px;
+	height: 20%;
+	min-height: 150px;
+	max-height: 250px;
+}
+
+#manual {
+	display: block;
+	margin: auto;
+	width: 80%;
+	height: 80%;
+	padding-top: 1%;
+	border-style: none;
 }
 
 #home-hover {
