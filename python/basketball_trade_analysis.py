@@ -48,25 +48,46 @@ def basketballTrade(db, sport, year):
 
 			# pull stats per player in trade
 			collection_stat = "owner" + owner_number + "_" + sport +  "_stats_" + year
-			stat_pull = list(db[collection_stat].find({"player": player_name}, {"_id": 0}))[0]
-			#print stat_pull
 
-			insert_json["trade_number"] = trade_number
-			insert_json["owner_number"] = owner_number
-			insert_json["owner"] = owner_name
-			insert_json["player"] = player_name
-			insert_json["GP"] = stat_pull["GP"]
-			insert_json["FG"] = stat_pull["FG"]
-			insert_json["FG_PCT"] = stat_pull["FG_PCT"]
-			insert_json["FT"] = stat_pull["FT"]
-			insert_json["FT_PCT"] = stat_pull["FT_PCT"]
-			insert_json["THREEPM"] = stat_pull["THREEPM"]
-			insert_json["REB"] = stat_pull["REB"]
-			insert_json["AST"] = stat_pull["AST"]
-			insert_json["STL"] = stat_pull["STL"]
-			insert_json["BLK"] = stat_pull["BLK"]
-			insert_json["TO"] = stat_pull["TO"]
-			insert_json["PTS"] = stat_pull["PTS"]
+			# if players just traded and there are no stats, make them all 0
+			try:
+				stat_pull = list(db[collection_stat].find({"player": player_name}, {"_id": 0}))[0]
+				#print stat_pull
+
+				insert_json["trade_number"] = trade_number
+				insert_json["owner_number"] = owner_number
+				insert_json["owner"] = owner_name
+				insert_json["player"] = player_name
+				insert_json["GP"] = stat_pull["GP"]
+				insert_json["FG"] = stat_pull["FG"]
+				insert_json["FG_PCT"] = stat_pull["FG_PCT"]
+				insert_json["FT"] = stat_pull["FT"]
+				insert_json["FT_PCT"] = stat_pull["FT_PCT"]
+				insert_json["THREEPM"] = stat_pull["THREEPM"]
+				insert_json["REB"] = stat_pull["REB"]
+				insert_json["AST"] = stat_pull["AST"]
+				insert_json["STL"] = stat_pull["STL"]
+				insert_json["BLK"] = stat_pull["BLK"]
+				insert_json["TO"] = stat_pull["TO"]
+				insert_json["PTS"] = stat_pull["PTS"]
+
+			except IndexError:
+				insert_json["trade_number"] = trade_number
+				insert_json["owner_number"] = owner_number
+				insert_json["owner"] = owner_name
+				insert_json["player"] = player_name
+				insert_json["GP"] = 0
+				insert_json["FG"] = "0/0"
+				insert_json["FG_PCT"] = 0.000
+				insert_json["FT"] = "0/0"
+				insert_json["FT_PCT"] = 0.000
+				insert_json["THREEPM"] = 0
+				insert_json["REB"] = 0
+				insert_json["AST"] = 0
+				insert_json["STL"] = 0
+				insert_json["BLK"] = 0
+				insert_json["TO"] = 0
+				insert_json["PTS"] = 0
 
 			# if owner not in list, add to keep track of which owners 
 			if owner_number not in owners_list:
@@ -74,7 +95,7 @@ def basketballTrade(db, sport, year):
 
 			db[collection_trade].update({"trade_number": trade_number, "player": player_name}, insert_json)
 		
-		print owners_list
+		print "owners_list", owners_list
 
 		# for each owner involved in trade
 		for each_owner in owners_list:
@@ -107,7 +128,7 @@ def basketballTrade(db, sport, year):
 			# loop through each player per owner per trade to sum
 			for each_player in total_pull:
 
-				print each_player
+				print "each_player", each_player
 
 				GP_upload += each_player["GP"]
 
@@ -115,14 +136,22 @@ def basketballTrade(db, sport, year):
 				FG_index = FG_pull.index('/')
 				FGM_upload += float(FG_pull[:FG_index])
 				FGA_upload += float(FG_pull[FG_index + 1:])
-				FG_PCT_upload = round(float(FGM_upload / FGA_upload), 4)
+				# if no stats for traded player yet, make 0
+				if FGA_upload == 0.0:
+					FG_PCT_upload = 0
+				else:
+					FG_PCT_upload = round(float(FGM_upload / FGA_upload), 4)
 				FG_upload = str(int(FGM_upload)) + "/" + str(int(FGA_upload))
 
 				FT_pull = each_player["FT"]
 				FT_index = FT_pull.index('/')
 				FTM_upload += float(FT_pull[:FT_index])
 				FTA_upload += float(FT_pull[FT_index + 1:])
-				FT_PCT_upload = round(float(FTM_upload / FTA_upload), 4)
+				# if no stats for traded player yet, make 0
+				if FTA_upload == 0.0:
+					FT_PCT_upload = 0
+				else:
+					FT_PCT_upload = round(float(FTM_upload / FTA_upload), 4)
 				FT_upload = str(int(FTM_upload)) + '/' + str(int(FTA_upload))
 
 				THREEPM_upload += each_player["THREEPM"]
