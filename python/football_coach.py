@@ -49,13 +49,14 @@ def coachAnalysis(db, year, completed_weeks):
 
 				# pull starting players per position
 				starting_pull = list(db[collection_scrape].find({"week": week, "status": "starters"}, {position: 1, "_id": 0}))
-				#print starting_pull
+				#print "starting pull", starting_pull
 				starting_points_pull = starting_pull[0][position]
 				print position, starting_points_pull			
 
 				# if not flex, pull from all collection (no FLEX position in all)
 				if position != "FLEX":
 					scrape_pull = list(db[collection_scrape].find({"week": week, "status": "all"}, {position: 1, "_id": 0}))
+					#print "scrape pull", scrape_pull
 					sorted_position = sorted(scrape_pull[0][position], reverse=True)
 					print position, sorted_position
 

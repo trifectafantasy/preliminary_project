@@ -75,13 +75,13 @@ module.exports = function(req, res, db, year, owner_number, completed_weeks, cal
 												full_player = players.slice(0, players.length - 3);
 											}
 											else if (players.charAt(players.length - 1) === "D") {
-												// if Doubtful (D)
-												if (players.charAt(players.length - 2) === " ") {
-													full_player = players.slice(0, players.length - 3);
-												}
 												// if Suspended (SSPD)
-												else {
+												if (players.charAt(players.length - 2) === "P") {
 													full_player = players.slice(0, players.length - 6);
+												}
+												// if Doubtful (D)
+												else {
+													full_player = players.slice(0, players.length - 3);
 												}
 											}
 											else if (players.charAt(players.length - 1) === "O") {
@@ -152,13 +152,13 @@ module.exports = function(req, res, db, year, owner_number, completed_weeks, cal
 												full_player = players.slice(0, players.length - 3);
 											}
 											else if (players.charAt(players.length - 1) === "D") {
-												// if Doubtful (D)
-												if (players.charAt(players.length - 2) === " ") {
-													full_player = players.slice(0, players.length - 3);
-												}
-												// if Suspended (SSPD)
-												else {
+												// if Supsendedl (SSPD)
+												if (players.charAt(players.length - 2) === "P") {
 													full_player = players.slice(0, players.length - 6);
+												}
+												// if Doubtful (D)
+												else {
+													full_player = players.slice(0, players.length - 3);
 												}
 											}
 											else if (players.charAt(players.length - 1) === "O") {
