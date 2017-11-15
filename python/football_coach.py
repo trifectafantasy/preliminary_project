@@ -11,7 +11,6 @@ from collections import OrderedDict
 def coachAnalysis(db, year, completed_weeks):
 
 	owner_number_list = range(1, 11)
-	time.sleep(5)
 
 	for owner_number in owner_number_list:
 
