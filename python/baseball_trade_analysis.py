@@ -50,33 +50,62 @@ def baseballTrade(db, sport, year):
 
 			# pull stats for this player
 			collection_stat = "owner" + owner_number + "_" + sport +  "_stats_" + year
-			stat_pull = list(db[collection_stat].find({"player": player_name}, {"_id": 0}))[0]
-			#print stat_pull
 
-			insert_json["trade_number"] = trade_number
-			insert_json["owner_number"] = owner_number
-			insert_json["owner"] = owner_name
-			insert_json["player"] = player_name
-			insert_json["GP"] = stat_pull["GP"]
-			insert_json["AB"] = stat_pull["AB"]
-			insert_json["H"] = stat_pull["H"]
-			insert_json["R"] = stat_pull["R"]
-			insert_json["HR"] = stat_pull["HR"]
-			insert_json["RBI"] = stat_pull["RBI"]
-			insert_json["BB"] = stat_pull["BB"]
-			insert_json["SO"] = stat_pull["SO"]
-			insert_json["SB"] = stat_pull["SB"]
-			insert_json["OBP"] = stat_pull["OBP"]
-			insert_json["IP"] = stat_pull["IP"]
-			insert_json["HA"] = stat_pull["HA"]
-			insert_json["ER"] = stat_pull["ER"]
-			insert_json["BBA"] = stat_pull["BBA"]
-			insert_json["K"] = stat_pull["K"]
-			insert_json["QS"] = stat_pull["QS"]
-			insert_json["W"] = stat_pull["W"]
-			insert_json["SV"] = stat_pull["SV"]
-			insert_json["ERA"] = stat_pull["ERA"]
-			insert_json["WHIP"] = stat_pull["WHIP"]
+			# if players just traded and there are no stats, make them all 0
+			try:
+				stat_pull = list(db[collection_stat].find({"player": player_name}, {"_id": 0}))[0]
+				#print stat_pull
+
+				insert_json["trade_number"] = trade_number
+				insert_json["owner_number"] = owner_number
+				insert_json["owner"] = owner_name
+				insert_json["player"] = player_name
+				insert_json["GP"] = stat_pull["GP"]
+				insert_json["AB"] = stat_pull["AB"]
+				insert_json["H"] = stat_pull["H"]
+				insert_json["R"] = stat_pull["R"]
+				insert_json["HR"] = stat_pull["HR"]
+				insert_json["RBI"] = stat_pull["RBI"]
+				insert_json["BB"] = stat_pull["BB"]
+				insert_json["SO"] = stat_pull["SO"]
+				insert_json["SB"] = stat_pull["SB"]
+				insert_json["OBP"] = stat_pull["OBP"]
+				insert_json["IP"] = stat_pull["IP"]
+				insert_json["HA"] = stat_pull["HA"]
+				insert_json["ER"] = stat_pull["ER"]
+				insert_json["BBA"] = stat_pull["BBA"]
+				insert_json["K"] = stat_pull["K"]
+				insert_json["QS"] = stat_pull["QS"]
+				insert_json["W"] = stat_pull["W"]
+				insert_json["SV"] = stat_pull["SV"]
+				insert_json["ERA"] = stat_pull["ERA"]
+				insert_json["WHIP"] = stat_pull["WHIP"]
+
+			except IndexError:
+				insert_json["trade_number"] = trade_number
+				insert_json["owner_number"] = owner_number
+				insert_json["owner"] = owner_name
+				insert_json["player"] = player_name
+				insert_json["GP"] = 0
+				insert_json["AB"] = 0
+				insert_json["H"] = 0
+				insert_json["R"] = 0
+				insert_json["HR"] = 0
+				insert_json["RBI"] = 0
+				insert_json["BB"] = 0
+				insert_json["SO"] = 0
+				insert_json["SB"] = 0
+				insert_json["OBP"] = 0.000
+				insert_json["IP"] = 0.0
+				insert_json["HA"] = 0
+				insert_json["ER"] = 0
+				insert_json["BBA"] = 0
+				insert_json["K"] = 0
+				insert_json["QS"] = 0
+				insert_json["W"] = 0
+				insert_json["SV"] = 0
+				insert_json["ERA"] = 0.000
+				insert_json["WHIP"] = 0.000
 
 			# add player to owner list of owners involved in trade
 			if owner_number not in owners_list:

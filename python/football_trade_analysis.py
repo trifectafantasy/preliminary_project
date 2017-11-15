@@ -139,29 +139,35 @@ def footballTrade(db, sport, year):
 
 			# loop through each player per owner per trade to sum
 			for each_player in total_pull:
-				print each_player
+				print "each_player", each_player
 
 				# parse pass completions and attmepts, convert to int, sum, then back to string
 				PASS_pull = each_player["PASS"]
-				PASS_index = PASS_pull.index('/')
-				C_upload += int(PASS_pull[:PASS_index])
-				A_upload += int(PASS_pull[PASS_index + 1:])
-				PASS_upload = str(C_upload) + "/" + str(A_upload)
 
-				# add to total counts
-				PASS_YDS_upload += each_player["PASS_YDS"]
-				PASS_TD_upload += each_player["PASS_TD"]
-				PASS_INT_upload += each_player["PASS_INT"]
-				RUSH_upload += each_player["RUSH"]
-				RUSH_YDS_upload += each_player["RUSH_YDS"]
-				RUSH_TD_upload += each_player["RUSH_TD"]
-				REC_upload += each_player["RUSH"]
-				REC_YDS_upload += each_player["REC_YDS"]
-				REC_TD_upload += each_player["REC_TD"]
-				REC_TAR_upload += each_player["REC_TAR"]
-				MISC_FUML_upload += each_player["MISC_FUML"]
-				MISC_TD_upload += each_player["MISC_TD"]
-				PTS_upload += each_player["PTS"]
+				# case where players stats are not all 0's but all --'s', don't add to total to avoid NaN
+				if PASS_pull == "--/--":
+					PASS_upload = str(C_upload) + "/" + str(A_upload)
+
+				else:
+					PASS_index = PASS_pull.index('/')
+					C_upload += int(PASS_pull[:PASS_index])
+					A_upload += int(PASS_pull[PASS_index + 1:])
+					PASS_upload = str(C_upload) + "/" + str(A_upload)
+
+					# add to total counts
+					PASS_YDS_upload += each_player["PASS_YDS"]
+					PASS_TD_upload += each_player["PASS_TD"]
+					PASS_INT_upload += each_player["PASS_INT"]
+					RUSH_upload += each_player["RUSH"]
+					RUSH_YDS_upload += each_player["RUSH_YDS"]
+					RUSH_TD_upload += each_player["RUSH_TD"]
+					REC_upload += each_player["RUSH"]
+					REC_YDS_upload += each_player["REC_YDS"]
+					REC_TD_upload += each_player["REC_TD"]
+					REC_TAR_upload += each_player["REC_TAR"]
+					MISC_FUML_upload += each_player["MISC_FUML"]
+					MISC_TD_upload += each_player["MISC_TD"]
+					PTS_upload += each_player["PTS"]
 
 
 			total_json["trade_number"] = trade_number
