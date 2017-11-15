@@ -159,17 +159,16 @@ module.exports = function(req, res, db, sport, year, callback) {
 
 						for (i = 0; i < number_of_traded_players; i++) {
 
-							portion_index = sliced_player_string.indexOf("to ");
-							portion = sliced_player_string.slice(0, portion_index + 7)
-							//console.log(portion);
+							portion_index = sliced_player_string.indexOf(" to ");
+							portion = sliced_player_string.slice(0, portion_index + 8)
 
 							player_index = portion.indexOf("traded");
 							player = portion.slice(player_index + 7, portion.indexOf(","));
-							//console.log("player: ", player);
+							//console.log("player:", player);
 
-							owner_index = portion.indexOf("to ");
-							owner = portion.slice(owner_index + 3, owner_index + 7);
-							//console.log("owner: ", owner);
+							owner_index = portion.indexOf(" to ");
+							owner = portion.slice(owner_index + 4, owner_index + 8);
+							//console.log("owner:", owner);
 
 							if (owner.indexOf(owner1_abbrev) != -1) {
 								//console.log("owner1 match");
