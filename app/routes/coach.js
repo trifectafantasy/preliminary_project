@@ -23,38 +23,44 @@ var all_football_coach = function(x, owner_list) {
 		owner_number = owner_list[x];
 		console.log("owner number", owner_number);
 
-		// scrape starting lineups and benches from each week
-		var coach_scrape = require('../modules/coach_scrape.js')(req, res, db, year, owner_number, completed_weeks, function(err, call) {
-			console.log("coach scrape done");
+		// delay 1/2 second between each owner scrape
+		setTimeout(function() {
+			// scrape starting lineups and benches from each week
+			var coach_scrape = require('../modules/coach_scrape.js')(req, res, db, year, owner_number, completed_weeks, function(err, call) {
+				console.log("coach scrape done");
 
-			// send back to loop again
-			all_football_coach(x + 1, owner_list);
-		}) // end of coach scrape script
+				// send back to loop again
+				all_football_coach(x + 1, owner_list);
+			}) // end of coach scrape script
+		}, 500)
 	}
 	// once done with all in loop, done
 	else {
 		var options = {
 			args: [year, completed_weeks]
 		}
-		pyshell.run('python/football_coach.py', options, function(err) {
-			if (err) throw err;
-			console.log("coach python script done");
+		// delay 2 seconds to let scraping finish
+		setTimeout(function() {
+			pyshell.run('python/football_coach.py', options, function(err) {
+				if (err) throw err;
+				console.log("coach python script done");
 
-			// delay 2 seconds to let database populate
-			setTimeout(function() {
-				// pull from collection for display
-				db.collection("all_coach_" + year).find({}, {"_id": 0}).sort({"season": -1}).toArray(function(e, docs) {
-					disp_coach = docs;
-					console.log("displaying coach standings...");
+				// delay 1/2 second to let scrape database populate after python script
+				setTimeout(function() {
+					// pull from collection for display
+					db.collection("all_coach_" + year).find({}, {"_id": 0}).sort({"season": -1}).toArray(function(e, docs) {
+						disp_coach = docs;
+						console.log("displaying coach standings...");
 
-					res.render('football_coach', {
-						year: year,
-						completed_weeks: completed_weeks,
-						coach_standings: disp_coach
-					})
-				}) // end of display pull				
-			}, 2000)
-		}) // end of python script
+						res.render('football_coach', {
+							year: year,
+							completed_weeks: completed_weeks,
+							coach_standings: disp_coach
+						})
+					}) // end of display pull				
+				}, 500)
+			}) // end of python script
+		}, 2000)
 	}
 } // end of all_football_coach function
 
@@ -75,6 +81,7 @@ var all_football_coach = function(x, owner_list) {
 		for (var i=1; i<=number_of_owners; i++) {
 			owner_list.push(i.toString());
 		}
+		//owner_list = [4];
 
 		// run synchronous for loop function
 		all_football_coach(0, owner_list);
