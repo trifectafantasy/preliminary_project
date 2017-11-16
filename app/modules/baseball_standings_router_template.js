@@ -198,7 +198,7 @@ module.exports = function(req, res, db, year, playoffs) {
 					// pull from mongodb and display new data after python script finishes
 					db.collection('baseball_h2h_' + year).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
 						//console.log(docs);
-						console.log("Displaying h2h data...")
+						console.log("Displaying h2h data...");
 						disp_h2h_standings = docs;
 						// call complete to see if both finds are done
 						complete();
@@ -206,7 +206,8 @@ module.exports = function(req, res, db, year, playoffs) {
 
 					db.collection('baseball_roto_' + year).find({}, {"_id": 0}).sort({"roto_trifecta_points": -1}).toArray(function(e, docs) {
 						//console.log(docs);
-						console.log("Displaying roto data...")
+						console.log("Displaying roto data...");
+						console.log("");
 						disp_roto_standings = docs;
 						// call complete to see if both finds are done
 						complete();
@@ -229,6 +230,8 @@ module.exports = function(req, res, db, year, playoffs) {
 								db.collection('baseball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
 									//console.log(docs);
 									console.log("Displaying playoff data...");
+									console.log("");
+
 									disp_trifecta_standings = docs;
 									complete();
 								});	// end of trifecta standings pull

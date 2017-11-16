@@ -24,9 +24,11 @@ function display() {
 	}
 
 	db.collection(sport + "_trades_" + year).find({}, {"_id": 0}, {"sort": [["trade_number", "asc"], ["player", "asc"], ["owner", "asc"], [category_sort, "asc"]]}).toArray(function(e, docs) {
-		console.log('displaying trade analysis...');
 		//console.log(docs);
+		console.log('Displaying trade analysis...');
+		console.log("");
 		disp_trade = docs;
+		
 		res.render(sport + '_trade', {
 			year: year,
 			trader: disp_trade,
@@ -106,7 +108,8 @@ function trade_history_display(req, res, db) {
 	db.collection("trade_history").find({}, {"_id":0}, {"sort": [["date", "desc"]]}).toArray(function(e, docs1) {
 		//console.log(docs1);
 		disp_trade_history = docs1;
-		console.log("displaying trade history...");
+		console.log("Displaying trade history...");
+		console.log("");
 
 		res.render('trade_history', {
 			trade_history: disp_trade_history

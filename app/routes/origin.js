@@ -81,7 +81,9 @@ var display = function() {
 				// reset owner number (after it has gone through loop) to all for all display
 		db.collection(sport + "_origin_" + year).find({}, {"_id": 0}).sort({"total_points": -1}).toArray(function(e, docs) {
 			origin_standings = docs;
-			console.log("displaying origin standings...");
+			console.log("Displaying origin standings...");
+			console.log("");
+
 			res.render('origin', {
 				sport: sport,
 				year: year,
@@ -95,6 +97,8 @@ var display = function() {
 		db.collection(sport + "_origin_" + year).find({}, {"_id": 0}).sort({"total_pr": -1}).toArray(function(e, docs) {
 			origin_standings = docs;
 			console.log("displaying origin standings...");
+			console.log("");
+
 			res.render('origin', {
 				sport: sport,
 				year: year,

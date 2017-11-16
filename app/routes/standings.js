@@ -29,6 +29,7 @@ function display_trifecta_standings() {
 	db.collection('trifecta_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs){
 		//console.log(docs);
 		console.log("Displaying trifecta season standings...");
+		console.log("");
 		disp_trifecta_standings = docs;
 
 		// render to standings_playoffs
@@ -141,7 +142,8 @@ var complete = function() {
 		// pull from mongodb and display new data after python script finishes
 		db.collection('football_h2h_' + year).find({}, {"_id": 0}).sort({"trifecta_points": -1}).toArray(function(e, docs) {
 			//console.log(docs);
-			console.log("Displaying h2h data...")
+			console.log("Displaying h2h data...");
+			console.log("");
 			disp_h2h_standings = docs;
 			// call complete to see if both finds are done
 			complete();
@@ -154,6 +156,7 @@ var complete = function() {
 		db.collection('football_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
 			//console.log(docs);
 			console.log("Displaying playoff data...");
+			console.log("");
 			disp_trifecta_standings = docs;
 			complete();
 		});
@@ -217,7 +220,8 @@ var complete = function() {
 		// pull from mongodb and display new data after python script finishes
 		db.collection('basketball_h2h_' + year).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
 			//console.log(docs);
-			console.log("Displaying h2h data...")
+			console.log("Displaying h2h data...");
+			console.log("");
 			disp_h2h_standings = docs;
 			// call complete to see if both finds are done
 			complete();
@@ -225,7 +229,8 @@ var complete = function() {
 
 		db.collection('basketball_roto_' + year).find({}, {"_id": 0}).sort({"roto_trifecta_points": -1}).toArray(function(e, docs) {
 			//console.log(docs);
-			console.log("Displaying roto data...")
+			console.log("Displaying roto data...");
+			console.log("");
 			disp_roto_standings = docs;
 			// call complete to see if both finds are done
 			complete();
@@ -238,6 +243,7 @@ var complete = function() {
 		db.collection('basketball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
 			//console.log(docs);
 			console.log("Displaying playoff data...");
+			console.log("");
 			disp_trifecta_standings = docs;
 			complete();
 		});
@@ -298,7 +304,8 @@ var complete = function() {
 		// pull from mongodb and display new data after python script finishes
 		db.collection('baseball_h2h_' + year).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
 			//console.log(docs);
-			console.log("Displaying h2h data...")
+			console.log("Displaying h2h data...");
+			console.log("");
 			disp_h2h_standings = docs;
 			// call complete to see if both finds are done
 			complete();
@@ -306,7 +313,8 @@ var complete = function() {
 
 		db.collection('baseball_roto_' + year).find({}, {"_id": 0}).sort({"roto_trifecta_points": -1}).toArray(function(e, docs) {
 			//console.log(docs);
-			console.log("Displaying roto data...")
+			console.log("Displaying roto data...");
+			console.log("");
 			disp_roto_standings = docs;
 			// call complete to see if both finds are done
 			complete();
@@ -319,6 +327,7 @@ var complete = function() {
 		db.collection('baseball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
 			//console.log(docs);
 			console.log("Displaying playoff data...");
+			console.log("");
 			disp_trifecta_standings = docs;
 			complete();
 		});

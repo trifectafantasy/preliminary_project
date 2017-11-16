@@ -4,6 +4,7 @@ import subprocess
 import time
 import sys
 from collections import OrderedDict
+import math
 
 ##### DEFINE FUNCTIONS #####
 
@@ -113,10 +114,10 @@ def basketballTrade(db, sport, year):
 			GP_upload = 0
 			FGA_upload = 0
 			FGM_upload = 0
-			FG_PCT_upload = 0
+			FG_PCT_upload = 0.000
 			FTA_upload = 0
 			FTM_upload = 0
-			FT_PCT_upload = 0
+			FT_PCT_upload = 0.000
 			THREEPM_upload = 0
 			REB_upload = 0
 			AST_upload = 0
@@ -130,37 +131,42 @@ def basketballTrade(db, sport, year):
 
 				print "each_player", each_player
 
-				GP_upload += each_player["GP"]
-
-				FG_pull = each_player["FG"]
-				FG_index = FG_pull.index('/')
-				FGM_upload += float(FG_pull[:FG_index])
-				FGA_upload += float(FG_pull[FG_index + 1:])
-				# if no stats for traded player yet, make 0
-				if FGA_upload == 0.0:
-					FG_PCT_upload = 0
+				# check if player's stats are the blasted dashes --
+				if math.isnan(each_player["GP"]):
+					FG_upload = "0/0"
+					FT_upload = "0/0"
 				else:
-					FG_PCT_upload = round(float(FGM_upload / FGA_upload), 4)
-				FG_upload = str(int(FGM_upload)) + "/" + str(int(FGA_upload))
+					GP_upload += each_player["GP"]
 
-				FT_pull = each_player["FT"]
-				FT_index = FT_pull.index('/')
-				FTM_upload += float(FT_pull[:FT_index])
-				FTA_upload += float(FT_pull[FT_index + 1:])
-				# if no stats for traded player yet, make 0
-				if FTA_upload == 0.0:
-					FT_PCT_upload = 0
-				else:
-					FT_PCT_upload = round(float(FTM_upload / FTA_upload), 4)
-				FT_upload = str(int(FTM_upload)) + '/' + str(int(FTA_upload))
+					FG_pull = each_player["FG"]
+					FG_index = FG_pull.index('/')
+					FGM_upload += float(FG_pull[:FG_index])
+					FGA_upload += float(FG_pull[FG_index + 1:])
+					# if no stats for traded player yet, make 0
+					if FGA_upload == 0.0:
+						FG_PCT_upload = 0
+					else:
+						FG_PCT_upload = round(float(FGM_upload / FGA_upload), 3)
+					FG_upload = str(int(FGM_upload)) + "/" + str(int(FGA_upload))
 
-				THREEPM_upload += each_player["THREEPM"]
-				REB_upload += each_player["REB"]
-				AST_upload += each_player["AST"]
-				STL_upload += each_player["STL"]
-				BLK_upload += each_player["BLK"]
-				TO_upload += each_player["TO"]
-				PTS_upload += each_player["PTS"]
+					FT_pull = each_player["FT"]
+					FT_index = FT_pull.index('/')
+					FTM_upload += float(FT_pull[:FT_index])
+					FTA_upload += float(FT_pull[FT_index + 1:])
+					# if no stats for traded player yet, make 0
+					if FTA_upload == 0.0:
+						FT_PCT_upload = 0
+					else:
+						FT_PCT_upload = round(float(FTM_upload / FTA_upload), 3)
+					FT_upload = str(int(FTM_upload)) + '/' + str(int(FTA_upload))
+
+					THREEPM_upload += each_player["THREEPM"]
+					REB_upload += each_player["REB"]
+					AST_upload += each_player["AST"]
+					STL_upload += each_player["STL"]
+					BLK_upload += each_player["BLK"]
+					TO_upload += each_player["TO"]
+					PTS_upload += each_player["PTS"]
 
 			total_json["trade_number"] = trade_number
 			total_json["owner_number"] = each_owner

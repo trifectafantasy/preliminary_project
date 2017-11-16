@@ -121,6 +121,7 @@ var display = function() {
 				// read total trifecta season matchup collection
 				db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
 					console.log("Displaying Trifecta owner matchups...");
+					console.log("");
 					var disp_trifecta_matchups = docs;
 
 					// render owner_matchups
@@ -151,6 +152,7 @@ var display = function() {
 					// read total trifecta season matchup collection
 					db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
 						console.log("Displaying Trifecta owner matchups...");
+						console.log("");
 						var disp_trifecta_matchups = docs;
 
 						// render owner_matchups
@@ -190,6 +192,7 @@ var display = function() {
 				// read total trifecta season matchup collection
 				db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
 					console.log("Displaying trifecta owner matchups...");
+					console.log("");
 					var disp_trifecta_matchups = docs;
 
 					// render owner_matchups
@@ -215,6 +218,7 @@ var display = function() {
 					// read total trifecta season matchup collection
 					db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
 						console.log("Displaying trifecta owner matchups...");
+						console.log("");
 						var disp_trifecta_matchups = docs;
 
 						// render owner_matchups
@@ -251,6 +255,7 @@ var display = function() {
 				// read total trifecta season matchup collection
 				db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
 					console.log("Displaying Trifecta owner matchups...");
+					console.log("");
 					var disp_trifecta_matchups = docs;
 
 					// render owner_matchups
@@ -275,6 +280,7 @@ var display = function() {
 						// read total trifecta season matchup collection
 					db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
 						console.log("Displaying Trifecta owner matchups...");
+						console.log("");
 						var disp_trifecta_matchups = docs;
 
 						// render owner_matchups
