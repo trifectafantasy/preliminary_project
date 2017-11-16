@@ -46,7 +46,8 @@ module.exports = function(req, res, db, sport, year, owner_number) {
 			// pull database for display
 			db.collection(sport + "_acquisitions_display_" + year + "_all").find({}, find_query, sort_query).toArray(function(e, docs) {
 				//console.log(docs);
-				console.log("displaying all roster stats...");
+				console.log("Displaying all roster stats...");
+				console.log("");
 				disp_acquisitions = docs;
 
 				// loop from back to front of pulled array
@@ -83,7 +84,8 @@ module.exports = function(req, res, db, sport, year, owner_number) {
 		// pull owner acquisition database for display
 		db.collection("owner" + owner_number + "_" + sport + "_acquisitions_display_" + year).find({}, find_query, sort_query).toArray(function(e, docs) {
 			//console.log(docs);
-			console.log("displaying roster stats...");
+			console.log("Displaying roster stats...");
+			console.log("");
 			disp_acquisitions = docs;
 
 			// loop from back to front of pulled array

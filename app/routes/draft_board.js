@@ -20,7 +20,9 @@ function draft_board(req, res, db, args) {
 var complete = function() {
 
 	if (disp_draft_board != null && disp_by_team_draft_board != null) {
-		console.log("displaying draft board...");
+		console.log("Displaying draft board...");
+		console.log("");
+		
 		res.render('future_draft_boards', {
 			sport: sport,
 			year: year,

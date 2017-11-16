@@ -60,7 +60,9 @@ var all_popular = function(x, owner_list) {
 					db.collection(sport + "_popular_" + year).find({"owner": "all"}, {"_id": 0}).toArray(function(e, docs2) {
 						disp_all = docs2;
 
-						console.log("displaying most popular players...")
+						console.log("Displaying most popular players...");
+						console.log("");
+
 						res.render('popular', {
 							sport: sport,
 							year: year,
@@ -97,7 +99,9 @@ var all_popular = function(x, owner_list) {
 			db.collection(sport + "_popular_" + year).find({"owner": "all"}, {"_id": 0}).toArray(function(e, docs2) {
 				disp_all = docs2;
 
-				console.log("displaying most popular players...")
+				console.log("Displaying most popular players...");
+				console.log("");
+
 				res.render('popular', {
 					sport: sport,
 					year: year,

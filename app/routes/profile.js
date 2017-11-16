@@ -29,7 +29,9 @@ let profile_complete = function() {
 
 	// wait for all 3 sets of data to be pulled
 	if ((disp_profile_matchups != null && disp_profile_standings != null) && disp_profile_players != null) {
-		console.log("displaying profile stats...");
+		console.log("Displaying profile stats...");
+		console.log("");
+
 		res.render('profile_recap', {
 			owner: owner_name,
 			profile_standings: disp_profile_standings,
@@ -97,7 +99,8 @@ function trophy_case(req, res, db, args) {
 		// pull owner's trophy case
 		db.collection("owner" + owner_number + "_trophies").find({}, {"date": 0, "_id": 0}).sort({"date": 1}).toArray(function(e, docs2) {
 			disp_trophies = docs2;
-			console.log("displaying trophy case...")
+			console.log("Displaying trophy case...");
+			console.log("");
 
 			res.render('trophy_case', {
 				owner: owner_name,

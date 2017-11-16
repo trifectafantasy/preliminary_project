@@ -50,7 +50,8 @@ var all_football_coach = function(x, owner_list) {
 					// pull from collection for display
 					db.collection("all_coach_" + year).find({}, {"_id": 0}).sort({"season": -1}).toArray(function(e, docs) {
 						disp_coach = docs;
-						console.log("displaying coach standings...");
+						console.log("Displaying coach standings...");
+						console.log("");
 
 						res.render('football_coach', {
 							year: year,
@@ -92,7 +93,8 @@ var all_football_coach = function(x, owner_list) {
 		// pull from collection for display
 		db.collection("all_coach_" + year).find({}, {"_id": 0}).sort({"season": -1}).toArray(function(e, docs) {
 			disp_coach = docs;
-			console.log("displaying coach standings...");
+			console.log("Displaying coach standings...");
+			console.log("");
 
 			res.render('football_coach', {
 				year: year,
