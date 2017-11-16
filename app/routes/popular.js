@@ -20,7 +20,7 @@ var all_popular = function(x, owner_list) {
 
 	if (x < owner_list.length) {
 		owner_number = owner_list[x];
-		console.log("owner number", owner_number);
+		//console.log("owner number", owner_number);
 
 		var popular = require('../modules/popular_scrape.js')(req, res, db, sport, year, owner_number, function(err, call) {
 			console.log("popular scrape done");

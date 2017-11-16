@@ -59,7 +59,7 @@ var acquire_process = function() {
 
 						// python script that determines acqusition value
 						pyshell.run('python/' + sport + '_acquisitions.py', options, function(err) {
-							console.log("acquisition python script complete");
+							console.log("roster stats python script complete");
 							var acquisitions_display = require('../modules/stats_display.js')(req, res, db, sport, year, owner_number)			
 						}) // end of python script
 					}) // end of aux
