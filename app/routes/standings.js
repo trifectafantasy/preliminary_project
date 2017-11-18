@@ -24,6 +24,22 @@ function trifecta_standings(req, res, db, args) {
 	// initialize display variable
 	var disp_trifecta_standings = null;
 
+// function that runs trifecta standings python script
+function python_trifecta_standings() {
+	var options = {
+		args: [year1, year2, this_football_season_started, this_basketball_season_started, this_baseball_season_started]
+	}
+
+	// always run trifecta standings python script
+	pyshell.run('python/trifecta_standings.py', options, function(err) {
+		if (err) throw err;
+		console.log("trifecta standings python script complete");
+
+		display_trifecta_standings();
+	});	
+} // end of python_trifecta_standings function
+
+// function that displays trifecta standings
 function display_trifecta_standings() {
 	// pull from this seasons trifecta collection
 	db.collection('trifecta_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs){
@@ -52,17 +68,52 @@ function display_trifecta_standings() {
 		// if the given years are the current ones, set appropriate parameters
 		if (year1 == current_year1 && year2 == current_year2) {
 
-			var options = {
-				args: [year1, year2, this_football_season_started, this_basketball_season_started, this_baseball_season_started]
+			// For each sport that is in season, call sports standings page to update standing before trifecta standings update
+
+			// if baseball season started, update all sports standings
+			if (this_baseball_season_started == true) {
+				request("http://localhost:8081/baseball_standings/" + year2, function(err, baseball_response, baseball_body) {
+					console.log("baseball standings updated");
+					console.log("");
+
+					request("http://localhost:8081/basketball_standings/" + year2, function(err, basketball_response, basketball_body) {
+						console.log("basketball standings updated");
+						console.log("");
+
+						request("http://localhost:8081/football_standings/" + year1, function(err, football_response, football_body) {
+							console.log("football standings updated");
+							console.log("");
+
+							python_trifecta_standings();
+						})
+					})
+				})
 			}
 
-			// always run trifecta standings python script
-			pyshell.run('python/trifecta_standings.py', options, function(err) {
-				if (err) throw err;
-				console.log("Trifecta standings python script complete");
+			// if basketball season started, update basketball and football standings before trifecta standings update
+			else if (this_basketball_season_started == true) {
+				request("http://localhost:8081/basketball_standings/" + year2, function(err, basketball_response, basketball_body) {
+					console.log("basketball standings updated");
+					console.log("");
 
-				display_trifecta_standings();
-			});
+					request("http://localhost:8081/football_standings/" + year1, function(err, football_response, football_body) {
+						console.log("football standings updated");
+						console.log("");
+
+						python_trifecta_standings();						
+					})
+				})
+			}
+
+			// if football season started, update foodtball standings before trifecta standings update
+			else if (this_football_season_started == true) {
+				request("http://localhost:8081/football_standings/" + year1, function(err, football_response, football_body) {
+					console.log("football standings updated");
+					console.log("");
+					
+					python_trifecta_standings();
+				})
+			}
 		}
 
 		// if the years given are in the past, don't just need to pull trifecta standings

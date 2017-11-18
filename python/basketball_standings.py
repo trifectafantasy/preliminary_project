@@ -30,6 +30,8 @@ def h2h_trifecta(db, collection):
 		current_team = sorted_h2h[i]["team"]
 		current_team_win_per = sorted_h2h[i]["win_per"]
 
+		print "points_hold", points_hold
+
 		# inner loop, looping through every other team to find any ties
 		for j in range(len(sorted_h2h)):
 
@@ -42,11 +44,18 @@ def h2h_trifecta(db, collection):
 		# there will always be at least 1 same record (team with itself). if > 1, go into tie process
 		if same_records > 1:
 
+			print "TIE!"
+
+			print "same records", same_records
+			print "trifecta Points", trifecta_h2h_points
+
 			# if this is the first time finding the tie, initializing the distributed tied points
 			if len(points_hold) == 0:
 
 				# points to be averaged and split are [trifecta points - # of teams tied, trifecta points]
-				points_hold = range((trifecta_h2h_points - ((same_records - 1) * 2) -2), trifecta_h2h_points + 1, 2)
+				points_hold = range((trifecta_h2h_points - ((same_records - 1) * 2)), trifecta_h2h_points + 1, 2)
+
+				print "POINTS_HOLD", points_hold
 				# range of points allocated is summed and averaged
 				dist_points = float(sum(points_hold)) / same_records
 			
@@ -65,8 +74,8 @@ def h2h_trifecta(db, collection):
 
 		# at the end of each loop of each team, decrease number of trifecta points (10 -> 1)
 		trifecta_h2h_points -= 2
-		print("team: ", current_team)
-		print("h2h trifecta points: ", float(individual_trifecta_h2h_points))
+		print "team: ", current_team
+		print "h2h trifecta points: ", float(individual_trifecta_h2h_points)
 
 		# update (not upsert or creating new document) each team's document with new field "h2h_trifecta_points"
 		db[collection].update({"team": current_team}, {"$set": {"h2h_trifecta_points": individual_trifecta_h2h_points}})
@@ -93,7 +102,7 @@ def roto_trifecta(db, collection):
 
 		# pull down each team's stats for current roto category into list
 		category_rank = list(db[collection].find({}, {"team": 1, "h2h_rank": 1, this_category: 1, "_id": 0}).sort(this_category, sort_direction))
-		print(category_rank)
+		#print category_rank
 
 		# like with h2h trifecta points distribution, initialize category points (10 -> 1) to be distributed and parameters for ties
 		category_points = 10
@@ -147,8 +156,8 @@ def roto_trifecta(db, collection):
 			# subtract 1 category point each team/loop
 			category_points -= 1
 			new_cat_points = "category_points_" + this_category
-			print "team: ", current_team
-			print new_cat_points, float(individual_category_points)
+			#print "team: ", current_team
+			#print new_cat_points, float(individual_category_points)
 
 			# create key-value pair for each roto category and corresponding roto category points per category
 			each_team_each_category_points = {new_cat_points: float(individual_category_points)}
@@ -182,7 +191,7 @@ def roto_trifecta(db, collection):
 
 		# pull down each team's roto category points entry (a list of key-value pairs for each category)
 		total_team_roto_points = list(db[collection].find({"team": current_team, "h2h_rank": current_team_h2h}, category_pull))
-		print total_team_roto_points
+		#print total_team_roto_points
 
 		# initialize total number of category roto points for said team
 		individual_total_roto_points = 0
@@ -242,9 +251,9 @@ def roto_trifecta(db, collection):
 			individual_trifecta_roto_points = trifecta_roto_points
 
 		trifecta_roto_points -= 1
-		print "team: ", current_team
-		print "trifecta points: ", float(individual_trifecta_roto_points)
-		print ""
+		#print "team: ", current_team
+		#print "trifecta points: ", float(individual_trifecta_roto_points)
+		#print ""
 
 
 		# update roto collection with new field "roto trifecta points (10 -> 1)"
