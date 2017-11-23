@@ -4,6 +4,7 @@ import subprocess
 import time
 import sys
 from collections import OrderedDict
+import add_team_name
 
 ##### DEFINE FUNCTIONS #####
 
@@ -39,85 +40,64 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 			football_count = db[collection_football_trifecta].count()
 			#print football_count
 
-			# if sport trifecta collection has 10 documents, just pull from sport trifecta collection
+			# if sport trifecta collection has 10 documents, (ie playoffs and all that is done) just pull from sport trifecta collection
 			if football_count == 10:
-
 				# pull total trifecta points per team
 				football_list = list(db[collection_football_trifecta].find({}, {"team": 1, "total_trifecta_points": 1, "_id": 0}))
-
-				# loop through each team pull
-				for football_info in football_list:
-					football_team = football_info["team"]
-					football_points = football_info["total_trifecta_points"]
-					print "football_team", football_team
-
-					# set path for finding owner through team name
-					path = "teams." + football_team
-					#print path
-					
-					while path.find(".", 6) != -1:
-					#if path.find(".", 6) != -1:
-						period_index = path.find(".", 6)
-						#print period_index
-						path = path[:period_index] + "\uff0E" + path[period_index + 1:]
-						football_team = football_team[:period_index - 6] + "\uff0E" + football_team[period_index + 1 - 6:]
-						#print football_team
-
-					owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
-					#print owner_check
-					owner_name_check = owner_check["teams"][football_team]["owner"]
-					#print owner_name_check
-
-					# if owner names match, set correct team name and trifecta points
-					if owner_name == owner_name_check:
-						correct_team_name = football_team
-						correct_trifecta_points = football_points
-
-				football_trifecta_points = correct_trifecta_points
-				print "football team name: ", correct_team_name
-				print "football trifecta points: ", football_trifecta_points
+				points_field = "total_trifecta_points"
 
 			# if there are not 10 documents, then take current sport trifecta points from h2h colletion in mongodb
 			else:
-
 				# set h2h football collection
 				collection_football = "football_h2h_" + year1
 
 				# pull trifecta points from h2h collection
-				football_list = list(db[collection_football].find({}, {"team": 1, "trifecta_points": 1, "_id": 0}))
+				football_list = list(db[collection_football].find({}, {"team": 1, "trifecta_points": 1, "owner_number": 1, "_id": 0}))
+				points_field = "trifecta_points"
+
+			# loop through h2h pull
+			for football_info in football_list:
+				football_team = football_info["team"]
+				football_points = football_info[points_field]
+				#print "football_team", football_team
+
+				# set path for finding owner through team name
+				path = "teams." + football_team
+				#print path
 				
-				# loop through h2h pull
-				for football_info in football_list:
-					football_team = football_info["team"]
-					football_points = football_info["trifecta_points"]
+				while path.find(".", 6) != -1:
+					period_index = path.find(".", 6)
+					#print period_index
+					path = path[:period_index] + "\uff0E" + path[period_index + 1:]
+					football_team = football_team[:period_index - 6] + "\uff0E" + football_team[period_index + 1 - 6:]
 					#print football_team
 
-					# set path for finding owner through team name
-					path = "teams." + football_team
-					#print path
-					
-					while path.find(".", 6) != -1:
-					#if path.find(".", 6) != -1:
-						period_index = path.find(".", 6)
-						#print period_index
-						path = path[:period_index] + "\uff0E" + path[period_index + 1:]
-						football_team = football_team[:period_index - 6] + "\uff0E" + football_team[period_index + 1 - 6:]
-						#print football_team	
+				owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
+				#print owner_check
 
-					owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
-					#print owner_check
+				# try and pull owner_name with associated team names
+				try:
 					owner_name_check = owner_check["teams"][football_team]["owner"]
 					#print owner_name_check
 
-					# if owner names are same, set correct team name and trifecta points
-					if owner_name == owner_name_check:
-						correct_team_name = football_team
-						correct_trifecta_points = football_points
+				# if exception (ie no team name in database), add team name per owner
+				except KeyError:
+					football_owner_number = football_info["owner_number"]
+					#print "football owner number", football_owner_number
+					owner_number = str(int(list(db["football_owners"].find({"football_owner_number": football_owner_number}, {"owner_number": 1, "_id": 0}))[0]["owner_number"]))
+					#print "OWNER NUMBER", owner_number
 
-				# set final correct trifeta points as football trifecta points
-				football_trifecta_points = correct_trifecta_points
-				print "football team name: ", correct_team_name
-				print "football trifecta points: ", football_trifecta_points
+					add_team_name.add_team_name_function(db, owner_number, football_team)
+
+				# if owner names are same, set correct team name and trifecta points
+				if owner_name == owner_name_check:
+					correct_team_name = football_team
+					correct_trifecta_points = football_points
+
+			# set final correct trifeta points as football trifecta points
+			football_trifecta_points = correct_trifecta_points
+			print "football team name: ", correct_team_name
+			print "football trifecta points: ", football_trifecta_points
 
 		# if football is not in season, just assign 0 trifecta points
 		else: 
@@ -134,70 +114,51 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 			#print basketball_count
 
 			if basketball_count == 10:
-
 				basketball_list = list(db[collection_basketball_trifecta].find({}, {"team": 1, "total_trifecta_points": 1, "_id": 0}))
-				
-				for basketball_info in basketball_list:
-					basketball_team = basketball_info["team"]
-					basketball_points = basketball_info["total_trifecta_points"]
-					#print basketball_team
-
-					path = "teams." + basketball_team
-					# print path
-					
-					while path.find(".", 6) != -1:
-						period_index = path.find(".", 6)
-						#print period_index
-						path = path[:period_index] + "\uff0E" + path[period_index + 1:]
-						basketball_team = basketball_team[:period_index - 6] + "\uff0E" + basketball_team[period_index + 1 - 6:]
-						#print basketball_team	
-
-					owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
-					#print owner_check
-					owner_name_check = owner_check["teams"][basketball_team]["owner"]
-					#print owner_name_check
-
-					if owner_name == owner_name_check:
-						correct_team_name = basketball_team
-						correct_trifecta_points = basketball_points
-
-				basketball_trifecta_points = correct_trifecta_points
-				print "basketball team name: ", correct_team_name
-				print "basketball trifecta points: ", basketball_trifecta_points
+				points_field = "total_trifecta_points"
 
 			else:
 				collection_basketball = "basketball_h2h_" + year2	
+				basketball_list = list(db[collection_basketball].find({}, {"team": 1, "h2h_trifecta_points": 1, "owner_number": 1, "_id": 0}))
+				points_field = "h2h_trifecta_points"
 
-				basketball_list = list(db[collection_basketball].find({}, {"team": 1, "h2h_trifecta_points": 1, "_id": 0}))
-				
-				for basketball_info in basketball_list:
-					basketball_team = basketball_info["team"]
-					basketball_points = basketball_info["h2h_trifecta_points"]
-					#print basketball_team
+			for basketball_info in basketball_list:
+				basketball_team = basketball_info["team"]
+				basketball_points = basketball_info[points_field]
+				#print basketball_team
 
-					path = "teams." + basketball_team
-					#print path
-					
-					while path.find(".", 6) != -1:
-					#if path.find(".", 6) != -1:
-						period_index = path.find(".", 6)
-						#print period_index
-						path = path[:period_index] + "\uff0E" + path[period_index + 1:]
-						basketball_team = basketball_team[:period_index - 6] + "\uff0E" + football_team[period_index + 1 - 6:]
-						#print football_team					
+				path = "teams." + basketball_team
+				#print path
 
-					owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
-					#print owner_check
+				while path.find(".", 6) != -1:
+					period_index = path.find(".", 6)
+					#print period_index
+					path = path[:period_index] + "\uff0E" + path[period_index + 1:]
+					basketball_team = basketball_team[:period_index - 6] + "\uff0E" + football_team[period_index + 1 - 6:]
+					#print basketball_team			
+
+				owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
+				#print owner_check
+
+				# try and pull owner_name with associated team names
+				try:
 					owner_name_check = owner_check["teams"][basketball_team]["owner"]
 					#print owner_name_check
 
-					if owner_name == owner_name_check:
-						correct_team_name = basketball_team
-						correct_trifecta_points = basketball_points
+				# if exception (ie no team name in database), add team name per owner
+				except KeyError:
+					owner_number = str(basketball_info["owner_number"])
+					#print "OWNER", owner_number, type(owner_number)
 
-				basketball_trifecta_points = correct_trifecta_points
-				print "basketball team name: ", correct_team_name
-				print "basketball trifecta points: ", basketball_trifecta_points
+					add_team_name.add_team_name_function(db, owner_number, basketball_team)
+
+				if owner_name == owner_name_check:
+					correct_team_name = basketball_team
+					correct_trifecta_points = basketball_points
+
+			basketball_trifecta_points = correct_trifecta_points
+			print "basketball team name: ", correct_team_name
+			print "basketball trifecta points: ", basketball_trifecta_points
 
 		else: 
 			basketball_trifecta_points = 0
@@ -216,7 +177,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 
 				# just pull from total trifecta points from baseball tirfectacollection
 				baseball_list = list(db[collection_baseball_trifecta].find({}, {"team": 1, "total_trifecta_points": 1, "_id": 0}))
-				
+
 				# loop through listed results for team and trifecta points
 				for baseball_info in baseball_list:
 					baseball_team = baseball_info["team"]
@@ -236,8 +197,18 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 
 					owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
 					#print owner_check
-					owner_name_check = owner_check["teams"][baseball_team]["owner"]
-					#print owner_name_check
+
+					# try and pull owner_name with associated team names
+					try:
+						owner_name_check = owner_check["teams"][baseball_team]["owner"]
+						#print owner_name_check
+
+					# if exception (ie no team name in database), add team name per owner
+					except KeyError:
+						owner_number = str(baseball_info["owner_number"])
+						#print "OWNER", owner_number, type(owner_number)
+
+						add_team_name.add_team_name_function(db, owner_number, baseball_team)
 
 					# if owner names are the same, set correct team name and trifecta points
 					if owner_name == owner_name_check:
@@ -252,10 +223,10 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 			else:
 				# will need to pull from h2h and roto to get proper trifecta points
 				collection_baseball_h2h = "baseball_h2h_" + year2
-				collection_baseball_roto	= "baseball_roto_" + year2
+				collection_baseball_roto = "baseball_roto_" + year2
 
 				# pull from h2h collection
-				baseball_list = list(db[collection_baseball_h2h].find({}, {"team": 1, "h2h_trifecta_points": 1, "_id": 0}))
+				baseball_list = list(db[collection_baseball_h2h].find({}, {"team": 1, "h2h_trifecta_points": 1, "owner_number": 1, "_id": 0}))
 				
 				for baseball_info in baseball_list:
 					baseball_team = baseball_info["team"]
@@ -273,9 +244,19 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 						#print baseball_team
 
 					owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
-					print owner_check
-					owner_name_check = owner_check["teams"][baseball_team]["owner"]
-					#print owner_name_check
+					#print owner_check
+
+					# try and pull owner_name with associated team names
+					try:
+						owner_name_check = owner_check["teams"][baseball_team]["owner"]
+						#print owner_name_check
+
+					# if exception (ie no team name in database), add team name per owner
+					except KeyError:
+						owner_number = str(baseball_info["owner_number"])
+						#print "OWNER", owner_number, type(owner_number)
+
+						add_team_name.add_team_name_function(db, owner_number, baseball_team)
 
 					if owner_name == owner_name_check:
 						correct_team_name = baseball_team
@@ -306,10 +287,19 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 
 					owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
 					#print owner_check
-					print "baseball_team", baseball_team
+					#print "baseball_team", baseball_team
 
-					owner_name_check = owner_check["teams"][baseball_team]["owner"]
-					#print owner_name_check
+					# try and pull owner_name with associated team names
+					try:
+						owner_name_check = owner_check["teams"][baseball_team]["owner"]
+						#print owner_name_check
+
+					# if exception (ie no team name in database), add team name per owner
+					except KeyError:
+						owner_number = str(baseball_info["owner_number"])
+						#print "OWNER", owner_number, type(owner_number)
+
+						add_team_name.add_team_name_function(db, owner_number, baseball_team)
 
 					if owner_name == owner_name_check:
 						correct_team_name = baseball_team
