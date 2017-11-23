@@ -41,13 +41,17 @@ module.exports = function(req, res, db, year, playoffs) {
 					losses: "",
 					ties: "",
 					win_per: "",
-					division: ""
+					division: "",
+					owner_number: ""
 				};
 
 				// traversing the DOM
 				///// MAKE SURE YOU USE FIRST() OR NEXT() TO ACTUALLY GO INTO LEVEL OF CHILDREN /////
 				division = $(this).parent().children().first();
 				team = $(this).children().children();
+				team_url = $(this).children().html();
+				team_id_index = team_url.indexOf("teamId=") + 7;
+				owner_number = team_url.slice(team_id_index, team_url.indexOf("&",team_id_index));				
 				wins = team.parent().next();
 				losses = wins.next();
 				ties = losses.next();
@@ -60,10 +64,11 @@ module.exports = function(req, res, db, year, playoffs) {
 				json1.losses = parseInt(losses.text());
 				json1.ties = parseInt(ties.text());
 				json1.win_per = parseFloat(win_per.text()).toFixed(3);
+				json1.owner_number = parseInt(owner_number);
 
 				// push each team's json of data into array of all teams
 				h2h_standings.push(json1);
-			})
+			}) // end of each h2h row
 
 			// scraping roto stats and standings
 			// for each team row in roto standings (note space " " in class name; it's possible!)

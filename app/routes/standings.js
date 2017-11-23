@@ -37,6 +37,7 @@ function python_trifecta_standings() {
 
 		display_trifecta_standings();
 	});	
+
 } // end of python_trifecta_standings function
 
 // function that displays trifecta standings
