@@ -513,17 +513,53 @@ router.get('/football_coach_home_page', function(req, res) {
 // route to analyze fantasy football "coaching" aka starting lineup optimization
 router.get('/football/coach/:year', function(req, res) {
 
-	let input = {
-		year: req.params.year,
-		completed_football_season: completed_football_season,
-		completed_weeks: football_completed_matchups,
-		football_ahead: football_ahead,
-		football_ahead_completed_matchups: football_ahead_completed_matchups
-	};
+	let year = req.params.year;
 
-	const send = coach_router.coach(req, res, db, input);
+	if (year > completed_football_season) {
+
+		const matchups_update_router = require("../modules/matchups_number_update.js").single_sport(req, res, db, "football", year, function(err, call) {
+
+			let input = {
+				year: req.params.year,
+				completed_football_season: completed_football_season,
+				completed_weeks: football_completed_matchups,
+				football_ahead: football_ahead,
+				football_ahead_completed_matchups: football_ahead_completed_matchups
+			};
+
+			setTimeout(function() {
+				const send = coach_router.coach(req, res, db, input);
+			}, 1000);
+		})
+	}
+	else {
+
+		let input = {
+			year: req.params.year,
+			completed_football_season: completed_football_season,
+			completed_weeks: football_completed_matchups,
+			football_ahead: football_ahead,
+			football_ahead_completed_matchups: football_ahead_completed_matchups
+		};
+
+		const send = coach_router.coach(req, res, db, input);
+	}
+
 
 }) // end of route to coach analysis
+
+router.get('/scrape_matchups/:sport/:year', function(req, res) {
+
+	let sport = req.params.sport;
+	let year = req.params.year;
+
+	const send = require("../modules/matchups_number_update.js")(req, res, db, sport, year, function(err, call) {
+		console.log("done");
+
+		res.status(200).send("ok");
+	})
+
+})
 
 
 // route to future draft boards home page
