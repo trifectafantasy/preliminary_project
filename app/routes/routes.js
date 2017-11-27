@@ -553,7 +553,7 @@ router.get('/scrape_matchups/:sport/:year', function(req, res) {
 	let sport = req.params.sport;
 	let year = req.params.year;
 
-	const send = require("../modules/matchups_number_update.js")(req, res, db, sport, year, function(err, call) {
+	const send = require("../modules/matchups_number_update.js").single_sport(req, res, db, sport, year, function(err, call) {
 		console.log("done");
 
 		res.status(200).send("ok");

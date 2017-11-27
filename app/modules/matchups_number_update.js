@@ -37,19 +37,22 @@ function single_sport(req, res, db, sport, year ,callback) {
 
 			// if football, look for "Week"
 			if (title.indexOf("Week") != -1) {
-				console.log("FOOTBALL");
 
-				var completed_matchups = parseInt(title.slice(title.indexOf(" ", title.length) - 1));
+				var completed_matchups = parseInt(title.slice(title.indexOf(" ", title.length) - 1)) - 1;
 				//console.log(completed_matchups, typeof completed_matchups)
 			}
 
+			// if basketball/baseball, look for "Matchup"
 			else if (title.indexOf("Matchup") != -1) {
-				console.log("BASKETBALL/BASEBALL");
 
-				var completed_matchups = parseInt(title.slice(title.indexOf(" ", title.length) - 1));
-				//console.log(completed_matchups, typeof completed_matchups)				
+				// remove paranthetical dates to leave just matchup number
+				title = title.slice(0, title.indexOf("(") - 1);
+
+				var completed_matchups = parseInt(title.slice(title.indexOf(" ", title.length) - 1)) - 1;
+				console.log(completed_matchups, typeof completed_matchups)				
 			}
 
+			// if has "Round", then in playoffs so set max completed matchups
 			else if (title.indexOf("Round")) {
 				console.log("REGULAR SEASON OVER");
 
@@ -64,17 +67,14 @@ function single_sport(req, res, db, sport, year ,callback) {
 				}
 			}
 
-			var key = sport + "_completed_matchups";
-			console.log(key);
-
-
 			var json = {};
+			var key = sport + "_completed_matchups";
 			json[key] = completed_matchups;
 
 			console.log(json);
 
 			request.put({url: "http://localhost:8081/utility/season_variables", form: json}, function(err, response, body) {
-				console.log(response.body);
+				//console.log(response.body);
 			})
 
 
