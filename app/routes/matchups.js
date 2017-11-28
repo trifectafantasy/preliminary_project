@@ -126,7 +126,11 @@ function all_owner_matchups(req, res, db, args, football_args, basketball_args, 
 	var disp_trifecta_matchups = null;
 
 var complete = function() {
+
 	if ((disp_football_matchups !== null && disp_basketball_matchups !== null) && (disp_baseball_matchups !== null && disp_trifecta_matchups !== null)) {
+	
+		console.log("Displaying all-time owner matchups...");
+		console.log("");
 
 		res.render('total_owner_matchups', {
 			owner: owner_name,

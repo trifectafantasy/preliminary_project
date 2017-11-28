@@ -30,7 +30,6 @@ var complete = function() {
 	complete_count += 1;
 
 	// once all in season sports have been pulled
-	console.log("sports in season: ", sports_in_season_number);
 	if (complete_count == sports_in_season_number) {
 		console.log("ready to display");
 
@@ -312,6 +311,8 @@ var display = function() {
 			sports_in_season_number += 1;
 		}
 	}
+	
+	console.log("sports in season:", sports_in_season_number);
 
 	// pull list of all teams and their respective owners once at the beginning for reference
 	db.collection("owners_per_team_name").find({}, {"_id": 0}).toArray(function(e, docs2) {
