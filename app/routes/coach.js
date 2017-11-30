@@ -32,7 +32,7 @@ var all_football_coach = function(x, owner_list) {
 				// send back to loop again
 				all_football_coach(x + 1, owner_list);
 			}) // end of coach scrape script
-		}, 500)
+		}, 1000)
 	}
 	// once done with all in loop, done
 	else {

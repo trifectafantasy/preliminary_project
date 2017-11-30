@@ -7,7 +7,20 @@ html
 		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
 		link(rel='stylesheet', type="text/css", href='/css/styles.css')
 
+		script(type="text/javascript").
+
+			$(window).on('beforeunload', function() {
+				$(".loader").fadeIn("slow");
+				//console.log("UNLOAD");
+			})
+
+			$(window).load(function() {
+				$(".loader").fadeOut("slow");
+				//console.log("LOAD");
+			})
+
 	body
+		div.loader
 		header
 			+headliner
 									

@@ -217,10 +217,13 @@ module.exports = function(req, res, db, year, owner_number, completed_weeks, cal
 
 // if all weeks necessary are done, callback
 var complete = function() {
-	complete_count += 1;
-	if (complete_count === completed_weeks) {
-		callback();
-	}
+	setTimeout(function() {
+		complete_count += 1;
+
+		if (complete_count === completed_weeks) {
+			callback();
+		}
+	}, 500)
 } // end of complete function
 
 }
