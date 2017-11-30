@@ -546,6 +546,7 @@ router.get('/football/coach/:year', function(req, res) {
 
 	if (year > completed_football_season) {
 
+		let sports_list = ["football"];
 		let year1 = year;
 		let year2 = String(parseInt(year1) + 1);
 
