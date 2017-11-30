@@ -34,11 +34,11 @@ var complete = function() {
 } // end of complete function
 
 
-	if (year > current_year2 + 1) {
+	if (parseInt(year) > parseInt(current_year2) + 1) {
 		res.send("Too far in advance, enter an earlier season. Can only go one year ahead of current sport.");
 	}
 
-	else if ((year > current_year1 + 1 && sport == "football") && football_ahead == false) {
+	else if ((parseInt(year) > parseInt(current_year1) + 1 && sport == "football") && football_ahead == false) {
 		res.send("Too far in advance, enter an earlier season. Can only go one year ahead of current sport.");
 	}
 
