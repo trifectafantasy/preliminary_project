@@ -267,45 +267,52 @@ router.get('/owner/:owner_number/matchups/:year1/:year2', function(req, res) {
 		sports_list = ["football"];
 	}
 
-	let year1 = req.params.year1;
-	let year2 = req.params.year2;
+	let year_list = [current_year1, current_year2];
+	let owner_number = req.params.owner_number;
 
-	let input = {
-		owner_number: req.params.owner_number,
-		year1: year1,
-		year2: year2,
-		current_year1: current_year1,
-		current_year2: current_year2
-	};
+	var new_team_name = require('../modules/team_name_update.js')(req, res, db, sports_list, year_list, owner_number, function(err, call) {
+		//console.log("team names done");
+		let year1 = req.params.year1;
+		let year2 = req.params.year2;
 
-	const matchups_update_send = matchups_update.update_matchups(req, res, db, sports_list, year1, year2, function(err, call) {
+		let input = {
+			owner_number: owner_number,
+			year1: year1,
+			year2: year2,
+			current_year1: current_year1,
+			current_year2: current_year2
+		};
 
-		setTimeout(function() {
+		const matchups_update_send = matchups_update.update_matchups(req, res, db, sports_list, year1, year2, function(err, call) {
 
-			var football_input = {
-				this_football_season_started: this_football_season_started,
-				football_completed_matchups: football_completed_matchups,
-				this_football_completed_season: this_football_completed_season,
-				football_ahead: football_ahead,
-				football_ahead_completed_matchups: football_ahead_completed_matchups
-			};
+			setTimeout(function() {
 
-			var basketball_input = {
-				this_basketball_season_started: this_basketball_season_started,
-				basketball_completed_matchups: basketball_completed_matchups,
-				this_basketball_completed_season: this_basketball_completed_season
-			};
+				var football_input = {
+					this_football_season_started: this_football_season_started,
+					football_completed_matchups: football_completed_matchups,
+					this_football_completed_season: this_football_completed_season,
+					football_ahead: football_ahead,
+					football_ahead_completed_matchups: football_ahead_completed_matchups
+				};
 
-			var baseball_input = {
-				this_baseball_season_started: this_baseball_season_started,
-				baseball_completed_matchups: baseball_completed_matchups,
-				this_baseball_completed_season: this_baseball_completed_season
-			};
+				var basketball_input = {
+					this_basketball_season_started: this_basketball_season_started,
+					basketball_completed_matchups: basketball_completed_matchups,
+					this_basketball_completed_season: this_basketball_completed_season
+				};
 
-			const send = matchups_router.owner_matchups(req, res, db, input, football_input, basketball_input, baseball_input);
-		
-		}, 1000) // end of setTimeout to wait for variables to reset
-	}) // end of update matchups function
+				var baseball_input = {
+					this_baseball_season_started: this_baseball_season_started,
+					baseball_completed_matchups: baseball_completed_matchups,
+					this_baseball_completed_season: this_baseball_completed_season
+				};
+
+				const send = matchups_router.owner_matchups(req, res, db, input, football_input, basketball_input, baseball_input);
+			
+			}, 1000) // end of setTimeout to wait for variables to reset
+		}) // end of update matchups function
+	});	// end of new team name 
+
 }); // end of owner to owner matchups 
 
 // route to individual owner's matchups for all trifecta seasons
@@ -442,27 +449,35 @@ router.get('/acquisition_value_home_page', function(req, res) {
 // route to football and basketball acquistion values
 router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) {
 
-	let sport = req.params.sport;
 
-	// set completed season for check if in season or not depending on sport
-	if (sport === 'football') {
-		completed_sport_season = completed_football_season;
-	}
-	else if (sport === 'basketball') {
-		completed_sport_season = completed_basketball_season;
-	}
-	else if (sport === 'baseball') {
-		completed_sport_season = completed_baseball_season;
-	}		
+	let sports_list = [req.params.sport];
+	let year_list = [req.params.year];
+	let owner_number = req.params.owner_number;
 
-	let input = {
-		sport: req.params.sport,
-		year: req.params.year,
-		owner_number: req.params.owner_number,
-		completed_sport_season: completed_sport_season
-	};
+	var match = require('../modules/team_name_update.js')(req, res, db, sports_list, year_list, owner_number, function(err, call) {
+		//console.log("final");
+		let sport = req.params.sport;
 
-	const send = acquisitions_router.acquisitions(req, res, db, input);
+		// set completed season for check if in season or not depending on sport
+		if (sport === 'football') {
+			completed_sport_season = completed_football_season;
+		}
+		else if (sport === 'basketball') {
+			completed_sport_season = completed_basketball_season;
+		}
+		else if (sport === 'baseball') {
+			completed_sport_season = completed_baseball_season;
+		}		
+
+		let input = {
+			sport: req.params.sport,
+			year: req.params.year,
+			owner_number: req.params.owner_number,
+			completed_sport_season: completed_sport_season
+		};
+
+		const send = acquisitions_router.acquisitions(req, res, db, input);
+	});				
 
 }) // end of route to football and basketball acquisition stats
 
@@ -614,3 +629,16 @@ router.get('/future_draft_board/:sport/:year', function(req, res) {
 	const send = draft_board_router.draft_board(req, res, db, input);
 
 }) // end of route to future draft boards home page
+
+
+router.get('/scraper/:owner_number', function(req, res) {
+	let sports_list = ["football", "basketball"];
+	let year_list = [current_year1, current_year2];
+	let owner_number = req.params.owner_number;
+
+	var match = require('../modules/team_name_update.js')(req, res, db, sports_list, year_list, owner_number, function(err, call) {
+		//console.log("final");
+	});				
+
+
+})
