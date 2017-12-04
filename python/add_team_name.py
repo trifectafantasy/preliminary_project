@@ -21,6 +21,13 @@ db = client.espn
 time.sleep(1)
 
 def add_team_name_function(db, owner_number, team_name):
+
+	while team_name.find(".") != -1:
+		period_index = team_name.find(".", 6)
+		#print period_index
+		path = path[:period_index] + "\uff0E" + path[period_index + 1:]
+		team_name = team_name[:period_index - 6] + "\uff0E" + team_name[period_index + 1 - 6:]
+
 	# define collections to be used
 	collection_owner = "owner" + owner_number
 	owner_name = list(db[collection_owner].find({}, {"owner": 1, "_id": 0}))[0]["owner"]
@@ -35,7 +42,9 @@ def add_team_name_function(db, owner_number, team_name):
 	# from owners_per_team python script, run createCollection function
 	owners_per_team.createCollection(db)
 
+
 # pull input for script from POST request
 owner_number = str(sys.argv[1])
 team_name = str(sys.argv[2])
 
+add_team_name_function(db, owner_number, team_name)

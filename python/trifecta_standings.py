@@ -4,7 +4,7 @@ import subprocess
 import time
 import sys
 from collections import OrderedDict
-import add_team_name
+import requests
 
 ##### DEFINE FUNCTIONS #####
 
@@ -86,8 +86,9 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 					#print "football owner number", football_owner_number
 					owner_number = str(int(list(db["football_owners"].find({"football_owner_number": football_owner_number}, {"owner_number": 1, "_id": 0}))[0]["owner_number"]))
 					#print "OWNER NUMBER", owner_number
+					r = requests.post("http://localhost:8081/utility/add_team_name", data = {"owner_number": owner_number, "team_name": football_team})
 
-					add_team_name.add_team_name_function(db, owner_number, football_team)
+				#print owner_name, owner_name_check
 
 				# if owner names are same, set correct team name and trifecta points
 				if owner_name == owner_name_check:
@@ -134,7 +135,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 					period_index = path.find(".", 6)
 					#print period_index
 					path = path[:period_index] + "\uff0E" + path[period_index + 1:]
-					basketball_team = basketball_team[:period_index - 6] + "\uff0E" + football_team[period_index + 1 - 6:]
+					basketball_team = basketball_team[:period_index - 6] + "\uff0E" + basketball_team[period_index + 1 - 6:]
 					#print basketball_team			
 
 				owner_check = list(db["owners_per_team_name"].find({}, {path: 1, "_id":0}))[0]
@@ -149,8 +150,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 				except KeyError:
 					owner_number = str(basketball_info["owner_number"])
 					#print "OWNER", owner_number, type(owner_number)
-
-					add_team_name.add_team_name_function(db, owner_number, basketball_team)
+					r = requests.post("http://localhost:8081/utility/add_team_name", data = {"owner_number": owner_number, "team_name": basketball_team})
 
 				if owner_name == owner_name_check:
 					correct_team_name = basketball_team
@@ -207,8 +207,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 					except KeyError:
 						owner_number = str(baseball_info["owner_number"])
 						#print "OWNER", owner_number, type(owner_number)
-
-						add_team_name.add_team_name_function(db, owner_number, baseball_team)
+						r = requests.post("http://localhost:8081/utility/add_team_name", data = {"owner_number": owner_number, "team_name": baseball_team})
 
 					# if owner names are the same, set correct team name and trifecta points
 					if owner_name == owner_name_check:
@@ -255,8 +254,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 					except KeyError:
 						owner_number = str(baseball_info["owner_number"])
 						#print "OWNER", owner_number, type(owner_number)
-
-						add_team_name.add_team_name_function(db, owner_number, baseball_team)
+						r = requests.post("http://localhost:8081/utility/add_team_name", data = {"owner_number": owner_number, "team_name": baseball_team})
 
 					if owner_name == owner_name_check:
 						correct_team_name = baseball_team
@@ -298,8 +296,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 					except KeyError:
 						owner_number = str(baseball_info["owner_number"])
 						#print "OWNER", owner_number, type(owner_number)
-
-						add_team_name.add_team_name_function(db, owner_number, baseball_team)
+						r = requests.post("http://localhost:8081/utility/add_team_name", data = {"owner_number": owner_number, "team_name": baseball_team})
 
 					if owner_name == owner_name_check:
 						correct_team_name = baseball_team
@@ -333,7 +330,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 		# append to list for 1 upload
 		trifecta_upload.append(input_json)
 
-	print trifecta_upload
+	#print trifecta_upload
 
 	# upload all to trifecta collection
 	db[collection_season_trifecta].insert(trifecta_upload)

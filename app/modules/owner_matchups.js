@@ -606,7 +606,6 @@ var football_complete = function() {
 
 								// if there is a saved record, then this is the matchup we want and upload to mongdb
 								if (basketball_save_record != null) {
-
 									// add to basketball scrape collection
 									db.collection('owner' + owner_number + "_basketball_matchups_scrape_" + year2).insert({"opposing_owner": basketball_opposing_owner, "record": basketball_save_record})
 
