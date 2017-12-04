@@ -449,35 +449,64 @@ router.get('/acquisition_value_home_page', function(req, res) {
 // route to football and basketball acquistion values
 router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) {
 
-
 	let sports_list = [req.params.sport];
 	let year_list = [req.params.year];
 	let owner_number = req.params.owner_number;
 
-	var match = require('../modules/team_name_update.js')(req, res, db, sports_list, year_list, owner_number, function(err, call) {
-		//console.log("final");
-		let sport = req.params.sport;
+	if (owner_number === 'all') {
+		// call trifecta standings to update team names
+		request("http://localhost:8081/trifecta_standings/" + current_year1 + "/" + current_year2, function(err, trifecta_response, trifecta_body) {
+			let sport = req.params.sport;
 
-		// set completed season for check if in season or not depending on sport
-		if (sport === 'football') {
-			completed_sport_season = completed_football_season;
-		}
-		else if (sport === 'basketball') {
-			completed_sport_season = completed_basketball_season;
-		}
-		else if (sport === 'baseball') {
-			completed_sport_season = completed_baseball_season;
-		}		
+			// set completed season for check if in season or not depending on sport
+			if (sport === 'football') {
+				completed_sport_season = completed_football_season;
+			}
+			else if (sport === 'basketball') {
+				completed_sport_season = completed_basketball_season;
+			}
+			else if (sport === 'baseball') {
+				completed_sport_season = completed_baseball_season;
+			}
 
-		let input = {
-			sport: req.params.sport,
-			year: req.params.year,
-			owner_number: req.params.owner_number,
-			completed_sport_season: completed_sport_season
-		};
+			let input = {
+				sport: req.params.sport,
+				year: req.params.year,
+				owner_number: req.params.owner_number,
+				completed_sport_season: completed_sport_season
+			};
 
-		const send = acquisitions_router.acquisitions(req, res, db, input);
-	});				
+			const send = acquisitions_router.acquisitions(req, res, db, input);
+		})
+	}
+
+	else {
+		var match = require('../modules/team_name_update.js')(req, res, db, sports_list, year_list, owner_number, function(err, call) {
+			//console.log("final");
+			let sport = req.params.sport;
+
+			// set completed season for check if in season or not depending on sport
+			if (sport === 'football') {
+				completed_sport_season = completed_football_season;
+			}
+			else if (sport === 'basketball') {
+				completed_sport_season = completed_basketball_season;
+			}
+			else if (sport === 'baseball') {
+				completed_sport_season = completed_baseball_season;
+			}		
+
+			let input = {
+				sport: req.params.sport,
+				year: req.params.year,
+				owner_number: req.params.owner_number,
+				completed_sport_season: completed_sport_season
+			};
+
+			const send = acquisitions_router.acquisitions(req, res, db, input);
+		});
+	}
+
 
 }) // end of route to football and basketball acquisition stats
 

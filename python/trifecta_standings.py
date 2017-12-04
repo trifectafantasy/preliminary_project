@@ -88,17 +88,19 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 					#print "OWNER NUMBER", owner_number
 					r = requests.post("http://localhost:8081/utility/add_team_name", data = {"owner_number": owner_number, "team_name": football_team})
 
-				#print owner_name, owner_name_check
-
 				# if owner names are same, set correct team name and trifecta points
 				if owner_name == owner_name_check:
 					correct_team_name = football_team
 					correct_trifecta_points = football_points
 
 			# set final correct trifeta points as football trifecta points
-			football_trifecta_points = correct_trifecta_points
-			print "football team name: ", correct_team_name
-			print "football trifecta points: ", football_trifecta_points
+			try:
+				football_trifecta_points = correct_trifecta_points
+			except:
+				trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_season, baseball_in_season)
+
+			print "football team name:", correct_team_name
+			print "football trifecta points:", football_trifecta_points
 
 		# if football is not in season, just assign 0 trifecta points
 		else: 
@@ -157,8 +159,8 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 					correct_trifecta_points = basketball_points
 
 			basketball_trifecta_points = correct_trifecta_points
-			print "basketball team name: ", correct_team_name
-			print "basketball trifecta points: ", basketball_trifecta_points
+			print "basketball team name:", correct_team_name
+			print "basketball trifecta points:", basketball_trifecta_points
 
 		else: 
 			basketball_trifecta_points = 0
@@ -215,8 +217,8 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 						correct_trifecta_points = baseball_points
 
 				baseball_trifecta_points = correct_trifecta_points
-				print "baseball team name: ", correct_team_name
-				print "baseball trifecta points: ", baseball_trifecta_points
+				print "baseball team name:", correct_team_name
+				print "baseball trifecta points:", baseball_trifecta_points
 
 			# if the sport trifecta collection is empty
 			else:
@@ -262,8 +264,8 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 
 				# divide h2h points by 2 to get proper weight for baseball trifecta points
 				h2h_baseball_trifecta_points = float(correct_trifecta_points)
-				print "baseball team name: ", correct_team_name
-				print "h2h baseball trifecta points: ", h2h_baseball_trifecta_points
+				print "baseball team name:", correct_team_name
+				print "h2h baseball trifecta points:", h2h_baseball_trifecta_points
 
 				# pull from roto collection
 				baseball_list = list(db[collection_baseball_roto].find({}, {"team": 1, "roto_trifecta_points": 1, "_id": 0}))
@@ -305,7 +307,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 				# divide roto points by 2 to get proper weight for baseball trifecta points
 				roto_baseball_trifecta_points = float(correct_trifecta_points)
 				#print "baseball team name: ", correct_team_name
-				print "roto baseball trifecta points: ", roto_baseball_trifecta_points
+				print "roto baseball trifecta points:", roto_baseball_trifecta_points
 
 				# sum h2h and roto halves to get total baseball trifecta points
 				baseball_trifecta_points = h2h_baseball_trifecta_points + roto_baseball_trifecta_points
