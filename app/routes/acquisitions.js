@@ -90,7 +90,7 @@ var all_acquisitions = function(x, owner_list) {
 						args: [sport, year, owner_number]
 					}
 
-					pyshell.run(sport + '_acquisitions.py', options, function(err) {
+					pyshell.run("python/" + sport + '_acquisitions.py', options, function(err) {
 						console.log("acquisitions python script complete");
 
 						all_acquisitions(x + 1, owner_list);
