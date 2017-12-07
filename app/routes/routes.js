@@ -659,15 +659,17 @@ router.get('/future_draft_board/:sport/:year', function(req, res) {
 
 }) // end of route to future draft boards home page
 
+// Test endpoint
+/*
+router.get('/scraper/:sport/:year', function(req, res) {
 
-router.get('/scraper/:owner_number', function(req, res) {
-	let sports_list = ["football", "basketball"];
-	let year_list = [current_year1, current_year2];
-	let owner_number = req.params.owner_number;
+	let sport = req.params.sport;
+	let year = req.params.year;
 
-	var match = require('../modules/team_name_update.js')(req, res, db, sports_list, year_list, owner_number, function(err, call) {
+	var match = require('../modules/playoffs_test.js')(req, res, db, sport, year, function(err, call) {
 		//console.log("final");
 	});				
 
 
 })
+*/

@@ -261,7 +261,7 @@ module.exports = function(req, res, db, sport, year, callback) {
 				// scrape for getting 1 winner of consolation bracket
 				else if (bracket === "CONSOLATION LADDER") {
 					
-					losers_bracket = $(this).next().next().children().next().next().children().children();
+					losers_bracket = $(this).next().next().children().next().children().children();
 					//console.log(losers_bracket.text());
 
 					team1 = losers_bracket.first().next().children().first();
