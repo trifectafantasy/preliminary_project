@@ -27,8 +27,6 @@ def add_team_name_function(db, owner_number, team_name):
 		#print period_index
 		team_name = team_name.replace(".", "\\uff0E")
 		#print "team name", team_name, type(team_name)
-		hey = raw_input()
-		#team_name = team_name[:period_index - 6] + "\uff0E" + team_name[period_index + 1 - 6:]
 
 	# define collections to be used
 	collection_owner = "owner" + owner_number
