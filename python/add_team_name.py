@@ -23,10 +23,10 @@ time.sleep(1)
 def add_team_name_function(db, owner_number, team_name):
 
 	while team_name.find(".") != -1:
-		period_index = team_name.find(".", 6)
+		period_index = team_name.find(".")
 		#print period_index
-		path = path[:period_index] + "\uff0E" + path[period_index + 1:]
-		team_name = team_name[:period_index - 6] + "\uff0E" + team_name[period_index + 1 - 6:]
+		team_name = team_name.replace(".", "\\uff0E")
+		#print "team name", team_name, type(team_name)
 
 	# define collections to be used
 	collection_owner = "owner" + owner_number

@@ -168,8 +168,7 @@ router.get('/owner/:owner_number/profile/recap', function(req, res) {
 		this_basketball_completed_season: this_basketball_completed_season,
 		this_baseball_completed_season: this_baseball_completed_season
 	};
-
-	console.log(input);
+	//console.log(input);
 
 	const send = profile_router.profile_recap(req, res, db, input);
 
@@ -283,34 +282,38 @@ router.get('/owner/:owner_number/matchups/:year1/:year2', function(req, res) {
 			current_year2: current_year2
 		};
 
-		const matchups_update_send = matchups_update.update_matchups(req, res, db, sports_list, year1, year2, function(err, call) {
+		setTimeout(function() {
 
-			setTimeout(function() {
+			const matchups_update_send = matchups_update.update_matchups(req, res, db, sports_list, year1, year2, function(err, call) {
 
-				var football_input = {
-					this_football_season_started: this_football_season_started,
-					football_completed_matchups: football_completed_matchups,
-					this_football_completed_season: this_football_completed_season,
-					football_ahead: football_ahead,
-					football_ahead_completed_matchups: football_ahead_completed_matchups
-				};
+				setTimeout(function() {
 
-				var basketball_input = {
-					this_basketball_season_started: this_basketball_season_started,
-					basketball_completed_matchups: basketball_completed_matchups,
-					this_basketball_completed_season: this_basketball_completed_season
-				};
+					var football_input = {
+						this_football_season_started: this_football_season_started,
+						football_completed_matchups: football_completed_matchups,
+						this_football_completed_season: this_football_completed_season,
+						football_ahead: football_ahead,
+						football_ahead_completed_matchups: football_ahead_completed_matchups
+					};
 
-				var baseball_input = {
-					this_baseball_season_started: this_baseball_season_started,
-					baseball_completed_matchups: baseball_completed_matchups,
-					this_baseball_completed_season: this_baseball_completed_season
-				};
+					var basketball_input = {
+						this_basketball_season_started: this_basketball_season_started,
+						basketball_completed_matchups: basketball_completed_matchups,
+						this_basketball_completed_season: this_basketball_completed_season
+					};
 
-				const send = matchups_router.owner_matchups(req, res, db, input, football_input, basketball_input, baseball_input);
-			
-			}, 1000) // end of setTimeout to wait for variables to reset
-		}) // end of update matchups function
+					var baseball_input = {
+						this_baseball_season_started: this_baseball_season_started,
+						baseball_completed_matchups: baseball_completed_matchups,
+						this_baseball_completed_season: this_baseball_completed_season
+					};
+
+					const send = matchups_router.owner_matchups(req, res, db, input, football_input, basketball_input, baseball_input);
+
+				}, 2000) // end of setTimeout to wait for matchups numbers variables to reset
+			}) // end of update matchups function
+		}, 2000) // end of setTimeout to wait for team names variables to reset
+
 	});	// end of new team name 
 
 }); // end of owner to owner matchups 
@@ -503,11 +506,11 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 				completed_sport_season: completed_sport_season
 			};
 
-			const send = acquisitions_router.acquisitions(req, res, db, input);
+			setTimeout(function() {
+				const send = acquisitions_router.acquisitions(req, res, db, input);
+			}, 2000) // end of setTimeout to let matchups numbers variables reset
 		});
 	}
-
-
 }) // end of route to football and basketball acquisition stats
 
 
@@ -606,7 +609,7 @@ router.get('/football/coach/:year', function(req, res) {
 				};
 
 				const send = coach_router.coach(req, res, db, input);
-			}, 1000);
+			}, 2000); // end of setTimeout for matchups numbers variables to reset
 		})
 	}
 	else {
@@ -621,21 +624,7 @@ router.get('/football/coach/:year', function(req, res) {
 
 		const send = coach_router.coach(req, res, db, input);
 	}
-
 }) // end of route to coach analysis
-
-router.get('/scrape_matchups/:sport/:year', function(req, res) {
-
-	let sport = req.params.sport;
-	let year = req.params.year;
-
-	const matchups_update_send = matchups_update.update_matchups(req, res, db, sports_list, year1, year2, function(err, call) {
-		console.log("done");
-
-		res.status(200).send("ok");
-	})
-
-})
 
 
 // route to future draft boards home page
