@@ -489,7 +489,7 @@ var football_complete = function() {
 		// run python script to interpret scraped data and convert to 
 		pyshell.run('python/football_matchups.py', options, function(err) {
 			if (err) throw err;
-			console.log('Matchups python script complete');
+			console.log('football matchups python script complete');
 
 			// tell overall complete that football scraping and processing is done
 			complete();
@@ -655,7 +655,7 @@ var basketball_complete = function() {
 		// call basketball matchups python script to processing
 		pyshell.run('python/basketball_matchups.py', options, function(err) {
 			if (err) throw err;
-			console.log('Matchups python script complete');
+			console.log('basketball matchups python script complete');
 
 			// tell overall complete function that basketball scrape and processing is already done
 			complete();
@@ -820,7 +820,7 @@ var baseball_complete = function() {
 		// run python script that processes record
 		pyshell.run('python/baseball_matchups.py', options, function(err) {
 			if (err) throw err;
-			console.log('Matchups python script complete');
+			console.log('baseball matchups python script complete');
 
 			// tell overall complete function that baseball is scraped and processes
 			complete();

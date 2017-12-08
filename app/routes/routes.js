@@ -168,8 +168,7 @@ router.get('/owner/:owner_number/profile/recap', function(req, res) {
 		this_basketball_completed_season: this_basketball_completed_season,
 		this_baseball_completed_season: this_baseball_completed_season
 	};
-
-	console.log(input);
+	//console.log(input);
 
 	const send = profile_router.profile_recap(req, res, db, input);
 
@@ -311,9 +310,9 @@ router.get('/owner/:owner_number/matchups/:year1/:year2', function(req, res) {
 
 					const send = matchups_router.owner_matchups(req, res, db, input, football_input, basketball_input, baseball_input);
 
-				}, 1000) // end of setTimeout to wait for variables to reset
+				}, 2000) // end of setTimeout to wait for matchups numbers variables to reset
 			}) // end of update matchups function
-		}, 1000)
+		}, 2000) // end of setTimeout to wait for team names variables to reset
 
 	});	// end of new team name 
 
@@ -508,14 +507,10 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 			};
 
 			setTimeout(function() {
-
 				const send = acquisitions_router.acquisitions(req, res, db, input);
-			}, 1000)
-
+			}, 2000) // end of setTimeout to let matchups numbers variables reset
 		});
 	}
-
-
 }) // end of route to football and basketball acquisition stats
 
 
@@ -614,7 +609,7 @@ router.get('/football/coach/:year', function(req, res) {
 				};
 
 				const send = coach_router.coach(req, res, db, input);
-			}, 1000);
+			}, 2000); // end of setTimeout for matchups numbers variables to reset
 		})
 	}
 	else {
@@ -629,21 +624,7 @@ router.get('/football/coach/:year', function(req, res) {
 
 		const send = coach_router.coach(req, res, db, input);
 	}
-
 }) // end of route to coach analysis
-
-router.get('/scrape_matchups/:sport/:year', function(req, res) {
-
-	let sport = req.params.sport;
-	let year = req.params.year;
-
-	const matchups_update_send = matchups_update.update_matchups(req, res, db, sports_list, year1, year2, function(err, call) {
-		console.log("done");
-
-		res.status(200).send("ok");
-	})
-
-})
 
 
 // route to future draft boards home page
