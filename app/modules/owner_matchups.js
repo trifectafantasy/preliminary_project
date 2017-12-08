@@ -592,7 +592,7 @@ var football_complete = function() {
 										basketball_opposing_team = football_opposing_team.replace(".", "\\uff0E");
 									}									
 									//console.log(basketball_my_team);
-									//console.log(opposing_team);		
+									//console.log(basketball_opposing_team);
 
 									// set record of matchup
 									basketball_save_record = basketball_record2.text();
