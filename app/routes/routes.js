@@ -410,10 +410,10 @@ router.post('/trade_history_upload', function(req, res) {
 
 
 
-// route to acquisition home page
+// route to stats home page
 router.get('/stats_home_page', function(req, res) {
 	res.render('stats_home_page');
-}) // end of acquisition home page
+}) // end of stats home page
 
 // route to roster stats
 router.get('/owner/:owner_number/:sport/stats/:year', function(req, res) {
@@ -441,7 +441,7 @@ router.get('/owner/:owner_number/:sport/stats/:year', function(req, res) {
 
 	const send = stats_router.stats(req, res, db, input);
 
-}) // end of route to football and basketball acquisition stats
+}) // end of route to roster stats
 
 
 // route to acquisition home page
@@ -511,7 +511,7 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 			}, 2000) // end of setTimeout to let matchups numbers variables reset
 		});
 	}
-}) // end of route to football and basketball acquisition stats
+}) // end of route to acquisition stats
 
 
 // route to origin home page

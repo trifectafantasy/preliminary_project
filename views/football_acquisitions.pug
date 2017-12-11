@@ -43,11 +43,11 @@ html
 				tr
 					th RANK
 					th PLAYER
+					th ACQUISITION VALUE
 					th PTS
+					th ACQUISITION WEIGHT
 					th ACQUIRED
 					th DRAFT POSITION
-					th ACQUISITION WEIGHT
-					th ACQUISITION VALUE
 					if owner === 'all'
 						th OWNER
 
@@ -58,16 +58,16 @@ html
 						each val, cat in readin
 							if cat === "player"
 								td= val
+							if cat === "acquisition_value"
+								td= parseFloat(val).toFixed(2)
 							if cat === "PTS"
 								td= parseFloat(val).toFixed(1)
+							if cat === "acquisition_weight"
+								td= parseFloat(val).toFixed(2)
 							if cat === "acquired"
 								td= val
 							if cat === "draft_position"
 								td= val
-							if cat === "acquisition_weight"
-								td= parseFloat(val).toFixed(2)
-							if cat === "acquisition_value"
-								td= parseFloat(val).toFixed(2)
 							if owner === 'all'
 								if cat === 'owner'
 									td= val		

@@ -52,12 +52,12 @@ html
 					th RANK
 					th PLAYER
 					th POSITION
+					th ACQUISITION VALUE
 					th WEIGHTED PR
+					th ACQUISITION WEIGHT
+					th PR
 					th ACQUIRED
 					th DRAFT POSITION
-					th ACQUISITION WEIGHT
-					th ACQUISITION VALUE
-					th PR
 					if owner === "all"
 						th OWNER
 
@@ -70,18 +70,18 @@ html
 								td= val
 							if cat === "hit_or_pit"
 								td= val
+							if cat === "acquisition_value"
+								td= parseFloat(val).toFixed(2)
 							if cat === "weighted_PR"
+								td= parseFloat(val).toFixed(2)
+							if cat === "acquisition_weight"
+								td= parseFloat(val).toFixed(2)
+							if cat === "PR"
 								td= parseFloat(val).toFixed(2)
 							if cat === "acquired"
 								td= val
 							if cat === "draft_position"
 								td= val
-							if cat === "acquisition_weight"
-								td= parseFloat(val).toFixed(2)
-							if cat === "acquisition_value"
-								td= parseFloat(val).toFixed(2)
-							if cat === "PR"
-								td= parseFloat(val).toFixed(2)
 							if owner === 'all'
 								if cat === 'owner'
 									td= val					

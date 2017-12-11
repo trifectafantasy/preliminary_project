@@ -16,11 +16,13 @@ module.exports = function(req, res, db, sport, year, owner_number) {
 
 		if (owner_number === 'all') {
 			let find_query = {"player": 1, "PTS": 1, "acquired": 1, "draft_position": 1, "acquisition_weight": 1, "acquisition_value": 1, "owner": 1, "_id": 0};
-			all_acquisitions_display(find_query, sort_query);
+			let reorder_array = ["player", "acquisition_value", "PTS", "acquisition_weight", "acquired", "draft_position", "owner"];
+			all_acquisitions_display(find_query, sort_query, reorder_array);
 		}
 		else {
 			let find_query = {"player": 1, "PTS": 1, "acquired": 1, "draft_position": 1, "acquisition_weight": 1, "acquisition_value": 1, "_id": 0};
-			individual_acquisitions_display(find_query, sort_query);
+			let reorder_array = ["player", "acquisition_value", "PTS", "acquisition_weight", "acquired", "draft_position"];
+			individual_acquisitions_display(find_query, sort_query, reorder_array);
 		}
 	}
 
@@ -28,12 +30,14 @@ module.exports = function(req, res, db, sport, year, owner_number) {
 		let sort_query = {"sort": [["acquisition_value", "desc"], ["weighted_PR", "desc"], ["acquisition_weight", "asc"]]};
 
 		if (owner_number === 'all') {
-			let find_query = {"player": 1, "weighted_PR": 1, "acquired": 1, "draft_position": 1, "acquisition_weight": 1, "acquisition_value": 1, "PR": 1, "owner": 1, "_id": 0};
-			all_acquisitions_display(find_query, sort_query);
+			let find_query = {"player": 1, "acquisition_value": 1, "PR": 1, "weighted_PR": 1, "acquired": 1, "draft_position": 1, "acquisition_weight": 1, "owner": 1, "_id": 0};
+			let reorder_array = ["player", "acquisition_value", "weighted_PR", "acquisition_weight", "PR", "acquired", "draft_position", "owner"];
+			all_acquisitions_display(find_query, sort_query, reorder_array);
 		}
 		else {
-			let find_query = {"player": 1, "weighted_PR": 1, "acquired": 1, "draft_position": 1, "acquisition_weight": 1, "acquisition_value": 1, "PR": 1, "_id": 0};
-			individual_acquisitions_display(find_query, sort_query);
+			let find_query = {"player": 1, "acquisition_value": 1, "PR": 1, "weighted_PR": 1, "acquired": 1, "draft_position": 1, "acquisition_weight": 1, "_id": 0};
+			let reorder_array = ["player", "acquisition_value", "weighted_PR", "acquisition_weight", "PR", "acquired", "draft_position"];
+			individual_acquisitions_display(find_query, sort_query, reorder_array);
 		}
 	}
 
@@ -42,17 +46,19 @@ module.exports = function(req, res, db, sport, year, owner_number) {
 
 		if (owner_number === 'all') {
 			let find_query = {"player": 1, "hit_or_pit": 1, "weighted_PR": 1, "acquired": 1, "draft_position": 1, "acquisition_weight": 1, "acquisition_value": 1, "PR": 1, "owner": 1, "_id": 0};
-			all_acquisitions_display(find_query, sort_query);
+			let reorder_array = ["player", "hit_or_pit", "acquisition_value", "weighted_PR", "acquisition_weight", "PR", "acquired", "draft_position", "owner"];
+			all_acquisitions_display(find_query, sort_query, reorder_array);
 		}
 		else {
 			let find_query = {"player": 1, "hit_or_pit": 1, "weighted_PR": 1, "acquired": 1, "draft_position": 1, "acquisition_weight": 1, "acquisition_value": 1, "PR": 1, "_id": 0};
-			individual_acquisitions_display(find_query, sort_query);
+			let reorder_array = ["player", "hit_or_pit", "acquisition_value", "weighted_PR", "acquisition_weight", "PR", "acquired", "draft_position"];
+			individual_acquisitions_display(find_query, sort_query, reorder_array);
 		}
 	}
 
 // functions defined in module for display //
 
-	function all_acquisitions_display(find_query, sort_query) {
+	function all_acquisitions_display(find_query, sort_query, reorder_array) {
 
 		let owner = 'all';
 
@@ -62,6 +68,8 @@ module.exports = function(req, res, db, sport, year, owner_number) {
 
 			// pull database for display
 			db.collection(sport + "_acquisitions_display_" + year + "_all").find({}, find_query, sort_query).toArray(function(e, docs) {
+				//reorder json fields for better display in retrospect
+				docs = JSON.parse(JSON.stringify(docs, reorder_array));
 				//console.log(docs);
 				console.log("Displaying all acquisition stats...");
 				console.log("");
@@ -99,10 +107,12 @@ module.exports = function(req, res, db, sport, year, owner_number) {
 		}) // end of script for all acquisitions
 	} // end of all_acquisitions_display fuction
 
-	function individual_acquisitions_display(find_query, sort_query) {
+	function individual_acquisitions_display(find_query, sort_query, reorder_array) {
 
 		// pull owner acquisition database for display
 		db.collection("owner" + owner_number + "_" + sport + "_acquisitions_display_" + year).find({}, find_query, sort_query).toArray(function(e, docs) {
+			//reorder json fields for better display in retrospect
+			docs = JSON.parse(JSON.stringify(docs, reorder_array));
 			//console.log(docs);
 			console.log("Displaying acquisition stats...");
 			console.log("");
