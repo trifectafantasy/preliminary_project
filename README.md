@@ -5,8 +5,7 @@ To install:
 + sudo apt install git
 + git clone https://github.com/trifectafantasy/preliminary_project.git
 cd to preliminary_project directory...
-+ sudo apt install nodejs-legacy
-+ sudo apt install npm
++ install node and npm following: https://github.com/nodejs/help/wiki/Installation
 + install mongodb following: https://docs.mongodb.com/v2.6/tutorial/install-mongodb-on-ubuntu/
   - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
   - echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
