@@ -5,7 +5,11 @@ To install:
 + sudo apt install git
 + git clone https://github.com/trifectafantasy/preliminary_project.git
 cd to preliminary_project directory...
-+ install node and npm following: https://github.com/nodejs/help/wiki/Installation
++ install node and npm through nvm:
+  - run install script from nvm GitHub page: https://github.com/creationix/nvm
+  - nvm install X.X.X to install most recent node version per https://nodejs.org/en/download/
+  - node -v (verify)
+  - npm -v (verify)
 + install mongodb following: https://docs.mongodb.com/v2.6/tutorial/install-mongodb-on-ubuntu/
   - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
   - echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
