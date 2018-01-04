@@ -25,14 +25,13 @@ cd to preliminary_project directory...
 
 To dump and restore mongodb espn database following: https://docs.mongodb.com/manual/tutorial/backup-and-restore-tools/
 + mongod
-  - to restore: mongorestore /backup_mongo/\<folder where dumped mongodb data is\>
-  - to dump: mongodump --out /backup_mongo/\<folder to dump mondogb data\>
+  - to restore: mongorestore backup_mongo/\<folder where dumped mongodb data is\>
+  - to dump: mongodump --out backup_mongo/\<folder to dump mondogb data\>
   
 To run:
 In different terminal windows in preliminary_project directory:
-+ nohup mongod &
++ nohup mongod --dbpath /data/db --smallfiles &
 + nohup nodemon server.js &
-+ nohup ngrok http -bind-tls=true -auth="chips:markers" 8081
 
 To open tunnel:
 + sign up for free ngrok account
