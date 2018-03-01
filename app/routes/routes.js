@@ -10,6 +10,10 @@ const mongo = require('mongodb');
 const assert = require('assert');
 const math = require('mathjs');
 
+//const validate = require('express-validation');
+const {check, oneOf, validation_result} = require('express-validator/check');
+const {matched_data, sanitize} = require('express-validator/filter');
+
 // create router object
 const router = express.Router();
 // export router to server.js file
@@ -104,6 +108,8 @@ StartMongoDBInstance(mongo_url, function(env_variables) {
 	set_season_variables(env_variables);
 });
 
+const secret_mission_router = require('./secret_mission.js');
+
 // Require routers for paths to different pages
 const utility_router = require('./utility.js');
 const profile_router = require('./profile.js');
@@ -119,6 +125,59 @@ const draft_board_router = require('./draft_board.js');
 
 const matchups_update = require('../modules/matchups_number_update.js');
 
+// Route to secret-mission pages
+router.get('/secret_mission', function(req, res) {
+	res.render('secret_mission/home_page', {
+		message: ""
+	})
+})
+
+router.post('/secret_mission_name', function(req, res) {
+	console.log(req.body);
+	res.send("good!");
+})
+
+
+/*
+router.post('/secret_mission_name', check('name', "Please enter your Agent Name").isIn(['wes','Wes']), function(req, res) {
+
+	var error_array = req._validationErrors;
+
+	if (req._validationErrors.length > 0) {
+		console.log(error_array[0].msg);
+
+		res.render('secret_mission/home_page',{
+			messgae: error_array[0].msg
+		})
+
+	}
+	else {
+		res.send("you're good");
+	}
+/*
+	try {
+		validation_result(req);
+	}
+	catch (err) {
+		console.log(validation_result(req))
+		res.send('bad!')
+	}
+	res.send('good!')
+
+/*
+	if (req.body.name === "wes") {
+
+		console.log(req.body);
+		res.redirect('secret_mission');
+
+	}
+	else {
+		res.
+	}
+
+
+})
+*/
 
 // Route to Home/Root page
 router.get('/', function(req, res) {

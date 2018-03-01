@@ -1,0 +1,26 @@
+html
+	head
+		title Welcome
+
+		script(type="text/javascript").
+			function checkFunction() {
+				if (document.getElementById('name_input').value == 'wes') {
+
+					alert("name is right!")
+					return true;
+				}
+				else {
+					alert("name is wrong!");
+					return false;
+				}
+			}
+
+	body
+		h1 Hello
+		
+		form(action="/secret_mission_name", method="POST", onsubmit="return checkFunction()")
+			p Please enter your Agent Name
+			input(type="text", id="name_input", name="name", placeholder=message)
+
+			input(type="submit" value="Enter")
+
