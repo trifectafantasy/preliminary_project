@@ -1,26 +1,37 @@
 html
 	head
 		title Welcome
+		include ../JADE-Bootstrap/_bootstrap
+		include ../mixins.pug
+		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', type="text/css", href='/css/styles.css')
 
 		script(type="text/javascript").
 			function checkFunction() {
-				if (document.getElementById('name_input').value == 'wes') {
 
-					alert("name is right!")
+				var name_list = ["K-Dawg", "Nate the Great", "Wes"];
+
+				var name_input = document.getElementById('name_input').value;
+				console.log(name_input)
+
+				if (name_list.includes(name_input)) {
+
 					return true;
 				}
 				else {
-					alert("name is wrong!");
+					document.getElementById("error").innerHTML = "Not an agent. Enter your name exactly as given.";
 					return false;
 				}
 			}
 
-	body
-		h1 Hello
+	body.secret_mission
+		h3 Login to private email server. (It's ok. We're not politicians.)
 		
-		form(action="/secret_mission_name", method="POST", onsubmit="return checkFunction()")
-			p Please enter your Agent Name
-			input(type="text", id="name_input", name="name", placeholder=message)
-
-			input(type="submit" value="Enter")
+		form(action="/secret_mission/email", method="POST", onsubmit="return checkFunction()")
+			h4 Agent Name:
+			input.one_line(type="text", id="name_input", name="name", placeholder=message) 
+			span.one_line
+				p#error
+			
+			input.next_line(type="submit" value="Enter")
 

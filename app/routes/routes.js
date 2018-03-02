@@ -132,10 +132,62 @@ router.get('/secret_mission', function(req, res) {
 	})
 })
 
-router.post('/secret_mission_name', function(req, res) {
-	console.log(req.body);
-	res.send("good!");
+router.post('/secret_mission/email', function(req, res) {
+	res.render('secret_mission/email', {
+		name: req.body.name
+	})
 })
+
+router.post('/secret_mission/instructions', function(req, res) {
+	res.render('secret_mission/instructions', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/friendship_wing', function(req, res) {
+	res.render('secret_mission/friendship_wing', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/front_door', function(req, res) {
+	res.render('secret_mission/front_door', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/banter', function(req, res) {
+	res.render('secret_mission/banter', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/the_tweedles', function(req, res) {
+	res.render('secret_mission/the_tweedles', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/the_tweedles/tweedle1', function(req, res) {
+	res.render('secret_mission/tweedle1', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/the_tweedles/tweedle2', function(req, res) {
+	res.render('secret_mission/tweedle2', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/the_tweedles/tweedle3', function(req, res) {
+	res.render('secret_mission/tweedle3', {
+		name: req.body.name
+	})
+})
+
+
+
 
 
 /*

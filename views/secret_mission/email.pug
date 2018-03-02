@@ -1,0 +1,21 @@
+html
+	head
+		title Email
+		include ../JADE-Bootstrap/_bootstrap
+		include ../mixins.pug
+		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', type="text/css", href='/css/styles.css')
+
+		script(type="text/javascript").
+			function moveOn() {
+				return true;
+			}
+	body.secret_mission
+
+		img#email(src="/images/secretmissionemail.jpg", alt="Secret Mission Email")
+
+
+		form(action='/secret_mission/instructions', method="POST")
+			input.hidden(type="hidden", name="name", value=name)
+			div(align="center")
+				button.navigate(onclick="return moveOn()") I'm ready!

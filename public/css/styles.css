@@ -20,6 +20,43 @@ a {
 	color: blue;
 }
 
+.secret_mission {
+	background-color: white;
+}
+
+.one_line {
+	display: inline-block;
+}
+.next_line {
+	display: block;
+}
+#error {
+	color: red;
+}
+
+.navigate {
+	background: none;
+	border: none;
+	cursor: pointer;
+	line-height: 10px;
+	font-style: italic;
+	font-size: 25px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+#email {
+	display: block;
+	margin-top: 0px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 30px;
+	width: 100%;
+	min-width: 1800px;
+	max-width: 2200px;
+	height: 550px;
+}
+
 .loader {
 	position: fixed;
 	left: 0px;
