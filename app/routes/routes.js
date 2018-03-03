@@ -186,7 +186,23 @@ router.post('/secret_mission/the_tweedles/tweedle3', function(req, res) {
 	})
 })
 
+router.post('/secret_mission/password_door', function(req, res) {
+	res.render('secret_mission/password_door', {
+		name: req.body.name
+	})
+})
 
+router.post('/secret_mission/pie', function(req, res) {
+	res.render('secret_mission/pie', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/foyer', function(req, res) {
+	res.render('secret_mission/foyer', {
+		name: req.body.name
+	})
+})
 
 
 

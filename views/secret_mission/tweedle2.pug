@@ -11,7 +11,115 @@ html
 				return true;
 			}
 	body.secret_mission
-		h4 Friendship Wing text goes here
+		p Hello. My name is Tweedle Wesley. I know one of the passwords to get into the Friendship Wing.
+
+		p 
+			| The clue I will give you is a pair of things that the password is like and a pair that the password is not like. You can conclude 1 characteristic about the password from each clue. For example: If I tell you, “The password is like 
+			strong Kermit the Frog & Grass 
+			| but not like 
+			strong Mustard & China’s Flag
+			| ,” you can deduce that the password is green. If another clue says the password is like 
+			strong Honey
+			| , do not be alarmed that honey is not green as that clue is leading you to another characteristic of the password. Got it?
+
+		p Your clue is:
+
+		if name === "Nate the Great"
+			p 
+				| The password is like 
+				strong Monkey & Tiger 
+				| but not like 
+				strong Cat & Lizard
+
+		else if name === "Baker Brandis"
+			p
+				| The password is like 
+				strong Panda & Moose 
+				| but not like 
+				strong Salamander & Alligator
+
+		else if name === "Big Apostle"
+			p
+				| The password is like 
+				strong Cheetah & Iguana 
+				| but not like 
+				strong Ladybug & Ostrich
+
+		else if name === "Coach Bkuh"
+			p
+				| The password is like 
+				strong Beta Fish & Parrot 
+				| but not like 
+				strong Lion & Termite
+
+		else if name === "Thomas Pyro"
+			p
+				| The password is like 
+				strong Flea & Sparrow 
+				| but not like 
+				strong Whale & Hippo
+
+		else if name === "K-Dawg"
+			p
+				| The password is like 
+				strong Wolf & Dolphin 
+				| but not like 
+				strong Mole & Octopus
+
+		else if name === "Generic White Guy Name"
+			p
+				| The password is like 
+				strong Sea Otter & Human 
+				| but not like 
+				strong Cow & Chicken
+
+		table
+			tbody
+				tr
+					td Rhino
+					td Koala
+					td Rabbit
+					td Elephant
+					td Camel
+					td Giraffe
+					td Rat
+					td Shrimp
+				tr
+					td Worm
+					td Horse
+					td Turtle
+					td Badger
+					td Dragon
+					td Pig
+					td Alligator
+					td Owl
+				tr
+					td Falcon
+					td Bat
+					td Snake
+					td Squid
+					td Hamster
+					td Penguin
+					td Kangaroo
+					td Turkey
+				tr
+					td Spider
+					td Sheep
+					td Goat
+					td Fox
+					td Leopard
+					td Polar Bear
+					td Dog
+					td Wasp
+				tr
+					td Beaver
+					td Shark
+					td Walrus
+					td Ox
+					td Raccoon
+					td Toucan
+					td Crab
+					td Ant
 
 		form(action='/secret_mission/the_tweedles', method="POST")
 			input.hidden(type="hidden", name="name", value=name)

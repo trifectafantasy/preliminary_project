@@ -11,19 +11,24 @@ html
 				return true;
 			}
 	body.secret_mission
-		h4 Tweedle text goes here
+		h4 Who would you like to do?
 
 		form(action='/secret_mission/the_tweedles/tweedle1', method="POST")
 			input.hidden(type="hidden", name="name", value=name)
 			div(align="center")
-				button.navigate(onclick="return moveOn()") Tweedle 1
+				button.navigate(onclick="return moveOn()") Talk to Tweedle 1
 
 		form(action='/secret_mission/the_tweedles/tweedle2', method="POST")
 			input.hidden(type="hidden", name="name", value=name)
 			div(align="center")
-				button.navigate(onclick="return moveOn()") Tweedle 2
+				button.navigate(onclick="return moveOn()") Talk to Tweedle 2
 
 		form(action='/secret_mission/the_tweedles/tweedle3', method="POST")
 			input.hidden(type="hidden", name="name", value=name)
 			div(align="center")
-				button.navigate(onclick="return moveOn()") Tweedle 3
+				button.navigate(onclick="return moveOn()") Talk to Tweedle 3
+
+		form(action='/secret_mission/password_door', method="POST")
+			input.hidden(type="hidden", name="name", value=name)
+			div(align="center")
+				button.navigate(onclick="return moveOn()") Try the password

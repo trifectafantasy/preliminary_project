@@ -1,6 +1,6 @@
 html
 	head
-		title Tweedle3
+		title Foyer
 		include ../JADE-Bootstrap/_bootstrap
 		include ../mixins.pug
 		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
@@ -11,13 +11,9 @@ html
 				return true;
 			}
 	body.secret_mission
-		p Hello. My name is Tweedle James. I know one of the passwords to get into the Friendship Wing.
-
-		p Your clue is:
-
-		p “A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, and Z. Now I know my ABC’s, just pick one, try, and you’ll see.”
-
-		form(action='/secret_mission/the_tweedles', method="POST")
+		p In the foyer
+		
+		form(action='/secret_mission/front_door', method="POST")
 			input.hidden(type="hidden", name="name", value=name)
 			div(align="center")
-				button.navigate(onclick="return moveOn()") Back to Tweedles
+				button.navigate(onclick="return moveOn()") Approach the door

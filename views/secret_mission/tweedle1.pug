@@ -11,9 +11,118 @@ html
 				return true;
 			}
 	body.secret_mission
-		h4 Friendship Wing text goes here
+		p Hello. My name is Tweedle Chipeco. I know one of the passwords to get into the Friendship Wing.
+
+		p 
+			| The clue I will give you is a pair of things that the password is like and a pair that the password is not like. You can conclude 1 characteristic about the password from each clue. For example: If I tell you, “The password is like 
+			strong Kermit the Frog & Grass 
+			| but not like 
+			strong Mustard & China’s Flag
+			| ,” you can deduce that the password is green. If another clue says the password is like 
+			strong Honey
+			| , do not be alarmed that honey is not green as that clue is leading you to another characteristic of the password. Got it?
+
+		p Your clue is:
+
+		if name === "K-Dawg"
+			p 
+				| The password is like 
+				strong Afghanistan & Canada 
+				| but not like 
+				strong New Delhi & Vilnius
+
+		else if name === "Coach Bkuh"
+			p
+				| The password is like 
+				strong Togo &  Botswana 
+				| but not like 
+				strong Mexico & Ukraine
+
+		else if name === "Thomas Pyro"
+			p
+				| The password is like 
+				strong Hungary & Zambia 
+				| but not like 
+				strong Chile & Russia
+
+		else if name === "Big Apostle"
+			p
+				| The password is like 
+				strong North Korea & El Salvador 
+				| but not like 
+				strong Norway & Bhutan
+
+		else if name === "Nate the Great"
+			p
+				| The password is like 
+				strong East Timor & Palau 
+				| but not like 
+				strong Egypt & Greece
+
+		else if name === "Generic White Guy Name"
+			p
+				| The password is like 
+				strong Mauritania & Uzbekistan 
+				| but not like 
+				strong the Democratic Republic of the Congo & Iraq
+
+		else if name === "Baker Brandis"
+			p
+				| The password is like 
+				strong Brazil & Taiwan 
+				| but not like 
+				strong Albania & Ecuador
+
+		table
+			tbody
+				tr
+					td Philippines
+					td Estonia
+					td Ethiopia
+					td Ouagadougou
+					td Costa Rica
+					td Bangladesh
+					td Serbia
+					td Tajikistan
+				tr
+					td Eritrea
+					td Azerbaijan
+					td Ivory Coast
+					td Caracas
+					td Japan
+					td Luxembourg
+					td Argentina
+					td Mongolia
+				tr
+					td San Marino
+					td Kyrgyzstan
+					td Peru
+					td Senegal
+					td Central African Republic
+					td Oman
+					td Port Au Prince
+					td Guatemala
+				tr
+					td Mozambique
+					td Lesotho
+					td Montenegro
+					td Uruguay
+					td China
+					td South Sudan
+					td Suriname
+					td Tbilisi
+				tr
+					td Algeria
+					td Kosovo
+					td United States of America
+					td Niger
+					td Turkey
+					td New Zealand
+					td Laos
+					td Lisbon
 
 		form(action='/secret_mission/the_tweedles', method="POST")
 			input.hidden(type="hidden", name="name", value=name)
 			div(align="center")
 				button.navigate(onclick="return moveOn()") Back to Tweedles
+
