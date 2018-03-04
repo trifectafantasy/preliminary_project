@@ -1,0 +1,70 @@
+html
+	head
+		title Lock
+		include ../JADE-Bootstrap/_bootstrap
+		include ../mixins.pug
+		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', type="text/css", href='/css/styles.css')
+
+		script(type="text/javascript").
+			function checkFunction() {
+
+				var combo1 = document.getElementById('combo1').value;
+				var combo2 = document.getElementById('combo2').value;
+				var combo3 = document.getElementById('combo3').value;
+				var name = document.getElementById('agent_name').value;
+				
+				var brandon_combo = ["5", "19", "39"];
+				var bryan_combo = ["22", "30", "24"];
+				var jefferson_combo = ["37", "18", "11"];
+				var josh_combo = ["15", "28", "4"];
+				var kevin_combo = ["9", "3", "20"];
+				var michael_combo = ["28", "10", "13"];
+				var nathan_combo = ["16", "12" ,"2"];
+
+				var mapping = {
+				"Baker Brandis": brandon_combo,
+				"Coach Bkuh": bryan_combo,
+				"Thomas Pyro": jefferson_combo,
+				"Big Apostle": josh_combo,
+				"K-Dawg": kevin_combo,
+				"Generic White Guy Name": michael_combo,
+				"Nate the Great": nathan_combo
+				};
+
+				if (combo1 === mapping[name][0]) {
+					if (combo2 === mapping[name][1]) {
+						if (combo3 === mapping[name][2]) {
+							document.password.action = "/secret_mission/itsa";
+						}
+						else {
+							document.password.action = "/secret_mission/nothing";
+						}
+					}
+					else {
+						document.password.action = "/secret_mission/nothing";
+					}
+				}
+				else {
+					document.password.action = "/secret_mission/nothing";
+				}
+
+				return true;
+
+			}
+
+	body.secret_mission
+		p You remove the picture and spin the lock right, left, and right according to what you saw in the picture…
+		
+		div.threeinoneline
+		
+			form(name="combo", method="POST", onsubmit="return checkFunction()")
+				input.hidden(id="agent_name", type="hidden", name="name", value=name)
+				h4 Enter combination:
+				input.one_line(type="text", id="combo1", name="combo1")
+				p.one_line - 
+				input.one_line(type="text", id="combo2", name="combo2")
+				p.one_line - 
+				input.one_line(type="text", id="combo3", name="combo3")
+				
+				input.next_line(type="submit" value="Enter")

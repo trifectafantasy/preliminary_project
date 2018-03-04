@@ -1,0 +1,20 @@
+html
+	head
+		title Bouncy Ball!
+		include ../JADE-Bootstrap/_bootstrap
+		include ../mixins.pug
+		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', type="text/css", href='/css/styles.css')
+
+		script(type="text/javascript").
+			function moveOn() {
+				return true;
+			}
+
+	body.secret_mission
+		p “Hey! Would you like this?” you say as you fish in your pocket and extend your open palm to him revealing a bouncy ball. “Oh boy!”, the “bouncer” exclaims. “I love bouncing!” He throws the ball in the hallway and it ricochets everywhere. He laughs with excitement as he chases it bouncing unpredictably through the hallway. He doesn’t notice one bit as you sneak your way over to the room with your name on it...
+		
+		form(action='/secret_mission/art_room', method="POST")
+			input.hidden(type="hidden", name="name", value=name)
+			div(align="center")
+				button.navigate(onclick="return moveOn()") Open your door

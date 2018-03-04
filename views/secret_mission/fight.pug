@@ -1,0 +1,21 @@
+html
+	head
+		title Fight!
+		include ../JADE-Bootstrap/_bootstrap
+		include ../mixins.pug
+		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', type="text/css", href='/css/styles.css')
+
+		script(type="text/javascript").
+			function moveOn() {
+				return true;
+			}
+	body.secret_mission
+
+		if 
+		p The lock pops open! Yes! You got it! You open the safe (locker) door and find the message rolled up like a scroll. You excitedly grab the message when…
+		
+		form(action='/secret_mission/trap', method="POST")
+			input.hidden(type="hidden", name="name", value=name)
+			div(align="center")
+				button.navigate(onclick="return moveOn()") Grab the message

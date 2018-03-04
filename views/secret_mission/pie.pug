@@ -10,11 +10,16 @@ html
 			function moveOn() {
 				return true;
 			}
-	body.secret_mission
-		p Pie in the face
 
-		
-		form(action='/secret_mission/front_door', method="POST")
+	body.secret_mission
+		p Without saying a word, the slit closes and a whipped cream pie swings down from the overhang and pies you in the face.
+
+		form(action='/secret_mission/password_door', method="POST")
 			input.hidden(type="hidden", name="name", value=name)
 			div(align="center")
-				button.navigate(onclick="return moveOn()") Approach the door
+				button.navigate(onclick="return moveOn()") Try again		
+		
+		form(action='/secret_mission/the_tweedles', method="POST")
+			input.hidden(type="hidden", name="name", value=name)
+			div(align="center")
+				button.navigate(onclick="return moveOn()") Go back to the Tweedles

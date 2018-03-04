@@ -1,6 +1,6 @@
 html
 	head
-		title Foyer
+		title Nothing
 		include ../JADE-Bootstrap/_bootstrap
 		include ../mixins.pug
 		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
@@ -11,9 +11,14 @@ html
 				return true;
 			}
 	body.secret_mission
-		p In the foyer
+		p Nothing happened. Wrong.
 		
-		form(action='/secret_mission/front_door', method="POST")
+		form(action='/secret_mission/lock', method="POST")
 			input.hidden(type="hidden", name="name", value=name)
 			div(align="center")
-				button.navigate(onclick="return moveOn()") Approach the door
+				button.navigate(onclick="return moveOn()") Try again
+
+		form(action='/secret_mission/picture', method="POST")
+			input.hidden(type="hidden", name="name", value=name)
+			div(align="center")
+				button.navigate(onclick="return moveOn()") Look at the picture again

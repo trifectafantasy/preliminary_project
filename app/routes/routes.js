@@ -198,13 +198,71 @@ router.post('/secret_mission/pie', function(req, res) {
 	})
 })
 
-router.post('/secret_mission/foyer', function(req, res) {
-	res.render('secret_mission/foyer', {
+router.post('/secret_mission/hallway', function(req, res) {
+	res.render('secret_mission/hallway', {
 		name: req.body.name
 	})
 })
 
+router.post('/secret_mission/punch', function(req, res) {
+	res.render('secret_mission/punch', {
+		name: req.body.name
+	})
+})
 
+router.post('/secret_mission/ball', function(req, res) {
+	res.render('secret_mission/ball', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/art_room', function(req, res) {
+	res.render('secret_mission/art_room', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/picture', function(req, res) {
+	res.render('secret_mission/picture', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/lock', function(req, res) {
+	res.render('secret_mission/lock', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/nothing', function(req, res) {
+	res.render('secret_mission/nothing', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/itsa', function(req, res) {
+	res.render('secret_mission/itsa', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/trap', function(req, res) {
+	res.render('secret_mission/trap', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/fight', function(req, res) {
+	res.render('secret_mission/fight', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/run', function(req, res) {
+	res.render('secret_mission/run', {
+		name: req.body.name
+	})
+})
 
 /*
 router.post('/secret_mission_name', check('name', "Please enter your Agent Name").isIn(['wes','Wes']), function(req, res) {

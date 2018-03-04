@@ -1,0 +1,24 @@
+html
+	head
+		title Hallway
+		include ../JADE-Bootstrap/_bootstrap
+		include ../mixins.pug
+		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', type="text/css", href='/css/styles.css')
+
+		script(type="text/javascript").
+			function moveOn() {
+				return true;
+			}
+	body.secret_mission
+		p "South Sudan. W. Rat.” you say. Without a word, the slit closes and the door opens! Standing on the other side is a lean or just skinny (you can’t tell), ambiguously Asian dude wearing a Tennessee Titans jersey. You are in a hallway with many doors. Each with the name of one of the Agents. (And one for the bathroom.) He asks you, “Who are you anyways?” You need to get rid of this guy. What do you do?
+		
+		form(action='/secret_mission/punch', method="POST")
+			input.hidden(type="hidden", name="name", value=name)
+			div(align="center")
+				button.navigate(onclick="return moveOn()") Punch him in the face
+		
+		form(action='/secret_mission/ball', method="POST")
+			input.hidden(type="hidden", name="name", value=name)
+			div(align="center")
+				button.navigate(onclick="return moveOn()") Give him what's in your pocket
