@@ -35,18 +35,18 @@ html
 				if (combo1 === mapping[name][0]) {
 					if (combo2 === mapping[name][1]) {
 						if (combo3 === mapping[name][2]) {
-							document.password.action = "/secret_mission/itsa";
+							document.combo.action = "/secret_mission/itsa";
 						}
 						else {
-							document.password.action = "/secret_mission/nothing";
+							document.combo.action = "/secret_mission/nothing";
 						}
 					}
 					else {
-						document.password.action = "/secret_mission/nothing";
+						document.combo.action = "/secret_mission/nothing";
 					}
 				}
 				else {
-					document.password.action = "/secret_mission/nothing";
+					document.combo.action = "/secret_mission/nothing";
 				}
 
 				return true;

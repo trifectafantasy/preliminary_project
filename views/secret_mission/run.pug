@@ -1,6 +1,6 @@
 html
 	head
-		title Fight!
+		title Run!
 		include ../JADE-Bootstrap/_bootstrap
 		include ../mixins.pug
 		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
@@ -11,7 +11,7 @@ html
 				return true;
 			}
 	body.secret_mission
-		p Are you kidding? You can’t take that guy on! He’s too tough. You sprint out the door to safety.
+		p What a smart decision! You can’t take that guy on! He’s too tough. You sprint out the door to safety.
 		
 		form(action='/secret_mission/escape', method="POST")
 			input.hidden(type="hidden", name="name", value=name)
