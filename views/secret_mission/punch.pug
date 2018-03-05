@@ -11,9 +11,15 @@ html
 				return true;
 			}
 	body.secret_mission
-		p “He doesn’t look so tough,” you think. So you wind up and POW! you punch him in the face. And boy were you right. One punch (and a glancing one at that) and he’s knocked out. You open the door with your name on it…
+		p “He doesn’t look so tough,” you think. So you wind up and...
+		br
+
+		p POW!
+		br
+		
+		p Punch him in the face. And boy were you right. One punch (a glancing one at that) and he’s knocked out. You open the door with your name on it…
 		
 		form(action='/secret_mission/art_room', method="POST")
 			input.hidden(type="hidden", name="name", value=name)
 			div(align="center")
-				button.navigate(onclick="return moveOn()") Go into the door with your name on it
+				button.navigate(onclick="return moveOn()") Go into the room

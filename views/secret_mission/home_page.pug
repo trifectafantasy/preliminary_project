@@ -15,7 +15,7 @@ html
 				console.log(name_input)
 
 				if (name_list.includes(name_input)) {
-					alert("Welcome " + name_input);
+					alert("Welcome, " + name_input + "!");
 
 					return true;
 				}
@@ -26,13 +26,13 @@ html
 			}
 
 	body.secret_mission
-		h3 Login to private email server. (It's ok. We're not politicians.)
+		h2 Login to private email server
+		h4 (It's ok. We're not politicians.)
 		
 		form(action="/secret_mission/email", method="POST", onsubmit="return checkFunction()")
-			h4 Agent Name:
+			p Agent Name:
 			input.one_line(type="text", id="name_input", name="name", placeholder=message) 
 			span.one_line
 				p#error
 			
 			input.next_line(type="submit" value="Enter")
-

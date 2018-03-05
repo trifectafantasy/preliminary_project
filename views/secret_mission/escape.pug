@@ -1,0 +1,26 @@
+html
+	head
+		title Escape
+		include ../JADE-Bootstrap/_bootstrap
+		include ../mixins.pug
+		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', type="text/css", href='/css/styles.css')
+
+		script(type="text/javascript").
+			function moveOn() {
+				return true;
+			}
+	body.secret_mission
+		p It’s raining! You quickly put the message in your pocket and look for someplace to hide with the athletic warrior not far behind. You decide the quickest place to hide is a car across the street. You sprint and duck behind the car and peer back… 
+		br
+
+		p The warrior has been thwarted! The rain is getting on his glasses, limiting his view! Huzzah! If only he had the money to afford LASIK…
+		br
+
+		p Now to find somewhere dry to read the message. You remember that near you is the Commissioner’s Office Wing. He’s got to have a desk and light there. You run through the rain around the corner. As you approach the door you just pray that there is no more lame Div Force enemies in the Office Wing.
+
+		
+		form(action='/secret_mission/secret_message', method="POST")
+			input.hidden(type="hidden", name="name", value=name)
+			div(align="center")
+				button.navigate(onclick="return moveOn()") Try to open the door

@@ -20,8 +20,35 @@ a {
 	color: blue;
 }
 
+p {
+	font-family: "Helvetica", Arial, sans-serif;
+	font-size: 22px;
+}
+
+
+.secret_message {
+	background-color: white;
+	margin: 40px 15% 0 15%;
+	line-height: 1.75;
+}
+
+.secret_mission ol {
+	font-size: 18px;
+}
+
+.secret_message p.letter {
+	font-size: 22px;
+	font-family: "Courier", Arial, serif;
+}
+
 .secret_mission {
 	background-color: white;
+	margin: 40px 15% 0 15%;
+	line-height: 1.75;
+}
+
+.hidden_one_line {
+	display: none;
 }
 
 .one_line {
@@ -33,6 +60,25 @@ a {
 #error {
 	color: red;
 }
+input[type="text"] {
+	width: 200px;
+}
+
+#correct {
+	color: green;
+}
+
+#final_question {
+	display: none;
+}
+
+#final_question_yes {
+	display: none;
+}
+
+#final_question_no {
+	display: none;
+}
 
 .navigate {
 	background: none;
@@ -43,17 +89,19 @@ a {
 	font-size: 25px;
 	text-align: center;
 	vertical-align: middle;
+	margin-top: 20px;
 }
 
+.image_body {
+	background-color: white;
+}
 #email {
 	display: block;
 	margin-top: 0px;
 	margin-left: auto;
 	margin-right: auto;
 	margin-bottom: 30px;
-	width: 100%;
-	min-width: 1800px;
-	max-width: 2200px;
+	width: 1900px;
 	height: 550px;
 }
 
@@ -62,7 +110,7 @@ a {
 	margin-left: auto;
 	margin-right: auto;
 	border-style: solid;
-	border-width: 50px 50px 50px 50px;
+	border-width: 40px 50px 50px 50px;
 	border-color: blue;
 	margin-top: 0px;
 }
@@ -70,6 +118,7 @@ a {
 .caption {
 	margin-top: -40px;
 	text-align: center;
+	font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
 .loader {

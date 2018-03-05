@@ -12,15 +12,20 @@ html
 			}
 	body.secret_mission
 		p Hello. My name is Tweedle Chipeco. I know one of the passwords to get into the Friendship Wing.
+		br
 
 		p 
-			| The clue I will give you is a pair of things that the password is like and a pair that the password is not like. You can conclude 1 characteristic about the password from each clue. For example: If I tell you, “The password is like 
+			| The clue I will give you is a pair of things that the password is like and a pair that the password is not like. You can conclude 1 characteristic about the password from each clue. 
+		br
+		p
+			| For example: If I tell you, “The password is like 
 			strong Kermit the Frog & Grass 
 			| but not like 
 			strong Mustard & China’s Flag
 			| ,” you can deduce that the password is green. If another clue says the password is like 
 			strong Honey
 			| , do not be alarmed that honey is not green as that clue is leading you to another characteristic of the password. Got it?
+		br
 
 		p Your clue is:
 
@@ -124,5 +129,5 @@ html
 		form(action='/secret_mission/the_tweedles', method="POST")
 			input.hidden(type="hidden", name="name", value=name)
 			div(align="center")
-				button.navigate(onclick="return moveOn()") Back to Tweedles
+				button.navigate(onclick="return moveOn()") Back to the Tweedles
 

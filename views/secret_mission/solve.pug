@@ -1,0 +1,107 @@
+html
+	head
+		title Solve the puzzle!
+		include ../JADE-Bootstrap/_bootstrap
+		include ../mixins.pug
+		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', type="text/css", href='/css/styles.css')
+
+		script(type="text/javascript").
+			function checkFunction() {
+
+				var name = document.getElementById('agent_name').value;
+				var message_input = document.getElementById('message_input').value;
+
+				if (name === "Nate the Great") {
+					if (message_input === "Will you be my best man?") {
+						document.getElementById("correct").innerHTML = "Correct! Now answer the question!";
+
+						document.getElementById("yes").style.display="inline-block";
+						document.getElementById("no").style.display="inline-block";
+						document.getElementById("final_question").style.display="block";
+						return false;
+
+					}
+					else {
+						document.getElementById("error").innerHTML = "Not an agent. Enter your agent name exactly as given.";
+
+						return false;
+					}
+				}
+				else {
+					if (message_input === "Will you be one of my groomsmen?") {
+						document.getElementById("correct").innerHTML = "Correct! Now answer the question!";
+
+						document.getElementById("final_question").style.display="block";
+						document.getElementById("final_question_yes").style.display="block";
+						document.getElementById("final_question_no").style.display="block";
+						return false;
+					}
+					else {
+						document.getElementById("error").innerHTML = "Incorrect. Enter exact translation to continue.";
+
+						return false;
+					}				
+				}
+			}
+
+			function moveOn() {
+				return true;
+			}
+
+	body.secret_mission
+
+		p Below is the last sentence from the secret message. What does it translate to? 
+
+		if name === "K-Dawg"
+			p
+				i Vhkk xnt ad nmd ne lx fqnnlrldm?
+		else if name === "Coach Bkuh"
+			p 
+				i Htww jzf mp zyp zq xj rczzxdxpy?
+
+		else if name === "Thomas Pyro"
+			p
+				i Mybb oek ru edu ev co wheecicud?
+
+		else if name === "Big Apostle"
+			p
+				i Xjmm zpv cf pof pg nz hsppntnfo?
+
+		else if name === "Nate the Great"
+			p
+				i Tfii vlr yb jv ybpq jxk?
+
+		else if name === "Generic White Guy Name"
+			p
+				i Gsvv iye lo yxo yp wi qbyywcwox?
+
+		else if name === "Baker Brandis"
+			p
+				i Iuxx kag nq azq ar yk sdaayeyqz?
+
+
+		form(action="#", onsubmit="return checkFunction()")
+			input.hidden(id="agent_name", type="hidden", name="name", value=name)
+			input.one_line(type="text", id="message_input", name="message") 
+			span.one_line
+				p#error
+				p#correct
+			
+			input.next_line(type="submit" value="Enter")
+
+		br
+		br
+
+		if name === "Nate the Great"
+			p#final_question Will you be my best man?
+		else
+			p#final_question Will you be one of my groomsmen?
+
+		form(action="/secret_mission/yes" method="POST", onsubmit="return moveOn()")
+			input.hidden(id="agent_name", type="hidden", name="name", value=name)
+			button#final_question_yes(onclick="return moveOn()") Yes!
+
+		form(action="/secret_mission/no", method="POST", onsubmit="return moveOn()")
+			input.hidden(id="agent_name", type="hidden", name="name", value=name)
+			button#final_question_no(onclick="return moveOn()") No

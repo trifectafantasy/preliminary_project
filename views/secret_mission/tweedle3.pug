@@ -12,12 +12,13 @@ html
 			}
 	body.secret_mission
 		p Hello. My name is Tweedle James. I know one of the passwords to get into the Friendship Wing.
+		br
 
 		p Your clue is:
 
-		p “A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, and Z. Now I know my ABC’s, just pick one, try, and you’ll see.”
+		p “A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, and Z. Now I know my ABC’s, pick one, try it, and you’ll see.”
 
 		form(action='/secret_mission/the_tweedles', method="POST")
 			input.hidden(type="hidden", name="name", value=name)
 			div(align="center")
-				button.navigate(onclick="return moveOn()") Back to Tweedles
+				button.navigate(onclick="return moveOn()") Back to the Tweedles
