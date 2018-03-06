@@ -9,7 +9,7 @@ html
 		script(type="text/javascript").
 			function checkFunction() {
 
-				var name_list = ["K-Dawg", "Nate the Great", "Thomas Pyro", "Coach Bkuh", "Big Apostle", "Baker Brandis", "Generic White Guy Name", "Wes"];
+				var name_list = ["K-Dawg", "Nate the Great", "Thomas Heffernos", "Coach Bkuh", "Big Apostle", "Coffee Meets Brandon", "Generic White Guy Name", "Wes"];
 
 				var name_input = document.getElementById('name_input').value;
 				console.log(name_input)
@@ -20,7 +20,7 @@ html
 					return true;
 				}
 				else {
-					document.getElementById("error").innerHTML = "Not an agent. Enter your agent name exactly as given.";
+					document.getElementById("error").innerHTML = "Not an agent. Enter your agent name exactly as given. Don't include \"Agent\".";
 					return false;
 				}
 			}

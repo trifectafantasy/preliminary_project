@@ -32,7 +32,7 @@ p {
 	line-height: 1.75;
 }
 
-.secret_mission ol {
+.secret_mission ul {
 	font-size: 18px;
 }
 
@@ -80,6 +80,20 @@ input[type="text"] {
 	display: none;
 }
 
+.table_mission {
+	border-spacing: 0px;
+	border-collapse: collapse;
+}
+
+.table_mission td {
+	border: 1px solid black;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	padding-left: 10px;
+	padding-right: 10px;
+	font-size: 18px;
+}
+
 .navigate {
 	background: none;
 	border: none;
@@ -90,10 +104,15 @@ input[type="text"] {
 	text-align: center;
 	vertical-align: middle;
 	margin-top: 20px;
+	color:	#00BFFF;
 }
 
 .image_body {
 	background-color: white;
+}
+.image_body p {
+	margin: 40px 15% 0 15%;
+	line-height: 1.75;	
 }
 #email {
 	display: block;
@@ -111,8 +130,8 @@ input[type="text"] {
 	margin-right: auto;
 	border-style: solid;
 	border-width: 40px 50px 50px 50px;
-	border-color: blue;
 	margin-top: 0px;
+	border-color: #90EE90;
 }
 
 .caption {
