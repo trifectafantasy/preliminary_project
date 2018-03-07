@@ -1,0 +1,23 @@
+html
+	head
+		title Yes!
+		include ../JADE-Bootstrap/_bootstrap
+		include ../mixins.pug
+		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', type="text/css", href='/css/styles.css')
+
+		script(type="text/javascript").
+			function moveOn() {
+				return true;
+			}
+	body.secret_mission
+
+		p Really? Hurray! I'm so excited to have you be one of my right hand men on this special day for Keren and me!
+		br
+		
+		p Text or message me that you're in and I will add you to the Facebook group where all of the correspondence about everything from suits to bachelor party and other wedding things will go down.
+
+		form(action='/secret_mission/faq', method="POST")
+			input.hidden(type="hidden", name="name", value=name)
+			div(align="center")
+				button.navigate(onclick="return moveOn()") What does being a groomsman mean for me?

@@ -1,0 +1,23 @@
+html
+	head
+		title No
+		include ../JADE-Bootstrap/_bootstrap
+		include ../mixins.pug
+		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', type="text/css", href='/css/styles.css')
+
+		script(type="text/javascript").
+			function moveOn() {
+				return true;
+			}
+	body.secret_mission
+
+		p It's ok if you say no. I'll be sad, but I still want you to be at the wedding! If you had any major concerns or reasons you said no, I'd like to hear from you about it so I can understand where you're coming from, so please text or message me.
+		br
+		
+		p If you just clicked on this button to see what were here, yes, I am prepared and understand if someone said no.
+
+		form(action='/secret_mission/faq', method="POST")
+			input.hidden(type="hidden", name="name", value=name)
+			div(align="center")
+				button.navigate(onclick="return moveOn()") What does being a groomsman mean for me?

@@ -1,0 +1,36 @@
+html
+	head
+		title FAQ
+		include ../JADE-Bootstrap/_bootstrap
+		include ../mixins.pug
+		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', type="text/css", href='/css/styles.css')
+
+		script(type="text/javascript").
+			function moveOn() {
+				return true;
+			}
+	body.secret_mission
+
+		p Here are some of the expectations, duties, and responsibilities I think it will mean to be Wes' groomsman:
+
+		ol
+			li The foremost thing that being my groomsman means is being one of my best friends (almost literally) by my side as I get married. (Aka the #1 duty is showing up to the wedding and sharing this once-in-a-lifetime experience with me.)
+
+			li The main expectation I have is that you will be available to help pre- and post-wedding but especially day of. This could include helping set up and clean up, organize and serve people, and other small things like rides to airport or something. I may delegate you with a task and if I don't, I want you to always be available to help.
+
+			li There will be some bachelor party/weekend thing before the wedding and although I would like for everyone to be there, I know that organizing 8 people to get together one weekend is a big ask. Therefore, attending the bachelor party will not be mandatory. I would think that everyone would want to be there though, so the Best Man and I will do our best so that everyone can make it. So just as much as this is a "you don't have to come if you really don't want to", it is a "I'm sorry in advance if someone can't make it."
+
+			li There will be some monetary costs to being a groomsman. (I would like the cost to be pooled.) But either way, groomsmen will have to pay their way for the bachelor party and for suits/tuxes/wear your own (not decided yet). Having said this, you do not have to buy Keren and I a wedding gift. Your presence, help, and money to have a good time is enough of a gift for us.
+
+			li Finally, I do have one more mandatory task if you are to be a groomsman. You will have to come up with a 5 second handshake for you and I to do when you walk up the aisle while I'm at the altar.
+
+		form(action='/secret_mission/yes', method="POST")
+			input.hidden(type="hidden", name="name", value=name)
+			div(align="center")
+				button.navigate(onclick="return moveOn()") Sign me up!
+
+		form(action='/secret_mission/no', method="POST")
+			input.hidden(type="hidden", name="name", value=name)
+			div(align="center")
+				button.navigate(onclick="return moveOn()") No thanks

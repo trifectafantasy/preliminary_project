@@ -14,32 +14,26 @@ html
 
 		if name === "K-Dawg"
 			img.picture(src="/images/kevin-9-3-20.jpg", alt="Kevin's Secret Picture")
-			p.caption “This was a fun time. There is not a safe behind this picture.”
 
 		else if name === "Coach Bkuh"
 			img.picture(src="/images/bryan-22-30-24.jpg", alt="Bryan's Secret Picture")
-			p.caption “This was a fun time. There is not a safe behind this picture.”
 
 		else if name === "Thomas Heffernos"
 			img.picture(src="/images/jefferson-37-18-11.jpg", alt="Jefferson's Secret Picture")
-			p.caption “This was a fun time. There is not a safe behind this picture.”
 
 		else if name === "Big Apostle"
 			img.picture(src="/images/josh-15-28-4.jpg", alt="Josh's Secret Picture")
-			p.caption “This was a fun time. There is not a safe behind this picture.”
 
 		else if name === "Nate the Great"
 			img.picture(src="/images/nathan-16-12-2.jpg", alt="Nathan's Secret Picture")
-			p.caption “This was a fun time. There is not a safe behind this picture.”
 
 		else if name === "Generic White Guy Name"
 			img.picture(src="/images/michael-28-10-13.jpg", alt="Michael's Secret Picture")
-			p.caption “This was a fun time. There is not a safe behind this picture.”
 
 		else if name === "Coffee Meets Brandon"
 			img.picture(src="/images/brandon-5-19-39.jpg", alt="Brandon's Secret Picture")
-			p.caption “This was a fun time. There is not a safe behind this picture.”
 
+		p.caption “This was a fun time. There is not a safe behind this picture.”
 
 		form(action='/secret_mission/lock', method="POST")
 			input.hidden(type="hidden", name="name", value=name)

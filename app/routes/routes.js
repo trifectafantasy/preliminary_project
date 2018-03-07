@@ -282,6 +282,24 @@ router.post('/secret_mission/solve', function(req, res) {
 	})
 })
 
+router.post('/secret_mission/yes', function(req, res) {
+	res.render('secret_mission/yes', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/no', function(req, res) {
+	res.render('secret_mission/no', {
+		name: req.body.name
+	})
+})
+
+router.post('/secret_mission/faq', function(req, res) {
+	res.render('secret_mission/faq', {
+		name: req.body.name
+	})
+})
+
 /*
 router.post('/secret_mission_name', check('name', "Please enter your Agent Name").isIn(['wes','Wes']), function(req, res) {
 

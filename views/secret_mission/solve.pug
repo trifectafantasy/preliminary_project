@@ -16,14 +16,15 @@ html
 					if (message_input === "Will you be my best man?") {
 						document.getElementById("correct").innerHTML = "Correct! Now answer the question!";
 
-						document.getElementById("yes").style.display="inline-block";
-						document.getElementById("no").style.display="inline-block";
 						document.getElementById("final_question").style.display="block";
+						document.getElementById("final_question_yes").style.display="block";
+						document.getElementById("final_question_no").style.display="block";
+						document.getElementById("final_question_faq").style.display="block";
 						return false;
 
 					}
 					else {
-						document.getElementById("error").innerHTML = "Not an agent. Enter your agent name exactly as given.";
+						document.getElementById("error").innerHTML = "Incorrect. Enter exact translation to continue.";
 
 						return false;
 					}
@@ -35,11 +36,11 @@ html
 						document.getElementById("final_question").style.display="block";
 						document.getElementById("final_question_yes").style.display="block";
 						document.getElementById("final_question_no").style.display="block";
+						document.getElementById("final_question_faq").style.display="block";
 						return false;
 					}
 					else {
 						document.getElementById("error").innerHTML = "Incorrect. Enter exact translation to continue.";
-
 						return false;
 					}				
 				}
@@ -56,7 +57,7 @@ html
 		if name === "K-Dawg"
 			p
 				i Vhkk xnt ad nmd ne lx fqnnlrldm?
-				
+
 		else if name === "Coach Bkuh"
 			p 
 				i Htww jzf mp zyp zq xj rczzxdxpy?
@@ -106,3 +107,7 @@ html
 		form(action="/secret_mission/no", method="POST", onsubmit="return moveOn()")
 			input.hidden(id="agent_name", type="hidden", name="name", value=name)
 			button#final_question_no(onclick="return moveOn()") No
+
+		form(action="/secret_mission/faq", method="POST", onsubmit="return moveOn()")
+			input.hidden(id="agent_name", type="hidden", name="name", value=name)
+			button#final_question_faq(onclick="return moveOn()") What does being a groomsman mean for me?		
