@@ -8,7 +8,7 @@ from collections import OrderedDict
 ##### DEFINE FUNCTIONS #####
 
 # function that combines data from all matchup collections for total season trifecta owner matchup standings
-def matchupRecords(db, owner_number, completed_football_season, football_in_season, completed_basketball_season, basketball_in_season,  completed_baseball_season, baseball_in_season):
+def matchupRecords(db, owner_number, completed_football_season, completed_basketball_season, completed_baseball_season):
 
 	# pull owner name per owner number
 	collection_owner = "owner" + owner_number
@@ -23,12 +23,8 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 
 	# set range of available seasons for football
 	starting_football_season = 2015;
-	if football_in_season == "true":
-		# add 2 because range is exclusive on back end
-		ending_football_season = int(completed_football_season) + 2
-	else:
-		# add 1 because end parameter in range is exclusive
-		ending_football_season = int(completed_football_season) + 1
+	# add 1 because end parameter in range is exclusive
+	ending_football_season = int(completed_football_season) + 1
 
 	football_seasons = range(starting_football_season, ending_football_season)
 	print "football_seasons", football_seasons
@@ -110,12 +106,8 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 
 	# set range of available seasons for basketball
 	starting_basketball_season = 2016;
-	if basketball_in_season == "true":
-		# add 2 because range is exclusive on back end
-		ending_basketball_season = int(completed_basketball_season) + 2
-	else:
-		# add 1 because end parameter in range is exclusive
-		ending_basketball_season = int(completed_basketball_season) + 1
+	# add 1 because end parameter in range is exclusive
+	ending_basketball_season = int(completed_basketball_season) + 1
 
 	basketball_seasons = range(starting_basketball_season, ending_basketball_season)
 	#print "basketball_seasons", basketball_seasons
@@ -183,12 +175,8 @@ def matchupRecords(db, owner_number, completed_football_season, football_in_seas
 
 	# set range of available seasons for baseball
 	starting_baseball_season = 2016;
-	if baseball_in_season == "true":
-		# add 2 because range is exclusive on back end
-		ending_baseball_season = int(completed_baseball_season) + 2
-	else:
-		# add 1 because end parameter in range is exclusive
-		ending_baseball_season = int(completed_baseball_season) + 1
+	# add 1 because end parameter in range is exclusive
+	ending_baseball_season = int(completed_baseball_season) + 1
 
 	baseball_seasons = range(starting_baseball_season, ending_baseball_season)
 	#print "baseball_seasons", baseball_seasons
@@ -318,12 +306,7 @@ db = client.espn
 owner_number = str(sys.argv[1])
 
 completed_football_season = str(sys.argv[2])
-football_in_season = str(sys.argv[3])
+completed_basketball_season = str(sys.argv[3])
+completed_baseball_season = str(sys.argv[4])
 
-completed_basketball_season = str(sys.argv[4])
-basketball_in_season = str(sys.argv[5])
-
-completed_baseball_season = str(sys.argv[6])
-baseball_in_season = str(sys.argv[7])
-
-matchupRecords(db, owner_number, completed_football_season, football_in_season, completed_basketball_season, basketball_in_season, completed_baseball_season, baseball_in_season)
+matchupRecords(db, owner_number, completed_football_season, completed_basketball_season, completed_baseball_season)
