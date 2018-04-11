@@ -8,6 +8,240 @@ let pyshell = require('python-shell');
 let mongo = require('mongodb');
 let assert = require('assert');
 
+function display_owner_matchups(req, res, db, args) {
+	let owner_number = args.owner_number;
+	let current_year1 = args.current_year1;
+	let current_year2 = args.current_year2;
+	let year1 = args.year1;
+	let year2 = args.year2;
+	let this_football_completed_season = args.this_football_completed_season;
+	let this_basketball_completed_season = args.this_basketball_completed_season;
+	let this_baseball_completed_season = args.this_baseball_completed_season;
+
+	let year_diff = year2 - year1;
+
+	let disp_football_matchups = null;
+	let disp_basketball_matchups = null;
+	let disp_baseball_matchups = null;
+	let disp_trifecta_matchups = null;
+
+// display function that when all individual in seaason sports have been pulled
+var display = function(sports_number) {
+
+		if (sports_number === 3) {
+			// if all of the necessary matchup documents are filled
+			if ((disp_football_matchups != null && disp_basketball_matchups != null) && disp_baseball_matchups != null) {
+
+				// pull owner's name for all pulls and/or scrapes
+				db.collection('owner' + owner_number).find({}, {"owner": 1,"teams": 1, "_id": 0}).toArray(function(e, docs) {
+					owner_name = docs[0]["owner"];
+					//console.log(owner_name);
+
+					// set python arguments
+					var options = {
+						args: [owner_number, year1, year2, this_football_completed_season, this_basketball_completed_season, this_baseball_completed_season]
+					}
+
+					// read total trifecta season matchup collection
+					db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
+						console.log("Displaying Trifecta owner matchups...");
+						console.log("");
+						var disp_trifecta_matchups = docs;
+
+						// render owner_matchups
+						res.render('owner_matchups', {
+							year1: year1, 
+							year2: year2,
+							owner: owner_name,
+							football_matchups: disp_football_matchups,
+							basketball_matchups: disp_basketball_matchups,
+							baseball_matchups: disp_baseball_matchups,
+							football_in_season: this_football_completed_season,
+							basketball_in_season: this_basketball_completed_season,
+							baseball_in_season: this_baseball_completed_season,
+							trifecta_matchups: disp_trifecta_matchups
+						})
+
+					}) // end of trifecta matchups read
+				}) // end of owner_name scrape
+			}
+		} // end of if 3 sports
+
+		else if (sports_number === 2) {
+			if (disp_football_matchups != null && disp_basketball_matchups != null) {
+
+				// pull owner's name for all pulls and/or scrapes
+				db.collection('owner' + owner_number).find({}, {"owner": 1,"teams": 1, "_id": 0}).toArray(function(e, docs) {
+					owner_name = docs[0]["owner"];
+					//console.log(owner_name);
+
+					// set python arguments
+					var options = {
+						args: [owner_number, year1, year2, this_football_completed_season, this_basketball_completed_season, this_baseball_completed_season]
+					}
+
+					// read total trifecta season matchup collection
+					db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
+						console.log("Displaying Trifecta owner matchups...");
+						console.log("");
+						var disp_trifecta_matchups = docs;
+
+						// render owner_matchups
+						res.render('owner_matchups', {
+							year1: year1, 
+							year2: year2,
+							owner: owner_name,
+							football_matchups: disp_football_matchups,
+							basketball_matchups: disp_basketball_matchups,
+							baseball_matchups: disp_baseball_matchups,
+							football_in_season: this_football_completed_season,
+							basketball_in_season: this_basketball_completed_season,
+							baseball_in_season: this_baseball_completed_season,
+							trifecta_matchups: disp_trifecta_matchups
+						})
+
+					}) // end of trifecta matchups read
+				}) // end of owner_name scrape
+			}
+		} // end of if 2 sports
+
+		else if (sports_number === 1) {
+			if (disp_football_matchups != null) {
+				// pull owner's name for all pulls and/or scrapes
+				db.collection('owner' + owner_number).find({}, {"owner": 1,"teams": 1, "_id": 0}).toArray(function(e, docs) {
+					owner_name = docs[0]["owner"];
+					//console.log(owner_name);
+
+					// set python arguments
+					var options = {
+						args: [owner_number, year1, year2, this_football_completed_season, this_basketball_completed_season, this_baseball_completed_season]
+					}
+
+					// read total trifecta season matchup collection
+					db.collection('owner' + owner_number + '_trifecta_matchups_' + year1 + '_' + year2).find({}, {"_id": 0}).sort({"total_win_per": -1}).toArray(function(e, docs) {
+						console.log("Displaying Trifecta owner matchups...");
+						console.log("");
+						var disp_trifecta_matchups = docs;
+
+						// render owner_matchups
+						res.render('owner_matchups', {
+							year1: year1, 
+							year2: year2,
+							owner: owner_name,
+							football_matchups: disp_football_matchups,
+							basketball_matchups: disp_basketball_matchups,
+							baseball_matchups: disp_baseball_matchups,
+							football_in_season: this_football_completed_season,
+							basketball_in_season: this_basketball_completed_season,
+							baseball_in_season: this_baseball_completed_season,
+							trifecta_matchups: disp_trifecta_matchups
+						})
+
+					}) // end of trifecta matchups read
+				}) // end of owner_name scrape
+			}
+		} // end of if 1 sport
+
+} // end of display function definition	
+	
+	// if incorrect years entered
+	if (year_diff != 1) {
+		res.send("Please enter two consecutive years"); 
+	}
+
+	// if years in the past all sports finished and pull
+	else if (year1 < current_year1 && year2 < current_year2) {
+		let sports_number = 3;
+		// pull from mongodb and display new data after python script finishes, but wait 2 seconds to let mongodb finish
+		db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
+			//console.log(docs);
+			//console.log("Displaying football matchup data...")
+			disp_football_matchups = docs;
+			// call display to see if all finds are done
+			display(sports_number);
+		});
+
+		db.collection("owner" + owner_number + "_basketball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
+			//console.log(docs);
+			//console.log("Displaying basketball matchup data...")
+			disp_basketball_matchups = docs;
+			// call display to see if all finds are done
+			display(sports_number);
+		});
+
+		db.collection("owner" + owner_number + "_baseball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
+			//console.log(docs);
+			//console.log("Displaying baseball matchup data...")
+			disp_baseball_matchups = docs;
+			// call display to see if all finds are done
+			display(sports_number);
+		});			
+	}
+
+	// if current trifecta season, only pull seasons that are completed
+	else {
+		if (this_baseball_completed_season == true) {
+			let sports_number = 3;
+			// pull from mongodb and display new data after python script finishes, but wait 2 seconds to let mongodb finish
+			db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
+				//console.log(docs);
+				//console.log("Displaying football matchup data...")
+				disp_football_matchups = docs;
+				// call display to see if all finds are done
+				display(sports_number);
+			});
+
+			db.collection("owner" + owner_number + "_basketball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
+				//console.log(docs);
+				//console.log("Displaying basketball matchup data...")
+				disp_basketball_matchups = docs;
+				// call display to see if all finds are done
+				display(sports_number);
+			});
+
+			db.collection("owner" + owner_number + "_baseball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
+				//console.log(docs);
+				//console.log("Displaying baseball matchup data...")
+				disp_baseball_matchups = docs;
+				// call display to see if all finds are done
+				display(sports_number);
+			});				
+		}
+
+		else if (this_basketball_completed_season == true) {
+			let sports_number = 2;
+			// pull from mongodb and display new data after python script finishes, but wait 2 seconds to let mongodb finish
+			db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
+				//console.log(docs);
+				console.log("Displaying football matchup data...")
+				disp_football_matchups = docs;
+				// call display to see if all finds are done
+				display(sports_number);
+			});
+
+			db.collection("owner" + owner_number + "_basketball_matchups_" + year2).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
+				//console.log(docs);
+				console.log("Displaying basketball matchup data...")
+				disp_basketball_matchups = docs;
+				// call display to see if all finds are done
+				display(sports_number);
+			});
+
+		}
+
+		else if (this_football_completed_season == true) {
+			let sports_number = 1;
+			db.collection('owner' + owner_number + '_football_matchups_' + year1).find({}, {"_id": 0}, {"sort": [["win_per", "desc"], ["pt_diff", "desc"]]}).toArray(function(e, docs) {
+				//console.log(docs);
+				//console.log("Displaying football matchup data...")
+				disp_football_matchups = docs;
+				// call display to see if all finds are done
+				display(sports_number);
+			});			
+		}
+	}
+} // end of display_owners_matchup function
+
 
 function owner_matchups(req, res, db, args, football_args, basketball_args, baseball_args) {
 
@@ -250,6 +484,7 @@ var complete = function() {
 }
 
 module.exports = {
+	display_owner_matchups,
 	owner_matchups,
 	all_owner_matchups
 };

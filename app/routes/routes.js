@@ -251,8 +251,26 @@ router.get('/owner_matchup_home_page', function(req, res) {
 	res.render('owner_matchup_home_page');
 })
 
-// route to individual owner's matchups for a given trifecta season
 router.get('/owner/:owner_number/matchups/:year1/:year2', function(req, res) {
+
+	let input = {
+		owner_number: req.params.owner_number,
+		current_year1: current_year1,
+		current_year2: current_year2,
+		year1: req.params.year1,
+		year2: req.params.year2,
+		this_football_completed_season: this_football_completed_season,
+		this_basketball_completed_season: this_basketball_completed_season,
+		this_baseball_completed_season: this_baseball_completed_season
+	};
+
+	const send = matchups_router.display_owner_matchups(req, res, db, input);
+
+
+})
+
+// route to individual owner's matchups for a given trifecta season
+router.get('/owner/:owner_number/matchups/:year1/:year2/scrape', function(req, res) {
 
 	var sports_list = [];
 
@@ -319,7 +337,7 @@ router.get('/owner/:owner_number/matchups/:year1/:year2', function(req, res) {
 }); // end of owner to owner matchups 
 
 // route to individual owner's matchups for all trifecta seasons
-router.get('/owner/:owner_number/matchups/all', function(req, res) {
+router.get('/owner/:owner_number/matchups/all/scrape', function(req, res) {
 
 	let owner_number = req.params.owner_number;
 
