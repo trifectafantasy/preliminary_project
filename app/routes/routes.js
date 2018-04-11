@@ -251,8 +251,26 @@ router.get('/owner_matchup_home_page', function(req, res) {
 	res.render('owner_matchup_home_page');
 })
 
-// route to individual owner's matchups for a given trifecta season
 router.get('/owner/:owner_number/matchups/:year1/:year2', function(req, res) {
+
+	let input = {
+		owner_number: req.params.owner_number,
+		current_year1: current_year1,
+		current_year2: current_year2,
+		year1: req.params.year1,
+		year2: req.params.year2,
+		this_football_completed_season: this_football_completed_season,
+		this_basketball_completed_season: this_basketball_completed_season,
+		this_baseball_completed_season: this_baseball_completed_season
+	};
+
+	const send = matchups_router.display_owner_matchups(req, res, db, input);
+
+
+})
+
+// route to individual owner's matchups for a given trifecta season
+router.get('/owner/:owner_number/matchups/:year1/:year2/scrape', function(req, res) {
 
 	var sports_list = [];
 
@@ -328,33 +346,13 @@ router.get('/owner/:owner_number/matchups/all', function(req, res) {
 		//console.log(response.body);
 	
 		let input = {
-			owner_number: owner_number
+			owner_number: owner_number,
+			completed_football_season: completed_football_season,
+			completed_basketball_season: completed_basketball_season,
+			completed_baseball_season: completed_baseball_season
 		};
 		
-		var football_input = {
-			completed_football_season: completed_football_season,
-			this_football_season_started: this_football_season_started,
-			football_completed_matchups: football_completed_matchups,
-			this_football_completed_season: this_football_completed_season,
-			football_ahead: football_ahead,
-			football_ahead_completed_matchups: football_ahead_completed_matchups
-		};
-
-		var basketball_input = {
-			completed_basketball_season: completed_basketball_season,
-			this_basketball_season_started: this_basketball_season_started,
-			basketball_completed_matchups: basketball_completed_matchups,
-			this_basketball_completed_season: this_basketball_completed_season
-		};
-
-		var baseball_input = {
-			completed_baseball_season: completed_baseball_season,
-			this_baseball_season_started: this_baseball_season_started,
-			baseball_completed_matchups: baseball_completed_matchups,
-			this_baseball_completed_season: this_baseball_completed_season
-		};
-
-		const send = matchups_router.all_owner_matchups(req, res, db, input, football_input, basketball_input, baseball_input);	
+		const send = matchups_router.all_owner_matchups(req, res, db, input);	
 	}); // end of request to update current trifecta season's matchups before pulling total matchups
 }); // end of owner to owner matchups 
 

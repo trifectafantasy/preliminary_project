@@ -190,7 +190,7 @@ module.exports = function(req, res, db, year, playoffs) {
 				}
 
 				// run standings.py from python-shell to update collections with roto and trifecta points
-				pyshell.run("baseball_standings.py", options, function(err) {
+				pyshell.run("python/baseball_standings.py", options, function(err) {
 					
 					if (err) throw err;
 					console.log("Python script complete");
