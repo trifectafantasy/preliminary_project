@@ -1,0 +1,6 @@
+{
+	"ignore": [
+		"backup_mongo/*",
+		"node_mondules/*"
+	]
+}
