@@ -1,0 +1,53 @@
+html
+	head
+		title= "Historical Records"
+		link(rel="icon", type="image/x-icon", href="/images/trifectalogo.ico")
+		include ./JADE-Bootstrap/_bootstrap
+		include mixins.pug
+		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', type="text/css", href='/css/styles.css')
+
+		script(type="text/javascript").
+
+			$(window).on('beforeunload', function() {
+				$(".loader").fadeIn("slow");
+				//console.log("UNLOAD");
+			})
+
+			$(window).load(function() {
+				$(".loader").fadeOut("slow");
+				//console.log("LOAD");
+			})
+
+	body
+		div.loader
+		header
+			+headliner
+					
+		h2= owner + "'s" + " Historical Records"
+		h4 A compilation of all previous seasons
+
+		table
+			thead
+				tr
+					th SPORT
+					th WINS
+					th LOSSES
+					th TIES
+					th WIN %
+
+			tbody
+				each readin in historical_records
+					tr
+						each val, cat in readin
+							if cat === "sport"
+								td= val
+							if cat === "wins"
+								td= val
+							if cat === "losses"
+								td= val
+							if cat === "ties"
+								td= val
+							if cat === "win_per"
+								td= parseFloat(val).toFixed(3)
+								

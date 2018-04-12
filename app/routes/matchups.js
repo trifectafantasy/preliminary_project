@@ -381,48 +381,7 @@ var complete = function() {
 	let completed_football_season = args.completed_football_season;
 	let completed_basketball_season = args.completed_basketball_season;
 	let completed_baseball_season = args.completed_baseball_season;
-/*
-	// determine in_season variable from season_started and completed_season variables
-	if (this_football_season_started == true && this_football_completed_season == false) {
-		var football_in_season = true;
-		if (football_completed_matchups == 0) {
-			var football_in_season = false;
-		}
-	}
-	else {
-		var football_in_season = false;
-	}
 
-	// determine in_season variable from season_started and completed_season variables
-	if (this_basketball_season_started == true && this_basketball_completed_season == false) {
-		var basketball_in_season = true;
-		if (basketball_completed_matchups == 0) {
-			var basketball_in_season = false;
-		}		
-	}
-	else {
-		var basketball_in_season = false;
-	}
-
-	// determine in_season variable from season_started and completed_season variables
-	if (this_baseball_season_started == true && this_baseball_completed_season == false) {
-		var baseball_in_season = true;
-		if (baseball_completed_matchups == 0) {
-			var baseball_in_season = false;
-		}		
-	}
-	else {
-		var baseball_in_season = false;
-	}
-
-	// handle football_ahead variable for in season
-	if (football_ahead == true) {
-		football_in_season = true;
-		if (football_ahead_completed_matchups == 0) {
-			football_in_season = false;
-		}
-	}	
-*/
 	var options = {
 		args: [owner_number, completed_football_season, completed_basketball_season, completed_baseball_season]
 	}

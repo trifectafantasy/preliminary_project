@@ -157,6 +157,17 @@ router.get('/profile_home_page', function(req, res) {
 	res.render('profile_home_page');
 });
 
+router.get('/owner/:owner_number/profile/historical_records', function(req, res) {
+
+	let owner_number = req.params.owner_number;
+
+	// update all-time matchups
+	request.get({url: "http://localhost:8081/owner/" + owner_number + "/matchups/all"}, function(err, response, body) {
+
+		const send = profile_router.record_recap(req, res, db, owner_number);
+	})
+})
+
 // route to individual owner profiles
 router.get('/owner/:owner_number/profile/recap', function(req, res) {
 

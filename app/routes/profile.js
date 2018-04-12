@@ -8,6 +8,32 @@ let pyshell = require('python-shell');
 let mongo = require('mongodb');
 let assert = require('assert');
 
+function record_recap(req, res, db, owner_number) {
+	
+	db.collection('owner' + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs) {
+		owner_name = docs[0]["owner"]
+		//console.log(owner_name);
+
+		options = {
+			args: [owner_number]
+		}
+
+		pyshell.run('python/historical_records.py', options, function(err) {
+			console.log("historical records python script complete");
+
+			db.collection("owner" + owner_number + "_historical_records").find({}, {"_id": 0}).toArray(function(e, docs) {
+				//console.log(docs);
+
+				console.log("Displaying historical reord...");
+				res.render('historical_records', {
+					owner: owner_name,
+					historical_records: docs
+				})
+			})
+		})
+	})
+}
+
 function profile_recap(req, res, db, args) {
 	
 	let owner_number = args.owner_number;
@@ -113,6 +139,7 @@ function trophy_case(req, res, db, args) {
 
 
 module.exports = {
+	record_recap,
 	profile_recap,
 	trophy_case
 };
