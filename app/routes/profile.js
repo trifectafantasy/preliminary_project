@@ -9,10 +9,8 @@ let mongo = require('mongodb');
 let assert = require('assert');
 
 function record_recap(req, res, db, owner_number) {
-			console.log(owner_number)
 	
 	db.collection('owner' + owner_number).find({}, {"owner": 1, "_id": 0}).toArray(function(e, docs) {
-		console.log(docs)
 		owner_name = docs[0]["owner"]
 		//console.log(owner_name);
 
@@ -23,12 +21,10 @@ function record_recap(req, res, db, owner_number) {
 		pyshell.run('python/historical_records.py', options, function(err) {
 			console.log("historical records python script complete");
 
-
-
-
 			db.collection("owner" + owner_number + "_historical_records").find({}, {"_id": 0}).toArray(function(e, docs) {
-				console.log(docs);
+				//console.log(docs);
 
+				console.log("Displaying historical reord...");
 				res.render('historical_records', {
 					owner: owner_name,
 					historical_records: docs
