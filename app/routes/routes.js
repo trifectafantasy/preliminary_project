@@ -115,6 +115,7 @@ const acquisitions_router = require('./acquisitions.js');
 const origin_router = require('./origin.js');
 const popular_router = require('./popular.js');
 const coach_router = require('./coach.js');
+const records_router = require('./historical_records.js');
 const draft_board_router = require('./draft_board.js');
 
 const matchups_update = require('../modules/matchups_number_update.js');
@@ -157,15 +158,11 @@ router.get('/profile_home_page', function(req, res) {
 	res.render('profile_home_page');
 });
 
-router.get('/owner/:owner_number/profile/historical_records', function(req, res) {
+router.get('/historical_records/:sport', function(req, res) {
 
-	let owner_number = req.params.owner_number;
+	let sport = req.params.sport;
 
-	// update all-time matchups
-	request.get({url: "http://localhost:8081/owner/" + owner_number + "/matchups/all"}, function(err, response, body) {
-
-		const send = profile_router.record_recap(req, res, db, owner_number);
-	})
+	const send = records_router.historical_records(req, res, db, sport);
 })
 
 // route to individual owner profiles

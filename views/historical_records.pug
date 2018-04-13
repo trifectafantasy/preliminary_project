@@ -23,31 +23,91 @@ html
 		div.loader
 		header
 			+headliner
-					
-		h2= owner + "'s" + " Historical Records"
-		h4 A compilation of all previous seasons
 
-		table
-			thead
-				tr
-					th SPORT
-					th WINS
-					th LOSSES
-					th TIES
-					th WIN %
+		h2= sport.charAt(0).toUpperCase() + sport.substr(1) + " Historical Records"
+		h4 All-time owner records of completed Trifecta fantasy seasons
 
-			tbody
-				each readin in historical_records
+		if sport == "combined"
+
+			table
+				thead
 					tr
-						each val, cat in readin
-							if cat === "sport"
-								td= val
-							if cat === "wins"
-								td= val
-							if cat === "losses"
-								td= val
-							if cat === "ties"
-								td= val
-							if cat === "win_per"
-								td= parseFloat(val).toFixed(3)
-								
+						th OWNER
+						th FOOTBALL WIN %
+						th BASKETBALL WIN %
+						th BASEBALL WIN %
+						th COMBINED WIN %
+
+				tbody
+					each readin in historical_records
+						tr
+							each val, cat in readin
+								if cat === "owner_name"
+									td= val
+								if cat === "football_win_per"
+									td= parseFloat(val).toFixed(3)
+								if cat === "basketball_win_per"
+									td= parseFloat(val).toFixed(3)
+								if cat === "baseball_win_per"
+									td= parseFloat(val).toFixed(3)
+								if cat === "combined_win_per"
+									td= parseFloat(val).toFixed(3)
+
+		else 
+
+			table
+				thead
+					tr
+						th OWNER
+						th WINS
+						th LOSSES
+						th TIES
+						th WIN %
+
+				tbody
+					each readin in historical_records
+
+						if sport == "football"
+
+							tr
+								each val, cat in readin
+									if cat === "owner_name"
+										td= val
+									if cat === "football_wins"
+										td= val
+									if cat === "football_losses"
+										td= val
+									if cat === "football_ties"
+										td= val
+									if cat === "football_win_per"
+										td= parseFloat(val).toFixed(3)				
+
+						if sport == "basketball"
+
+							tr
+								each val, cat in readin
+									if cat === "owner_name"
+										td= val
+									if cat === "basketball_wins"
+										td= val
+									if cat === "basketball_losses"
+										td= val
+									if cat === "basketball_ties"
+										td= val
+									if cat === "basketball_win_per"
+										td= parseFloat(val).toFixed(3)
+
+						if sport == "baseball"
+
+							tr
+								each val, cat in readin
+									if cat === "owner_name"
+										td= val
+									if cat === "baseball_wins"
+										td= val
+									if cat === "baseball_losses"
+										td= val
+									if cat === "baseball_ties"
+										td= val
+									if cat === "baseball_win_per"
+										td= parseFloat(val).toFixed(3)
