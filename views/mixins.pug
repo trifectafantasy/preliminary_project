@@ -55,7 +55,13 @@ mixin headliner
             +nav_item("/football_standings/2017") 2017 Football
             +nav_item("/basketball_standings/2018") 2018 Basketball
             +nav_item("/baseball_standings/2018") 2018 Baseball
-            +nav_item("/trifecta_standings/2017/2018") 2017-2018 Trifecta                   
+            +nav_item("/trifecta_standings/2017/2018") 2017-2018 Trifecta
+
+        +nav_item_dropdown("#")(label="Historical Records")
+            +nav_item("/historical_records/football") Football
+            +nav_item("/historical_records/basketball") Basketball
+            +nav_item("/historical_records/baseball") Baseball
+            +nav_item("/historical_records/combined") Combined
 
         +nav_item("/owner_matchup_home_page") Owner vs Owner Matchup Records
 
