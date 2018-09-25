@@ -43,7 +43,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 			# if sport trifecta collection has 10 documents, (ie playoffs and all that is done) just pull from sport trifecta collection
 			if football_count == 10:
 				# pull total trifecta points per team
-				football_list = list(db[collection_football_trifecta].find({}, {"team": 1, "total_trifecta_points": 1, "_id": 0}))
+				football_list = list(db[collection_football_trifecta].find({}, {"team": 1, "total_trifecta_points": 1, "owner_number": 1, "_id": 0}))
 				points_field = "total_trifecta_points"
 
 			# if there are not 10 documents, then take current sport trifecta points from h2h colletion in mongodb
@@ -117,7 +117,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 			#print basketball_count
 
 			if basketball_count == 10:
-				basketball_list = list(db[collection_basketball_trifecta].find({}, {"team": 1, "total_trifecta_points": 1, "_id": 0}))
+				basketball_list = list(db[collection_basketball_trifecta].find({}, {"team": 1, "total_trifecta_points": 1, "owner_number": 1,"_id": 0}))
 				points_field = "total_trifecta_points"
 
 			else:
@@ -178,7 +178,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 			if baseball_count == 10:
 
 				# just pull from total trifecta points from baseball tirfectacollection
-				baseball_list = list(db[collection_baseball_trifecta].find({}, {"team": 1, "total_trifecta_points": 1, "_id": 0}))
+				baseball_list = list(db[collection_baseball_trifecta].find({}, {"team": 1, "total_trifecta_points": 1, "owner_number": 1, "_id": 0}))
 
 				# loop through listed results for team and trifecta points
 				for baseball_info in baseball_list:
@@ -208,9 +208,9 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 
 					# if exception (ie no team name in database), add team name per owner
 					except KeyError:
-						#owner_number = str(baseball_info["owner_number"])
+						owner_number = str(baseball_info["owner_number"])
 						#print "OWNER", owner_number, type(owner_number)
-						r = requests.post("http://localhost:8081/utility/add_team_name", data = {"owner_number": owner_num, "team_name": baseball_team})
+						r = requests.post("http://localhost:8081/utility/add_team_name", data = {"owner_number": owner_number, "team_name": baseball_team})
 
 					# if owner names are the same, set correct team name and trifecta points
 					if owner_name == owner_name_check:
