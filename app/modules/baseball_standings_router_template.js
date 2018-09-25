@@ -17,10 +17,7 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 	var disp_roto_standings = null;
 	var disp_trifecta_standings = null;		
 
-	if (in_season === false && playoffs === true) {
-		console.log(in_season, playoffs);
-
-
+	if (in_season === false) { //&& playoffs === true) {
 		// function that checks if both finds from mongodb are complete (ie display variables are not empty)
 		var complete = function() {
 
@@ -51,64 +48,50 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 			}
 		}
 
-		var playoff_scrape = require('./playoffs_router_template.js')(req, res, db, sport, year, function(err, call) {
-			
-			var options = {
-				args: [year]
-			};
-			
-			// run python script to initialize trifecta database
-			pyshell.run('python/baseball_playoffs.py', options, function(err) {
-				if (err) throw err;
-				console.log('Playoff python script complete');
+		// pull from mongodb and display new data after python script finishes
+		db.collection('baseball_h2h_' + year).find({}, {"_id": 0}).sort({"win_per": -1}).toArray(function(e, docs) {
+			//console.log(docs);
+			console.log("Displaying h2h data...");
+			disp_h2h_standings = docs;
+			// call complete to see if both finds are done
+			complete();
+		});
 
-				db.collection('baseball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
-					//console.log(docs);
-					console.log("Displaying playoff data...");
-					console.log("");
+		db.collection('baseball_roto_' + year).find({}, {"_id": 0}).sort({"roto_trifecta_points": -1}).toArray(function(e, docs) {
+			//console.log(docs);
+			console.log("Displaying roto data...");
+			console.log("");
+			disp_roto_standings = docs;
+			// call complete to see if both finds are done
+			complete();
+		});	
 
-					disp_trifecta_standings = docs;
-					complete();
-				});	// end of trifecta standings pull
-			}) // end of pyshell
-		}); // end of playoff scrape
-
-	}
-
-	else if (in_season === false && playoffs === false) {
 		console.log(in_season, playoffs);
-		
 
-		// function that checks if both finds from mongodb are complete (ie display variables are not empty)
-		var complete = function() {
+		if (playoffs === true) {
 
-			if (playoffs === true) {
-				if ((disp_h2h_standings !== null && disp_roto_standings !== null) && disp_trifecta_standings !== null) {
+			var playoff_scrape = require('./playoffs_router_template.js')(req, res, db, sport, year, function(err, call) {
+				
+				var options = {
+					args: [year]
+				};
+				
+				// run python script to initialize trifecta database
+				pyshell.run('python/baseball_playoffs.py', options, function(err) {
+					if (err) throw err;
+					console.log('Playoff python script complete');
 
-					// render to baseball_standings
-					res.render('baseball_standings', {
-						h2h_standings: disp_h2h_standings,
-						roto_standings: disp_roto_standings,
-						trifecta_standings: disp_trifecta_standings,
-						year: year,
-						playoffs: playoffs
-					});
-				}
-			}
-			else {
-				if (disp_h2h_standings !== null && disp_roto_standings !== null) {
+					db.collection('baseball_trifecta_' + year).find({}, {"_id": 0}).sort({"total_trifecta_points": -1}).toArray(function(e, docs) {
+						//console.log(docs);
+						console.log("Displaying playoff data...");
+						console.log("");
 
-					// render to baseball_standings
-					res.render('baseball_standings', {
-						h2h_standings: disp_h2h_standings,
-						roto_standings: disp_roto_standings,
-						year: year,
-						playoffs: playoffs
-					});
-				}
-			}
+						disp_trifecta_standings = docs;
+						complete();
+					});	// end of trifecta standings pull
+				}) // end of pyshell
+			}); // end of playoff scrape
 		}
-		complete();
 	}
 
 	else {
