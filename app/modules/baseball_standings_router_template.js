@@ -91,11 +91,9 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 				}) // end of pyshell
 			}); // end of playoff scrape
 		}; // end of if playoffs
-	}; // end of if in_season
+	} // end of if in_season
 
 	else {
-
-
 		// url for baseball standings
 		var url = 'http://games.espn.com/flb/standings?leagueId=109364&seasonId=' + year;
 
@@ -337,6 +335,6 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 
 			} // end of if(!error)
 		}) // end of request
-	} // end of 
+	} // end of else
 
 } // end of .get('/baseball_standings')
