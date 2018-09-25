@@ -9,6 +9,8 @@ var mongo = require('mongodb');
 var assert = require('assert');
 
 module.exports = function(req, res, db, year, in_season, playoffs) {
+	
+	var sport = 'baseball';	
 
 	// initialize display database queries
 	var disp_h2h_standings = null;
@@ -107,7 +109,6 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 
 	else {
 
-		var sport = 'baseball';
 
 		// url for baseball standings
 		var url = 'http://games.espn.com/flb/standings?leagueId=109364&seasonId=' + year;
