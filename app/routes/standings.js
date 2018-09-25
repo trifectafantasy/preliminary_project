@@ -233,6 +233,7 @@ function basketball_standings(req, res, db, args) {
 	var year = args.year;
 	let completed_basketball_season = args.completed_basketball_season;
 	let this_basketball_season_started = args.this_basketball_season_started;
+	let in_season = args.this_basketball_in_season;
 	var playoffs = args.playoffs;
 
 // function that checks if both finds from mongodb are complete (ie display variables are not empty)
@@ -301,7 +302,7 @@ var complete = function() {
 		});
 	}
 	else if (this_basketball_season_started === true && year - completed_basketball_season == 1) {
-		var stand = require('../modules/basketball_standings_router_template.js')(req, res, db, year, playoffs);
+		var stand = require('../modules/basketball_standings_router_template.js')(req, res, db, year, in_season, playoffs);
 	}
 	else {
 		res.send("Basketball " + year + " is not in season yet")
@@ -317,6 +318,7 @@ function baseball_standings(req, res, db, args) {
 	var year = args.year;
 	var completed_baseball_season = args.completed_baseball_season;
 	let this_baseball_season_started = args.this_baseball_season_started;
+	let in_season = args.this_basketball_in_season;
 	var playoffs = args.playoffs;
 
 // function that checks if both finds from mongodb are complete (ie display variables are not empty)
@@ -385,8 +387,9 @@ var complete = function() {
 		});
 	}
 	else if (this_baseball_season_started === true && year - completed_baseball_season == 1) {
-		var stand = require('../modules/baseball_standings_router_template.js')(req, res, db, year, playoffs);
+		var stand = require('../modules/baseball_standings_router_template.js')(req, res, db, year, in_season, playoffs);
 	}
+	else if ((this_baseball_season_started === true && year - completed_baseball_season == 1) & )
 	else {
 		res.send("Baseball " + year + " is not in season yet.");
 	}

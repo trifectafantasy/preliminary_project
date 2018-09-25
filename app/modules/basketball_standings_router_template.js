@@ -8,7 +8,7 @@ var pyshell = require('python-shell');
 var mongo = require('mongodb');
 var assert = require('assert');
 
-module.exports = function(req, res, db, year, playoffs) {
+module.exports = function(req, res, db, year, in_season, playoffs) {
 
 	var sport = "basketball";
 
