@@ -12,12 +12,13 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 	
 	var sport = 'baseball';	
 
-	// initialize display database queries
-	var disp_h2h_standings = null;
-	var disp_roto_standings = null;
-	var disp_trifecta_standings = null;		
+	if (in_season === false) { 
 
-	if (in_season === false) { //&& playoffs === true) {
+		// initialize display database queries
+		var disp_h2h_standings = null;
+		var disp_roto_standings = null;
+		var disp_trifecta_standings = null;
+
 		// function that checks if both finds from mongodb are complete (ie display variables are not empty)
 		var complete = function() {
 
@@ -66,8 +67,6 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 			complete();
 		});	
 
-		console.log(in_season, playoffs);
-
 		if (playoffs === true) {
 
 			var playoff_scrape = require('./playoffs_router_template.js')(req, res, db, sport, year, function(err, call) {
@@ -91,8 +90,8 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 					});	// end of trifecta standings pull
 				}) // end of pyshell
 			}); // end of playoff scrape
-		}
-	}
+		}; // end of if playoffs
+	}; // end of if in_season
 
 	else {
 
