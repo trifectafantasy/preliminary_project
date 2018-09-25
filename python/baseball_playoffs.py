@@ -26,15 +26,13 @@ def combine_databases(db, collection_h2h, collection_roto, collection_playoffs, 
 		json = OrderedDict()
 
 		team_name = pull_h2h[i]["team"]
-		# pull h2h points and divide by 2 to weight for h2h half
 		h2h_trifecta_points = pull_h2h[i]["h2h_trifecta_points"]
-		h2h_trifecta_points = float(h2h_trifecta_points) / 2
+		h2h_trifecta_points = float(h2h_trifecta_points)
 
 		# pull roto trifecta points from roto collection
 		pull_roto = list(db[collection_roto].find({"team": team_name}, {"roto_trifecta_points": 1, "_id": 0}))
-		# divide by 2 to weight for roto half
 		roto_trifecta_points = pull_roto[0]["roto_trifecta_points"]
-		roto_trifecta_points = float(roto_trifecta_points) / 2
+		roto_trifecta_points = float(roto_trifecta_points)
 
 		# pull playoff trifecta points from playoffs collection
 		pull_playoffs = list(db[collection_playoffs].find({"team": team_name}, {"playoff_trifecta_points": 1, "_id": 0}))

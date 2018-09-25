@@ -182,6 +182,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 
 				# loop through listed results for team and trifecta points
 				for baseball_info in baseball_list:
+                                        print "baseball_info", baseball_info
 					baseball_team = baseball_info["team"]
 					baseball_points = baseball_info["total_trifecta_points"]
 					#print baseball_team
@@ -207,9 +208,9 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 
 					# if exception (ie no team name in database), add team name per owner
 					except KeyError:
-						owner_number = str(baseball_info["owner_number"])
+						#owner_number = str(baseball_info["owner_number"])
 						#print "OWNER", owner_number, type(owner_number)
-						r = requests.post("http://localhost:8081/utility/add_team_name", data = {"owner_number": owner_number, "team_name": baseball_team})
+						r = requests.post("http://localhost:8081/utility/add_team_name", data = {"owner_number": owner_num, "team_name": baseball_team})
 
 					# if owner names are the same, set correct team name and trifecta points
 					if owner_name == owner_name_check:
