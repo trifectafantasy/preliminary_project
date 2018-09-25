@@ -318,7 +318,7 @@ function baseball_standings(req, res, db, args) {
 	var year = args.year;
 	var completed_baseball_season = args.completed_baseball_season;
 	let this_baseball_season_started = args.this_baseball_season_started;
-	let in_season = args.this_basketball_in_season;
+	let in_season = args.this_baseball_in_season;
 	var playoffs = args.playoffs;
 
 // function that checks if both finds from mongodb are complete (ie display variables are not empty)

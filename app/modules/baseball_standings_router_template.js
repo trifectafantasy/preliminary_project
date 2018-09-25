@@ -41,7 +41,7 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 				}
 			}
 		}
-		
+
 		var playoff_scrape = require('./playoffs_router_template.js')(req, res, db, sport, year, function(err, call) {
 			
 			var options = {
