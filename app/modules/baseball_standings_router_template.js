@@ -18,6 +18,7 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 	var disp_trifecta_standings = null;		
 
 	if (in_season === false && playoffs === true) {
+		console.log(in_season, playoffs);
 
 
 		// function that checks if both finds from mongodb are complete (ie display variables are not empty)
@@ -75,6 +76,9 @@ module.exports = function(req, res, db, year, in_season, playoffs) {
 	}
 
 	else if (in_season === false && playoffs === false) {
+		console.log(in_season, playoffs);
+		
+
 		// function that checks if both finds from mongodb are complete (ie display variables are not empty)
 		var complete = function() {
 
