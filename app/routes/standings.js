@@ -389,7 +389,6 @@ var complete = function() {
 	else if (this_baseball_season_started === true && year - completed_baseball_season == 1) {
 		var stand = require('../modules/baseball_standings_router_template.js')(req, res, db, year, in_season, playoffs);
 	}
-	else if ((this_baseball_season_started === true && year - completed_baseball_season == 1) & )
 	else {
 		res.send("Baseball " + year + " is not in season yet.");
 	}
