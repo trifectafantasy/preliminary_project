@@ -59,7 +59,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 			for football_info in football_list:
 				football_team = football_info["team"]
 				football_points = football_info[points_field]
-				#print "football_team", football_team
+				print "football_team", football_team
 
 				# set path for finding owner through team name
 				path = "teams." + football_team
