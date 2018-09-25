@@ -10,7 +10,13 @@ var assert = require('assert');
 
 module.exports = function(req, res, db, year, in_season, playoffs) {
 
+	// initialize display database queries
+	var disp_h2h_standings = null;
+	var disp_roto_standings = null;
+	var disp_trifecta_standings = null;		
+
 	if (in_season === false && playoffs === true) {
+
 
 		// function that checks if both finds from mongodb are complete (ie display variables are not empty)
 		var complete = function() {
