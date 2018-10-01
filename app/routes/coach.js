@@ -68,7 +68,11 @@ var all_football_coach = function(x, owner_list) {
 // execute scriptf	
 	// if year is greater than completed season, SCRAPE
 	if (year > completed_football_season) {
-		
+
+		console.log("Don't scrape for coach stats anymore.");
+		res.send("Sorry, but coach stats aren't updated anymore.");
+
+		/*
 		db.collection("all_coach_" + year).remove({});
 	
 		// how many weeks have been completed, able to scrape
@@ -86,6 +90,7 @@ var all_football_coach = function(x, owner_list) {
 
 		// run synchronous for loop function
 		all_football_coach(0, owner_list);
+		*/
 	} // end of if need to be scraped
 	// if year is in past, just pull
 	else {
