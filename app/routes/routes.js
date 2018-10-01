@@ -638,6 +638,7 @@ router.get('/football/coach/:year', function(req, res) {
 }) // end of route to coach analysis
 
 
+/* --------------------------------------------------------------------
 // route to future draft boards home page
 router.get('/future_draft_boards_home_page', function(req, res) {
 	res.render('future_draft_boards_home_page');
@@ -658,6 +659,8 @@ router.get('/future_draft_board/:sport/:year', function(req, res) {
 	const send = draft_board_router.draft_board(req, res, db, input);
 
 }) // end of route to future draft boards home page
+-----------------------------------------------------------------------
+*/
 
 // Test endpoint
 /*
