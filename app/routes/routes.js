@@ -256,6 +256,7 @@ router.get('/baseball_standings/:year', function(req, res) {
 }) // end of .get('/baseball_standings')
 
 
+/* --------------------------------------------------------------------------------
 // route to home page for all individual owner matchup data
 router.get('/owner_matchup_home_page', function(req, res) {
 	res.render('owner_matchup_home_page');
@@ -365,6 +366,8 @@ router.get('/owner/:owner_number/matchups/all', function(req, res) {
 		const send = matchups_router.all_owner_matchups(req, res, db, input);	
 	}); // end of request to update current trifecta season's matchups before pulling total matchups
 }); // end of owner to owner matchups 
+--------------------------------------------------------------------------------
+*/ 
 
 
 // route to home page for all individual owner matchup data
