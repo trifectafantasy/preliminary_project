@@ -232,6 +232,7 @@ router.get('/basketball_standings/:year', function(req, res) {
 		year: req.params.year,
 		completed_basketball_season: completed_basketball_season,
 		this_basketball_season_started: this_basketball_season_started,
+		this_basketball_in_season: this_basketball_in_season,
 		playoffs: this_basketball_playoffs
 	};
 
@@ -246,6 +247,7 @@ router.get('/baseball_standings/:year', function(req, res) {
 		year: req.params.year,
 		completed_baseball_season: completed_baseball_season,
 		this_baseball_season_started: this_baseball_season_started,
+		this_baseball_in_season: this_baseball_in_season,
 		playoffs: this_baseball_playoffs,
 	};
 

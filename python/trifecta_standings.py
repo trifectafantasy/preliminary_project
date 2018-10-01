@@ -38,7 +38,7 @@ def trifectaSeasonPoints(db, year1, year2, football_in_season, basketball_in_sea
 
 			collection_football_trifecta = "football_trifecta_" + year1
 			football_count = db[collection_football_trifecta].count()
-			#print football_count
+			#print "football_count", football_count
 
 			# if sport trifecta collection has 10 documents, (ie playoffs and all that is done) just pull from sport trifecta collection
 			if football_count == 10:
