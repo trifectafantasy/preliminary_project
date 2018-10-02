@@ -111,7 +111,11 @@ var all_acquisitions = function(x, owner_list) {
 
 // execute script //
 	if (year > completed_sport_season) {
-		
+
+		console.log("Don't scrape for roster stats anymore.");
+		res.send("Sorry, but roster stats aren't updated anymore.");
+
+		/*
 		if (sport === 'football') {
 			acquire_process();
 		}
@@ -123,6 +127,7 @@ var all_acquisitions = function(x, owner_list) {
 				acquire_process();
 			})
 		}
+		*/
 	}
 	else {
 		var stats_display = require('../modules/stats_display.js')(req, res, db, sport, year, owner_number)

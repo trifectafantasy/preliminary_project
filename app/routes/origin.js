@@ -113,6 +113,10 @@ var display = function() {
 	// if present season, scrape and go through process
 	if (year > completed_sport_season) {
 
+		console.log("Don't scrape for origin stats anymore.");
+		res.send("Sorry, but origin stats aren't updated anymore.");
+
+		/*
 		db.collection(sport  + '_origin_' + year).remove({});
 
 		if (sport === 'football') {
@@ -126,6 +130,7 @@ var display = function() {
 				origin_process();
 			})	
 		}
+		*/
 	}
 	// if season in past, just display
 	else {

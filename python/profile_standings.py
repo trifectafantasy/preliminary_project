@@ -259,6 +259,10 @@ for year1 in start_year_list:
 				elif sport == 'baseball':
 					year = year2
 					profiling(db, owner_number, team_list, sport, year)
+
+					# if baseball is done, then also do trifeta summary
+					trifecta_summary(db, owner_number, year1, year2)
+					
 			# if basketball done, profile basketball and football
 			elif basketball_completed_season == "true":
 				if sport == "football":

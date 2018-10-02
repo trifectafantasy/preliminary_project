@@ -21,21 +21,20 @@ function profile_recap(req, res, db, args) {
 	let this_baseball_completed_season = args.this_baseball_completed_season;
 
 	let disp_profile_standings = null;
-	let disp_profile_matchups = null;
+	//let disp_profile_matchups = null;
 	let disp_profile_players = null;
 // complete function that displays tables
 
 let profile_complete = function() {
 
 	// wait for all 3 sets of data to be pulled
-	if ((disp_profile_matchups != null && disp_profile_standings != null) && disp_profile_players != null) {
+	if (disp_profile_standings != null && disp_profile_players != null) {
 		console.log("Displaying profile stats...");
 		console.log("");
 
 		res.render('profile_recap', {
 			owner: owner_name,
 			profile_standings: disp_profile_standings,
-			matchup_standings: disp_profile_matchups,
 			players_standings: disp_profile_players
 		})
 	} // end of if
@@ -62,6 +61,7 @@ let profile_complete = function() {
 			}) // end of pull for display
 		}) // end of pyshell
 
+		/*
 		// python script that pulls each owner's best and worst matchups records 
 		pyshell.run('python/profile_matchups.py', options, function(err) {
 			console.log('profile matchups python script done');
@@ -72,6 +72,7 @@ let profile_complete = function() {
 				profile_complete();
 			}) // end of pull for display
 		}) // end of pyshell
+		*/
 
 		// python script that pulls each owner's best and worst players from season
 		pyshell.run('python/profile_players.py', options, function(err) {

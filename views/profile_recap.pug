@@ -62,43 +62,6 @@ html
 								else
 									td= parseFloat(val).toFixed(1)
 		
-		h3 Matchups Recap 
-		
-		table
-			thead
-				tr
-					th SEASON
-					th BEST OWNER AGAINST
-					th WIN %
-					th POINT DIFFERENTIAL
-					th WORST OWNER AGAINST
-					th WIN %
-					th POINT DIFFERENTIAL
-
-			tbody 
-				each readin2 in matchup_standings
-					tr
-						each val, cat in readin2
-							if cat === "season"
-								td= val
-							if cat === "best_owner"
-								td= val
-							if cat === "best_win_per"
-								td= parseFloat(val).toFixed(3)
-							if cat === "best_pt_diff"
-								if val == "N/A"
-									td= val
-								else
-									td= parseFloat(val).toFixed(1)
-							if cat === "worst_owner"
-								td= val
-							if cat === "worst_win_per"
-								td= parseFloat(val).toFixed(3)
-							if cat === "worst_pt_diff"
-								if val == "N/A"
-									td= val
-								else
-									td= parseFloat(val).toFixed(1)
 
 		h3 Players Recap
 

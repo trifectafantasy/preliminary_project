@@ -87,9 +87,14 @@ var all_popular = function(x, owner_list) {
 	// if season not completed, scrape
 	if (year > completed_sport_season) {
 
+		console.log("Don't scrape for popular player stats anymore.");
+		res.send("Sorry, but popular player stats aren't updated anymore.");
+
+		/*
 		db.collection(sport + "_popular_" + year).remove({});
 
 		all_popular(0, owner_list);
+		*/
 	}
 	// else just pull and display
 	else {
