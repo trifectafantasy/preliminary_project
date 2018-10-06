@@ -638,6 +638,11 @@ router.get('/football/coach/:year', function(req, res) {
 }) // end of route to coach analysis
 
 
+// route to trader page
+router.get('/trade_page', function(req, res) {
+	res.render('trade_page');
+})
+
 /* --------------------------------------------------------------------
 // route to future draft boards home page
 router.get('/future_draft_boards_home_page', function(req, res) {
