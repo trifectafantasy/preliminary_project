@@ -85,3 +85,8 @@ a:hover #profile-hover {
 #by_team_draft_board_picks {
 	width: 25px;
 }
+
+iframe {
+	display: block;
+	margin: auto;
+}
