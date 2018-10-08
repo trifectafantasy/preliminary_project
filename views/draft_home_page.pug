@@ -1,0 +1,128 @@
+html
+	head
+		title= "2019 Trifecta Draft Page"
+		link(rel="icon", type="image/x-icon", href="/images/trifectalogo.ico")
+		include ./JADE-Bootstrap/_bootstrap
+		include mixins.pug
+		link(rel='stylesheet', type="text/css", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel='stylesheet', type="text/css", href='/css/styles.css')
+
+		script(type="text/javascript").
+
+			$(window).on('beforeunload', function() {
+				$(".loader").fadeIn("slow");
+				//console.log("UNLOAD");
+			})
+
+			$(window).load(function() {
+				$(".loader").fadeOut("slow");
+				//console.log("LOAD");
+			})
+
+	body
+		div.loader
+		header
+			+headliner
+
+		h2 2019 Trifecta Draft Order
+
+		h4 The Bins Draft Order Selection Method
+		p The 3 "bins" are consituted as follows:
+		ul
+			li Bin 1: Picks 1, 2, 3
+			li Bin 2: Picks 4, 5, 6, 7
+			li Bin 3: Picks 8, 9, 10
+
+		p 
+
+		p The draft order for each sport will be determined randomly using the below wheel. Each owner will be in each bin across all 3 sports each Trifecta season. Each owner will get a Top 3 pick, Middle 4 pick and Bottom 3 pick across each sport. The spots within the bins and for which sports is random.
+
+		p If an owner is drawn into the same bin as a previous sport in the same Trifecta season, the spot will be re-drawn until it is filled by an owner who has not been selected into that bin. 
+
+		p Ex: Owner A gets pick 8 in Basketball (Bin 3). Owner A cannot be drawn into Bin 3 for Baseball or Football. The pick will be repeated and filled by another owner who had previously not been selected in Bin 3.
+
+		p 
+
+		p The draft orders for each sport are listed below:
+
+		table 
+			thead
+				tr
+					th Draft Spot
+					th Basketball
+					th Baseball
+					th Football
+
+			tbody
+				tr
+					td 1.
+					td Ryan Tomimitsu
+					td TBD
+					td TBD
+				tr
+					td 2.
+					td Wayne Fong
+					td TBD
+					td TBD
+
+				tr
+					td 3.
+					td Joshua Aguirre
+					td TBD
+					td TBD
+
+				tr
+					td 4.
+					td Joshua Liu
+					td TBD
+					td TBD
+
+				tr
+					td 5.
+					td Tim Fong
+					td TBD
+					td TBD
+
+				tr
+					td 6.
+					td Nick Wang & Kevin Okamoto
+					td TBD
+					td TBD
+
+				tr
+					td 7.
+					td Joshua Apostol
+					td TBD
+					td TBD
+
+				tr
+					td 8.
+					td Wesley Chipeco
+					td TBD
+					td TBD
+
+				tr
+					td 9.
+					td Bryan Kuh
+					td TBD
+					td TBD
+
+				tr
+					td 10.
+					td Marcus Lam
+					td TBD
+					td TBD
+
+
+		h2
+
+		h4 Links to Draft Order Selction Videos
+		a(href="https://servicenow-cmr.webex.com/servicenow-cmr/lsr.php?RCID=217b6b517d1a4fc3badbe9b6cce14170") 2019 Basketball Draft Order Selection Video
+
+		h2
+
+		h4 Give the wheel a spin and try it out!
+
+		iframe(src="https://wheeldecide.com/e.php?c1=Marcus+Lam&c2=Wesley+Chipeco&c3=Joshua+Liu&c4=Bryan+Kuh&c5=Joshua+Apostol&c6=Joshua+Aguirre&c7=Tim+Fong&c8=Ryan+Tomimitsu&c9=Nick+Wang+%26+Kevin+Okamoto&c10=Wayne+Fong&col=light&t=Trifecta+Fantasy+Draft+Order&time=10&width=800", width="825", height="825", align="middle", frameborder="0")
+
+
