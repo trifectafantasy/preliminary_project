@@ -524,11 +524,12 @@ router.get('/owner/:owner_number/:sport/acquisitions/:year', function(req, res) 
 	}
 }) // end of route to acquisition stats
 
-
+/*
 // route to origin home page
 router.get('/origin_home_page', function(req, res) {
 	res.render('origin_home_page')
 });
+*/
 
 // route to origin analysis
 router.get('/:sport/origin/:year', function(req, res) {
@@ -556,11 +557,12 @@ router.get('/:sport/origin/:year', function(req, res) {
 
 }); // end of origin route
 
-
+/*
 // route to popular home page
 router.get('/popular_home_page', function(req, res) {
 	res.render('popular_home_page');
 })
+*/
 
 // route to get most popular players
 router.get('/:sport/popular/:year', function(req, res) {
@@ -591,11 +593,12 @@ router.get('/:sport/popular/:year', function(req, res) {
 
 }) // end of route to sport popular
 
-
+/*
 // home page for football coach rankings
 router.get('/football_coach_home_page', function(req, res) {
 	res.render('football_coach_home_page');
 })
+*/
 
 // route to analyze fantasy football "coaching" aka starting lineup optimization
 router.get('/football/coach/:year', function(req, res) {
