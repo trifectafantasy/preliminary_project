@@ -371,8 +371,8 @@ router.get('/owner/:owner_number/matchups/all', function(req, res) {
 
 
 // route to home page for all individual owner matchup data
-router.get('/trades_home_page', function(req, res) {
-	res.render('trades_home_page');
+router.get('/draft_home_page', function(req, res) {
+	res.render('draft_home_page');
 })
 
 router.get('/:sport/trades/:year', function(req, res) {
