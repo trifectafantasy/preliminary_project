@@ -73,3 +73,11 @@ To form draft boards:
 + When creating the full draft board with draft order, use: draft_board_creation.py
   - When making set, specific draft pick trades, use: trade_draft_picks.py
   - To display set, specific draft board with order, in routes.js, line 73, set_board_sport = \<sport\>
+
+
+-----------------------------------------------------------------------------------------------------------
+See backgrounded processess:
++ $ ps -ef | grep ubuntu
+
+To check status of website: 
++ uptimerobot.com
